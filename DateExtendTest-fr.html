@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Page de test calendriers</title>
+<!-- Version M2020-11-21 first complete
+-->
+	
+	<meta name="creator" content="Louis-Aimé de Fouquières">
+	<meta name="description" content="Test nouveaux packages de dates ">
+	<meta name="keywords" content="Unicode calendrier, Unicode calendars">
+	<meta name="viewport" content="width=device-width">	
+
+<!-- General packages -->
+	<link href="dialsandpanels.css" rel="stylesheet"/>
+	<script type="text/javascript" src="Chronos.js"></script>
+	<script type="text/javascript" src="DateExtended.js"></script>
+	<script type="text/javascript" src="pldr.js"></script> <!-- must be defined ealier than referring calendars -->
+	<script type="text/javascript" src="MilesianCalendar.js"></script>
+	<script type="text/javascript" src="JulianCalendar.js"></script>
+	<script type="text/javascript" src="WesternCalendar.js"></script> 
+	<script type="text/javascript" src="DerivedCalendars.js"></script> 
+
+	<script type="text/javascript" src="DateExtendTest.js"></script>
+
+</head>
+
+<body class="centered" onload="setDateToNow()">
+<section class="centered"><h1 class="panelhead">Page de test calendriers</h1>
+</section>
+<section class="panel"><h2 class="panelhead">Date, heure, fuseau, navigation</h2>
+<section class="centered"><!-- setting date -->
+<script type="text/javascript">
+function calcGregorian() {
+	var 
+	 day =  Math.round (document.gregorian.day.value),
+	 month = Math.round (document.gregorian.monthname.value),
+	 year =  Math.round (document.gregorian.year.value);
+	 // HTML controls that day, month and year are numbers
+	custom = calendars[calendarnames.indexOf(document.custom.calend.value)];	// change custom calendar and valid with ISO button
+	let testDate = new Date (targetDate.valueOf());
+	switch (TZSettings.mode) {
+		case "TZ": 
+			testDate.setFullYear(year, month-1, day); 	// Set date object from calendar date indication, without changing time-in-the-day.
+			break;
+		case "UTC" : testDate.setUTCFullYear(year, month-1, day);
+			break;
+		case "Fixed" : 	
+			let shiftDate = new ExtDate (custom,targetDate.getTime() - TZSettings.msoffset);	// The shifted date, to be changed.
+			shiftDate.setUTCFullYear (year, month-1, day); 
+			testDate.setTime(shiftDate.getTime() + TZSettings.msoffset);
+	} 
+	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	else {
+		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
+		targetDate = new ExtDate (custom,testDate.valueOf());
+		setDisplay();
+	}
+}
+function calcCustom() {
+	var 
+	 day =  Math.round (document.custom.day.value),
+	 month = Math.round (document.custom.monthname.value),
+	 year =  Math.round (document.custom.year.value),
+	 testDate;
+	 // HTML controls that day, month and year are numbers
+	custom = calendars[calendarnames.indexOf(document.custom.calend.value)];	// global variable
+	// let testDate = new ExtDate (custom, year, month, day);
+	switch (TZSettings.mode) {
+		case "TZ":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
+			testDate = new ExtDate (custom, year, month, day, targetDate.getHours(), targetDate.getMinutes(), targetDate.getSeconds(), targetDate.getMilliseconds())
+			break;
+		case "UTC" : // // Set date object from custom calendar date indication, and with UTC time of day of currently displayed date.
+			testDate = new ExtDate (custom, year, month, day, targetDate.getUTCHours(), targetDate.getUTCMinutes(), targetDate.getUTCSeconds(), targetDate.getUTCMilliseconds())
+			// testDate.setTime (testDate.valueOf - testDate.getRealTZmsOffset ())
+			break;
+		case "Fixed" : 	
+			testDate = new ExtDate (custom,year, month, day, 
+				document.time.hours.value, document.time.mins.value, document.time.secs.value, document.time.ms.value);	// The shifted date, to be changed.
+			testDate.setTime(testDate.valueOf() + TZSettings.msoffset);
+
+			//testDate.setTime (testDate.valueOf() - testDate.getRealTZmsOffset ())
+			//testDate.setTime (testDate.valueOf() + TZSettings.msoffset);	// The shifted date, to be changed.
+	}
+	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	else {
+		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
+		targetDate = new ExtDate (custom,testDate.valueOf());
+		setDisplay();
+		}
+}
+</script>
+	<table class="centered">
+	  <tr>
+		<th>Calendrier</th>
+		<th>Année</th>
+		<th>Mois</th>
+		<th>Quant.</th>
+		<th> </th>
+	  </tr>
+	  <tr>
+		<form name="gregorian" method="post" action="javascript:calcGregorian()">
+		<td>iso8601</td>
+		<td><input name="year" type="number" class="centered digit4"> </td>
+		<td><input name="monthname" type="number" min="1" max="12" class="centered digit2"></td>
+		<td><input name="day" type="number" min="1" max="31" class="centered digit2"> </td>
+		<td><button class="textline">Ok</button></td>
+		</form>
+	  </tr>
+	  <form name="custom" method="post" action="javascript:calcCustom()">
+	  <tr>
+		<td><select name="calend" size="1" class="centered">
+			<option value="milesian" selected>milésien</option>
+			<option value="julian">julien</option>
+			<option value="vatican">Vatican</option>
+			<option value="french">France</option>
+			<option value="german">Allemagne</option>
+			<option value="english">Royaume-Uni</option>
+			<option value="ethiopic">Ethiopien</option>
+			</select></td>
+		<td><input name="year" type="number" class="centered digit4"> </td>
+		<td><input name="monthname" type="number" min="1" max="13" class="centered digit2"></td>
+		<td><input name="day" type="number" min="1" max="31" class="centered digit2"> </td>
+		<td><button class="textline">Ok</button></td>
+      </tr>
+	  <tr>
+		<td colspan="2">Jour de semaine</td>
+		<td colspan="2"><input name="dayofweek" type="text" class="centered" size="12" disabled="disabled" /></td>
+	  </tr>
+	</form>
+	</table>
+</section>
+<section class="centered"><!-- date navigation -->
+<script type="text/javascript">
+var 
+	dayOffset = 1; // Days (decimal) to add or substract
+// no setDateToToday
+function changeDayOffset () { 
+	let days = +document.control.shift.value;
+	if (isNaN(days) || days < 0) {
+		alert (milesianAlertMsg("invalidInput"));
+		// clockRun(0);
+		}
+	else 
+	{ 
+		dayOffset = days; // Global variable updated
+		document.control.shift.value = days; // Confirm changed value
+	}
+}
+function setDayOffset (sign=1) {
+	changeDayOffset();	// Force a valid value in field
+	let testDate = new Date(targetDate.valueOf());
+	testDate.setTime (testDate.getTime()+sign*dayOffset*Chronos.DAY_UNIT);
+	if (isNaN(testDate.valueOf())) { 
+		alert (milesianAlertMsg("outOfRange"));
+		// clockRun(0);
+		}
+	else {
+		targetDate = new ExtDate (custom,testDate.valueOf());
+		setDisplay();
+	}
+}
+</script>
+<form name="control" method="post" action="javascript:changeDayOffset()">
+ <table class="centered">
+  <tr>
+	<td><button class="textline" type="button" onclick="javascript:setDateToNow()">Maintenant</button></td>
+		<th>+/- jours&nbsp;: </th>
+		<td><button type="button" class="textline symbol" onclick="javascript:setDayOffset(-1)">-</button></td>
+		<td><input name="shift" type="number" value="1" min="0" step="any" class="centered digit4"></td> 
+		<td><button type="button" class="textline symbol" onclick="javascript:setDayOffset(+1)">+</button></td>
+  </tr>
+ </table>
+</form>
+</section>
+<section class="centered"><!-- setting time by elements -->
+<script type="text/javascript">
+function calcTime() { // Here the hours are deemed local hours
+	var hours = Math.round (document.time.hours.value), mins = Math.round (document.time.mins.value), 
+		secs = Math.round (document.time.secs.value), ms = Math.round (document.time.ms.value);
+	if (isNaN(hours) || isNaN (mins) || isNaN (secs) || isNaN (ms)) 
+		alert (milesianAlertMsg("invalidDate") + '"' + document.time.hours.value + '" "' + document.time.mins.value + '" "' 
+		+ document.time.secs.value + '.' + document.time.ms.value + '"')
+	 else {
+	  let testDate = new ExtDate (custom,targetDate.valueOf());
+	  switch (TZSettings.mode) {
+		case "TZ" : testDate.setHours(hours, mins, secs, ms); break;
+		case "UTC" : testDate.setUTCHours(hours, mins, secs, ms); break;
+		case "Fixed" : 
+			testDate = new Date(ExtDate.fullUTC (document.gregorian.year.value, document.gregorian.monthname.value, document.gregorian.day.value));
+			testDate.setUTCHours(hours, mins, secs, ms); 
+			testDate.setTime(testDate.getTime() + TZSettings.msoffset);
+		}
+		if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+		else {
+			targetDate = new ExtDate (custom,testDate.valueOf());
+			setDisplay();
+		}
+	}
+}
+</script>
+  <form name="time" method="post" autocomplete="off" action="javascript:calcTime()">
+	<table class="centered">
+	  <tr> 
+		 <th colspan="5">Heure du fuseau ou du mode</th>
+	   </tr>
+	   <tr>
+		 <td><input name="hours" type="number" min="0" max="23" class="centered digit2">h</td>
+		 <td><input name="mins" type="number" min="0" max="59" class="centered digit2">min</td>
+		 <td><input name="secs" type="number" min="0" max="59" class="centered digit2">s</td>
+		 <td><input name="ms" type="number" min="0" max="999" class="centered digit4">ms</td>
+		 <td><button class="textline">Ok</button></td>
+	  </tr>
+	</table>
+  </form>
+</section>
+<section class="centered"><!-- time navigation -->
+<script type="text/javascript">
+var addedTime = 60000; //Global variable, time to add or substract, in milliseconds.
+function changeAddTime() {
+	let msecs = +document.timeShift.shift.value; 
+	if (isNaN(msecs) || msecs <= 0) 
+		alert (milesianAlertMsg("invalidInput"))
+	else
+		{ 
+		addedTime = msecs; // Global variable updated
+		document.timeShift.shift.value = msecs; // Confirm changed value
+		}
+	}
+
+function addTime (sign = 1) { // addedTime ms is added or subtracted to or from the Timestamp.
+	changeAddTime();	// Force a valid value in field
+	let testDate = new Date(targetDate.valueOf());
+	testDate.setTime (testDate.getTime()+sign*addedTime); 
+	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	else {
+		targetDate = new ExtDate (custom,testDate.valueOf());
+		setDisplay();
+	}
+}
+</script>	 
+  <form name="timeShift" method="post" action="javascript:changeAddTime()">
+	<table class="centered"> 
+	  <tr>
+		<td>+/- ms</td>
+		<td><button type="button" class="textline symbol" onclick="javascript:addTime(-1)">-</button></td>
+		<td><input name="shift" type="number" value="60000" min="1" class="centered char8"></td>
+		<td><button type="button" class="textline symbol" onclick="javascript:addTime(1)">+</button></td>
+	  </tr>
+	</table>
+  </form>
+</section>
+<section class="centered autoscroll"><!-- time zone option -->
+  <form name="TZmode" autocomplete="off" method="post" action="javascript:setDisplay()">
+	<table class="centered">
+			<tr><th>Mode&nbsp;: </th>
+				<td>
+					<select name="TZcontrol" size="1" class="centered">
+					<option value="UTC">UTC</option>
+					<option value="TZ" selected>Fuseau système</option>
+					<option value="Fixed">Décalage fixe</option>
+					</select></td>
+			</tr>
+	</table>
+	<table class="centered">
+			<tr>
+				<th>Décalage&nbsp;: </th> 
+				<td><select name="TZOffsetSign" class="centered" size="2">
+				<option value="1">+</option>
+				<option value="-1">-</option>
+				</select> </td>
+				<td><input name="TZOffset" type="number" min="0" max="1500" class="centered digit4"></td>
+				<td>min</td>
+				<td><input name="TZOffsetSec" type="number" min="0" max="59" class="centered digit2"></td>
+				<td>s</td>
+				<td><button class="textline">Ok</button></td>
+			</tr>
+	</table>
+	<table class="centered">
+			<tr>
+				<th>Décalage système&nbsp;: </th>
+				<td id="sysTZoffset"></td><td>min</td>
+			</tr>
+	</table>
+  </form>
+</section>
+<section class="centered"><!-- setting preselected time -->
+<script type="text/javascript">
+function setDateToNow(){ // Self explanatory
+    targetDate = new ExtDate(custom); // set new Date object.
+	setDisplay ();
+}
+function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
+	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
+	let testDate = new Date (targetDate.valueOf());
+	testDate.setUTCHours(UTChours, 0, 0, 0);
+	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	else {
+		targetDate = new ExtDate (custom,testDate.valueOf());
+		setDisplay();
+	}
+}
+</script>
+	  <table class="centered">
+	  <tr>
+		<th>Même date à</th>
+		<td><button class="textline" type="button" name="0h" onclick="javascript:setUTCHoursFixed(0)">0 h</button></td>
+		<td><button class="textline" type="button" name="12h" onclick="javascript:setUTCHoursFixed(12)">12 h</button></td>
+		<th>UTC</th>
+	  </tr>
+	 </table>
+</section>
+<section class="centered"><!-- display normalised strings  -->
+	<table class="centered">
+		<tr><th colspan="2">Chaînes standard</th></tr>
+		<tr>
+			<th>ISO 8601&nbsp;:</th>
+			<td id="ISOdatetime"></td>
+		</tr>
+		<tr>
+			<th>calendrier&nbsp;:</th>
+			<td id="dateString"></td>
+		</tr>
+		<tr>
+			<th>Posix&nbsp;:</th>
+			<td id="Posixnumber"></td>
+		</tr>
+	</table>
+</section>
+</section>
+<section class="panel centered autoscroll"><h2 class="panelhead">Options générales de présentation</h2>
+	<form name="LocaleOptions" method="post" action="javascript:putStringOnOptions()">
+	<table class="centered"> 
+	<tr>
+		<td><button class="textline" type="reset">Aucune option</button></td>
+		<td><button class="textline" >Ok</button></td> <td></td>
+	</tr>
+   </table>
+<section class="centered"><h3 class="panelhead">Résolution des options</h3>
+	 <table class="centered">
+		<tr><th>Chaîne locale</th><th>Options</th></tr>
+		<tr>
+			<td><select name="LocaleMatcher" class="centered" size="1">
+				<option value="" selected>par défaut</option>
+				<option value="lookup">lookup BCP</option>
+				<option value="best fit">meilleur choix</option>
+				</select></td>
+			<td><select name="FormatMatcher" class="centered" size="1">
+				<option value="" selected>par défaut</option>
+				<option value="basic">choix de base</option>
+				<option value="best fit">meilleur choix</option>
+				</select></td>
+		</tr>
+	 </table>	
+	 <table class="centered"> 
+	   <tr>
+		<th>Code langue-pays&nbsp;: </th>
+		<td><input name="Locale" autocomplete="language" type="text" class="centered" size="30"> </td>
+	   </tr>
+	   <tr>
+		<th>Extension Unicode&nbsp;: </th>
+		<td><input name="UnicodeExt" type="text" class="centered" size="30"></td>
+	   </tr>
+	   <tr>
+		<td>Locale effective&nbsp;: </td><td colspan="3"><input name="Elocale" type="text" disabled="disabled" class="centered" size="30"></td>
+	   </tr>
+	   <tr>
+	   <tr>
+	    <td>Système de numération&nbsp;: </td>
+	    <td><input name="Enum" type="text" disabled="disabled" class="centered"></td>
+	   </tr>
+		<th>Calendrier référencé&nbsp;: </th>
+		<td>
+			<select name="Calendar" size="1" class="centered">
+			<option value="">par défaut</option>
+			<option value="buddhist">bouddhiste Thaï</option>
+			<option value="chinese">chinois luni-solaire</option>
+			<option value="coptic">copte</option>
+			<option value="dangi">coréen traditionnel dangi</option>
+			<option value="ethioaa">éthiopien Amete Alem (5493 BC) </option>
+			<option value="ethiopic">éthiopien Amete Mihret (8 AD)</option>
+			<option value="gregory">grégorien</option>
+			<option value="hebrew">hébraïque</option>
+			<option value="indian">indien moderne</option>
+			<option value="islamic">islamique standard</option>
+			<option value="islamic-umalqura">islamique Umm al-Qura</option>
+			<option value="islamic-tbla">islamique tabulaire astronomique</option>
+			<option value="islamic-civil">islamique tabulaire civil</option>
+			<option value="islamic-rgsa">islamique, Arabie saoudite</option>
+			<option value="iso8601">ISO 8601 (grégorien normalisé)</option>
+			<option value="japanese">japonais impérial</option>
+			<option value="persian">persan</option>
+			<option value="roc">chinois de république populaire</option>
+			</select> 
+		</td>
+	   </tr>
+	   <tr>
+	    <td>Calendrier effectif&nbsp;: </td>
+	    <td><input name="Ecalend" type="text" disabled="disabled" class="centered"></td>
+	   </tr>
+		<tr><th>Fuseau horaire&nbsp;: </th>
+		<td><input name="TimeZone" type="text" autocomplete="country" class="centered" size="30"> </td>
+		</tr>
+		<tr><td>Fuseau effectif&nbsp;: </td><td><input name="ETimeZone" type="text" disabled="disabled" class="centered" size="30"></td></tr>
+		</table>
+</section>
+<section class="centered"><h3 class="panelhead">Options en styles</h3>
+	 <table class="centered">
+	  <tr>
+		<th></th><th>Style date</th><th>Style heure</th>
+	  </tr>
+	  <tr>
+		<th>Demandé</th>
+		<td><select name="DateStyle" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="short">court</option>
+			<option value="medium">moyen</option>
+			<option value="long">long</option>
+			<option value="full">complet</option>
+			</select></td>
+		<td><select name="TimeStyle" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="short">court</option>
+			<option value="medium">moyen</option>
+			<option value="long">long</option>
+			<option value="full">complet</option>
+			</select></td>
+	  </tr>
+	  <tr>
+		<th>Effectif</th>
+		<td><input class="centered char8" name="EdateStyle" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="EtimeStyle" type="text" disabled="disabled"></td>
+	  </tr>
+	</table>
+</section>
+</section>
+<section class="panel centered autoscroll"><h2 class="panelhead">Options par champ</h3>
+<section class="centered"><h3 class="panelhead">Standard</h3>
+	 <table class="centered">
+	  <tr>
+		<th></th><th>Quantième</th><th>Mois</th><th>Année</th>
+	  </tr>
+	  <tr>
+		<th>Demandé</th>
+		<td><select name="Day" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="numeric">numérique</option>
+			<option value="2-digit">2 chiffres</option>
+			</select></td>
+		<td><select name="Month" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="numeric">numérique</option>
+			<option value="2-digit">2 chiffres</option>
+			<option value="narrow">étroit</option>
+			<option value="short">court</option>
+			<option value="long">long</option>
+			</select></td>
+		<td><select name="Year" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="numeric">numérique</option>
+			<option value="2-digit">2 chiffres</option>
+			</select></td>
+	   </tr>
+	  <tr>
+		<th>Intl</th>
+		<td><input class="centered char8" name="Eday" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Emonth" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Eyear" type="text" disabled="disabled"></td>
+	  </tr>
+	  <tr>
+		<th>Étendu</th>
+		<td><input class="centered char8" name="Xday" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Xmonth" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Xyear" type="text" disabled="disabled"></td>
+	  </tr>
+	</table>
+	<table class="centered">
+	  <tr> 
+		<th></th><th>Jour semaine</th><th>Ère</th>
+	  </tr> 
+	  <tr>
+		<th>Demandé</th>
+		<td><select name="Weekday" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="narrow">étroit</option>
+			<option value="short">court</option>
+			<option value="long">long</option>
+			</select></td>
+		<td><select name="Era" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="narrow">étroit</option>
+			<option value="short">court</option>
+			<option value="long">long</option>
+			</select></td>
+	  </tr>
+	  <tr>
+		<th>Intl</th>
+		<td><input class="centered char8" name="Eweekday" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Eera" type="text" disabled="disabled"></td>
+	  </tr>	
+	  <tr>
+		<th>Étendu</th>
+		<td><input class="centered char8" name="Xweekday" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Xera" type="text" disabled="disabled"></td>
+	  </tr>	
+	</table>
+	<table class="centered">
+	  <tr>
+		<th></th><th>Heure</th><th>Minute</th><th>Seconde</th>
+	  </tr>
+	  <tr>
+		<th>Demandé</th>
+		<td><select name="Hour" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="numeric">numérique</option>
+			<option value="2-digit">2 chiffres</option>
+			</select></td>
+		<td><select name="Minute" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="numeric">numérique</option>
+			<option value="2-digit">2 chiffres</option>
+			</select></td>
+		<td><select name="Second" class="centered" size="1">
+			<option value="" selected>absent</option>
+			<option value="numeric">numérique</option>
+			<option value="2-digit">2 chiffres</option>
+			</select></td>
+	  </tr>
+	  <tr>
+		<th>Intl</th>
+		<td><input class="centered char8" name="Ehour" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Eminute" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Esecond" type="text" disabled="disabled"></td>
+	  </tr>
+	  <tr>
+		<th>Étendu</th>
+		<td><input class="centered char8" name="Xhour" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Xminute" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="Xsecond" type="text" disabled="disabled"></td>
+	  </tr>
+	</table>
+	<table class="centered">
+		<tr>
+			<th></th><th>Fractions de secondes</th><th>Fuseau</th>
+		</tr>
+		<tr>
+			<th>Demandé</th>
+			<td><input class="centered char8" name="Msdigits" type="number" min="0" max="3"></td>
+			<td><select name="TimeZoneName" class="centered" size="1">
+				<option value="" selected>absent</option>
+				<option value="short">court</option>
+				<option value="long">long</option>
+				</select></td>
+		</tr>
+		<tr>
+			<th>Intl</th>
+			<td><input class="centered char8" name="Emsdigits" type="text" disabled="disabled"></td>
+			<td><input class="centered char8" name="EtimeZoneName" type="text" disabled="disabled"></td>
+		</tr>
+		<tr>
+			<th>Étendu</th>
+			<td><input class="centered char8" name="Xmsdigits" type="text" disabled="disabled"></td>
+			<td><input class="centered char8" name="XtimeZoneName" type="text" disabled="disabled"></td>
+		</tr>
+	</table>
+	<table class="centered">
+	  <tr> 
+		<th></th><th colspan="2">12 h</th><th>Cycle horaire</th><th>am/pm</th>
+	  </tr> 
+	  <tr>
+		<th>Demandé</th>
+		<td colspan="2"><select name="Hour12" size="1" class="centered">
+			<option value="" selected>défaut</option>
+			<option value="true">12 h</option>
+			<option value="false">24 h</option>
+			</select></td>
+		<td><select name="HourCycle" size="1" class="centered">
+			<option value="" selected>absent</option>
+			<option value="h11">h11</option>
+			<option value="h12">h12</option>
+			<option value="h23">h23</option>
+			<option value="h24">h24</option>
+			</select></td>
+		<td><select name="AmPm" size="1" class="centered">
+			<option value="" selected>absent</option>
+			<option value="narrow">étroit</option>
+				<option value="short">court</option>
+				<option value="long">long</option>
+			</select></td>
+	  </tr>
+	  <tr>
+		<th>Intl</th>
+		<td>12 h</td>
+		<td><input class="centered" name="Ehour12" type="checkbox" disabled="disabled"></td>
+		<td><input class="centered char8" name="EhourCycle" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="EAmPm" type="text" disabled="disabled"></td>
+	  </tr>
+	  <tr>
+		<th>Étendu</th>
+		<td>12 h</td>
+		<td><input class="centered" name="Xhour12" type="checkbox" disabled="disabled"></td>
+		<td><input class="centered char8" name="XhourCycle" type="text" disabled="disabled"></td>
+		<td><input class="centered char8" name="XAmPm" type="text" disabled="disabled"></td>
+	  </tr>
+	</table>
+</section>
+<section class="centered"><h3 class="panelhead">Options expérimentales</h3>
+	<table class="centered">
+		<tr>
+			<th>Affichage de l'ère</th>
+			<td><select name="eraDisplay" class="centered" size="1">
+				<option value="" selected>défaut</option>
+				<option value="never">jamais</option>
+				<option value="always">toujours</option>
+				<option value="auto">auto</option>
+			</select></td>
+		</tr>
+	</table>
+</section>
+  </form>
+</section>
+
+<section class="panel centered autoscroll"><h2 class="panelhead">Dates formatées</h2>
+<h3 class="panelhead">Intl standard</h3>
+	<table class="centered">
+		<tr><td id="Ustring"></td></tr>
+	</table>
+<h3 class="panelhead">Intl étendu</h3>
+	<table class="centered">
+		<tr><td id="Xstring"></td></tr>
+	</table>
+<h3 class="panelhead">Calendrier utilisateur</h3>
+	<table class="centered">
+		<tr><td id="Cstring"></td></tr>
+	</table>
+
+</section>
+
+<section class="panel centered autoscroll"><h2 class="panelhead">Semaine</h2>
+	<h3 class="panelhead">Calendrier utilisateur</h3>
+	<form name="week" method="post" autocomplete="off" action="javascript:calcWeek()">
+	<table class="centered">
+		<tr><th>mode&nbsp;: </th><td><select name="mode" size="1" class="centered">
+			<option value="" selected>local</option>
+			<option	value="UTC">UTC</option>
+		</select></td>
+		<td><button class="textline" >Ok</button></td>
+		</tr>
+		<tr><th>Année</th><th>Semaine</th><th>Jour</th></tr>
+		<tr><td id="weekyear"></td><td id="weeknum"></td><td id="dayownum"></td></tr>
+		<tr><th>Jour&nbsp;</th><td colspan="2" id="dayname"></td></tr>
+		<tr><th colspan="2">Semaines dans l'année&nbsp;: </th><td id="weeksinyear"></td></tr>
+	</table>
+	</form>
+	<script type="text/javascript">
+	function calcWeek() {
+		try {
+			document.getElementById("weekyear").innerHTML = targetDate.fullWeekYear(document.week.mode.value);
+			document.getElementById("weeknum").innerHTML = targetDate.weekNumber(document.week.mode.value);
+			document.getElementById("dayownum").innerHTML = targetDate.weekday(document.week.mode.value);
+			document.getElementById("weeksinyear").innerHTML = targetDate.weeksInYear(document.week.mode.value);
+			document.getElementById("dayname").innerHTML = 
+				new Intl.DateTimeFormat (document.LocaleOptions.Locale,{weekday : "long", 
+				timeZone : document.week.mode.value == "" ? undefined : document.week.mode.value })
+				.format(targetDate);
+		}
+		catch (e) {
+			document.getElementById("weekyear").innerHTML = "";
+			document.getElementById("weeknum").innerHTML = "";
+			document.getElementById("dayownum").innerHTML = "";
+			document.getElementById("weeksinyear").innerHTML = "";
+			document.getElementById("dayname").innerHTML = "not implemented";
+		}
+	}
+	</script>
+</section>
+<footer class="centered">
+ <p>Références&nbsp;: 
+	<a target="_blank" href="http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">Codes langues Unicode</a>, 
+	<a target="_blank" href="http://twiki.org/cgi-bin/xtra/tzdatepick.html">Codes zones horaires</a>
+ <br>© 2017-2020 <a href="http://www.calendriermilesien.org">www.calendriermilesien.org</a></p>
+</footer>
+
+
+</body>
+</html>
