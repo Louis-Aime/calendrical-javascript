@@ -9,7 +9,9 @@ Contents
 	One new method for Date for generalised time zone offset management
 	Extension of Intl.DateTimeFormat
 */
-/* Version	M2020-11-22 complete comments
+/* Version	M2020-11-25 replace any literal other than " " that follows numeric field with option "numeric" (not with option "2-digit")
+	M2020-11-24 - Add week-related fields added to date object for formatToParts
+	M2020-11-22 complete comments
 	M2020-11-19 Adapt to monthBase = 1 while keeping ancient getter and setter with monthBase = 0, add TZ parameter
 	M2020-11-17 consolidate files
 	M2020-10 : works in progress
@@ -376,6 +378,7 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		this.options.calendar = this.calendar == undefined ? this.DTFOptions.calendar : this.calendar.canvas;
 		this.options.numberingSystem = this.DTFOptions.numberingSystem;
 		this.options.timeZone = this.DTFOptions.timeZone;
+		this.options.timeZoneName = this.DTFOptions.timeZoneName;
 		// Control and resolve specific options
 		if (this.calendar != undefined && this.calendar.canvas != undefined) { 
 			this.DTFOptions.calendar = this.calendar.canvas 
@@ -593,7 +596,13 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			myParts = new Intl.DateTimeFormat(options.locale, options).formatToParts(date), // first try, in desired language and timeZone
 			myPartsTZ = myParts.find (item => (item.type == "timeZoneName")),
 			myTZ = (myPartsTZ != undefined) ? myPartsTZ.value : null;	// Remember Time zone name since we compute on UTC date values.
-		if (this.calendar != undefined) myDateFields = this.calendar.fieldsFromCounter (myAbsoluteDate.valueOf()); // the fields of the date in the calendar, not TZ-dependant.
+		if (this.calendar != undefined) {
+			myDateFields = this.calendar.fieldsFromCounter (myAbsoluteDate.valueOf()); // the fields of the date in the calendar, not TZ-dependant.
+			try {
+				Object.assign(myDateFields, this.calendar.weekFieldsFromCounter (myAbsoluteDate.valueOf()));	// Add week-related fields, including "weekday".
+			}
+			catch (e) {}	// week fields may not have been implemented. 
+		}
 		if (this.calendar != undefined && this.calendar.stringFormat == "fields") {	// order of parts is OK, but parts should be computed from fields. Week is considered OK. canvas calendar is Roman.
 			options.timeZone = "UTC";
 			let myCanvasFields = {...myDateFields};
@@ -616,12 +625,18 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			myParts.forEach( function (item, i) { 
 				if (this.calendar.partsFormat[item.type] != undefined ) switch (this.calendar.partsFormat[item.type].mode){
 					case "cldr" : break; // already computed
-					case "field" : myParts[i].value = myDateFields[item.type]; break; // insert field directly, whatever it is (era code...)
-					case "list" : myParts[i].value = 
-						(isNaN (myDateFields[myParts[i].type])) // case the field is not an number, e.g. era.
-						? (this.calendar.partsFormat[item.type].source[this.calendar.partsFormat[item.type].codes.indexOf(myDateFields[item.type])])
-						: (this.calendar.partsFormat[item.type].source[(myParts[i].value)]); 
-						break;
+					case "field" : myParts[i].value = myDateFields[item.type]; break; // insert field directly, whatever it is (number, era code...)
+					case "list" : switch (item.type) {
+						case "era" : myParts[i].value = this.calendar.partsFormat[item.type].source[this.calendar.partsFormat[item.type].codes.indexOf(myDateFields[item.type])];
+							break;
+						case "month": switch (options.month) {
+							case "2-digit" : myParts[i].value = this.figure2.format(myDateFields.month); break;
+							case "numeric" : myParts[i].value = this.figure1.format(myDateFields.month); break;
+							default : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]
+						}; break;
+						case "weekday" : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]; break;
+						default : // other fields are numeric, not subject to lists;
+					} break;
 					case "pldr" : 		// fake ICU computations using pldr. 
 						//	myInitialParts = {...myParts}; // Initial code was nested the reverse way.
 						// myParts = myInitialParts.map ( ({type, value}) => { // .map may not map to itself
@@ -682,10 +697,10 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 
 		// Erase 2-digit effects on numeric-asked fields, including related literals.
 		myParts.forEach ( function (item, i) {
-			if (options[item.type] != undefined && options[item.type] == "numeric")	{	// Intl.DateTimeFormat often converts to 2-digit and inserts literals
+			if (options[item.type] != undefined && options[item.type] == "numeric")	{	// Intl.DateTimeFormat often converts to 2-digit and inserts "/" literals
 				if (!isNaN(myParts[i].value)) myParts[i].value = this.figure1.format(item.value);
 				switch (item.type) {
-					// case "month" : case "day" : if (i+1 < myParts.length && myParts[i+1].value == '/') myParts[i+1].value = ' '; break;
+					case "month" : case "day" : if (i+1 < myParts.length && myParts[i+1].value != ' ') myParts[i+1].value = ' '; break;
 					case "hour" : case "minute" : if (i+1 < myParts.length && myParts[i+1].value == ":") myParts[i+1].value = item.type == "hour" ? " h " : " min ";
 				}
 			}
