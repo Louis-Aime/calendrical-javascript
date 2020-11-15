@@ -24,7 +24,8 @@ const JulianDayIso
 	toJulianDay from ISO fields
 	toIsoFields from Julian Day
 */
-/* Version M2020-11-22 enhance comments
+/* Version	M2020-11-24 add two cases of irregular week cycles, add notification of special cycle e.g. leap year etc. in Cycle Base Calendrical Computation Engine
+	M2020-11-22 enhance comments
 	M2020-11-12 enhance week rules
 	M2020-11-09 enhance
 	M2020-11-03 first established as a class
@@ -70,6 +71,8 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 			this.characWeekNumber = weekdayRule.characWeekNumber != undefined ? weekdayRule.characWeekNumber : 1 ;
 			this.dayBase = weekdayRule.dayBase != undefined ? Chronos.mod (weekdayRule.dayBase, this.weekLength) : 1 ;
 			this.weekBase = weekdayRule.weekBase != undefined ? weekdayRule.weekBase : 1; 
+			this.weekReset = weekdayRule.weekReset != undefined ? weekdayRule.weekReset : false;
+			this.uncappedWeeks = weekdayRule.uncappedWeeks != undefined ? weekdayRule.uncappedWeeks : null;
 		}
 	}
 	/** Detailed description of parameters for Chronos
@@ -85,6 +88,7 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	 *							// to be used for common/embolismic years in a Meton cycle, or for 128-years cycles of 4 or 5 years elementary cycles.
 	 *		multiplier : #, 	// multiplies the number of cycles of this level to convert into target units.
 	 *		target : #, 		// the unit (e.g. "year") of the decomposition element at this level. 
+	 *		notify : #, 		// optional, the field (e.g. "leapyear") where to indicate that the element's length is singular. 
 	 *		} ,					// end of cycle description
 	 *		{ 		// similar elements at a lower cycle level 
 	 *		} 		// end of cycle description
@@ -109,6 +113,14 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	 * (number) dayBase: number of the first day in any week. May differ from startOfWeek. used for displaying result. Default is 1.
 	 * (number) weekBase: number of the first week in any year. May differ from characWeekNumber. Default is 1.
 	 * (number) weekLength: number of days in week. Usage: test alernate weeks. Default is 7.
+	 * (boolean) weekReset: whether weekday is forced to a constant value at beginning of year. Default is false.
+	 * (Array) uncappedWeeks: an array of the numbers of the week that have one or more day above weekLength. Possible cases:
+		 undefined (and set to null): all weeks have always same duration.
+		 .length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength
+		 .length > 1: each week indentified is followed by one (unique) epagomenal day, and this week has weekLength + 1 days.
+		 e.g. for French revolutionary calendar: [36], and the days are indexed indexed 10 to 15 (index of Décadi is 9);
+		 whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
+		 These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.
 	 * Non tested constraints: 
 	 * 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.
 	 * 2. weekLength shall be > 0
@@ -211,6 +223,7 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 				quantity -= this.calendRule.coeff[i].cyclelength;
 			  }
 			  addCycle = (r == ceiling) ? this.calendRule.coeff[i].subCycleShift : 0; // if at last section of this cycle, add or subtract 1 to the ceiling of next cycle
+			  if (this.calendRule.coeff[i].notify != undefined) result[this.calendRule.coeff[i].notify] = (r == ceiling); // notify special cycle, like leap year etc. 
 			}
 			result[this.calendRule.coeff[i].target] += r*this.calendRule.coeff[i].multiplier; // add result to suitable part of result array	
 		}
@@ -264,15 +277,21 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 		let weekNumberShift = this.weekBase - 1, 	// used to compute last week's number
 			[weeksInYear, weekShiftNextYear] = Chronos.divmod (this.daysInYear(year), this.weekLength),	// Integer division of calendar year in weeks. 
 			// criticalWYP = Chronos.mod (-weekShiftNextYear, this.weekLength),	for memory: if weekYearPhase reaches this value, this week year has one week in addition to integer weeks.
-			weekYearPhase = Chronos.mod (characDayIndex + this.originWeekday - this.startOfWeek, this.weekLength); 	// this figures characterises the week year, in particular versus number of weeks.
+			weekYearPhase = this.weekReset ? 0
+				: Chronos.mod (characDayIndex + this.originWeekday - this.startOfWeek, this.weekLength); 	// this figures characterises the week year, in particular versus number of weeks.
 			// referenceDayIndex = characDayIndex - this.startOfWeek - weekYearPhase;			// index of day from which week figures should be computed.
 		// Compute basic coordinates: week cycle number (base 0) from referenceDay, day number 0..this.weekLength-1 in week beginning at 0 then shift to this.startOfWeek.
 		var result = Chronos.divmod ( dayIndex - characDayIndex + this.startOfWeek + weekYearPhase, this.weekLength ); // Here, first week is 0 and first day of week is 0.
+		if (this.uncappedWeeks != null && this.uncappedWeeks.length > 1) 	// One or several weeks with one epagomenal days within year. One epagomenal day per singular week.
+			 this.uncappedWeeks.forEach (item => {if (result[0] > item) {
+				result[1]--; result = Chronos.divmod (result[0] * this.weekLength + result[1], this.weekLength) }})	// Shift week counts by one day for each singular week.
 		result[0] += this.characWeekNumber;		// set week number with respect to number of week of the reference day
 		result = Chronos.shiftCycle ( result[0], result [1], this.weekLength, this.startOfWeek );	// shift week cycle, first day is this.startOfWeek and last day is this.startOfWeek + this.weekLength-1
 		if (this.dayBase != this.startOfWeek) result[1] = Chronos.mod (result[1]-this.dayBase, this.weekLength) + this.dayBase;		// day number forced to range this.dayBase .. this.dayBase + this.weekLength-1;
+		if (this.uncappedWeeks != null && this.uncappedWeeks.length == 1)
+			if (result[0] > this.uncappedWeeks[0]) {result[0]-- ; result[1] += this.weekLength } // epagomenal days at end of year have indexes above weekLength
 		// Solve overflow
-		let WeeksInDateYear = weeksInYear + (weekYearPhase >= Chronos.mod (-weekShiftNextYear, this.weekLength) ? 1 : 0) ; // Number of weeks for present week year
+		let WeeksInDateYear = weeksInYear + (this.weekReset || weekYearPhase >= Chronos.mod (-weekShiftNextYear, this.weekLength) ? 1 : 0) ; // Number of weeks for present week year
 		if (result[0] < this.weekBase) { // The week belongs to the preceding weekyear
 			[weeksInYear, weekShiftNextYear] = Chronos.divmod (this.daysInYear(year-1), this.weekLength);	// recompute week year parameters for preceding year
 			result.push(-1,		// reference year for the week number is the year before the date's year
