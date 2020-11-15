@@ -9,7 +9,8 @@ Required:
 	DateExtended
 	Files of tested calendars
 */
-/*Versions:	M2020-11 in progresse
+/*Versions:	M2020-11-24 list of calendars is in Calendar.js file
+	M2020-11 in progress
 	2017-2020: Unicode Tester
 	preceding versions were a personal makeup page
 */
@@ -39,10 +40,11 @@ Inquiries: www.calendriermilesien.org
 var 
 	targetDate = new ExtDate(milesian),
 	shiftDate = new ExtDate (milesian,targetDate.getTime() - targetDate.getRealTZmsOffset()),
-	custom = milesian,
-	calendars = [milesian, julian, vatican, french, german, english, myEthiopic],
-	calendarnames = ["milesian", "julian", "vatican", "french", "german", "english", "ethiopic"],
-	TZSettings = {mode : "TZ", msoffset : 0};	// initialisation to be superseded
+	customCalendar = milesian,
+	// calendars = [milesian, julian, vatican, french, german, english, myEthiopic],
+	// calendarnames = ["milesian", "julian", "vatican", "french", "german", "english", "ethiopic"],
+	TZSettings = {mode : "TZ", msoffset : 0},	// initialisation to be superseded
+	TZDisplay = ""; 
 
 function putStringOnOptions() { // get Locale, calendar indication and Options given on page, print String. Called by setDisplay
 	let Locale = document.LocaleOptions.Locale.value;
@@ -86,7 +88,6 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	if	(document.LocaleOptions.Hour.value != "")	Options.hour = document.LocaleOptions.Hour.value;
 	if	(document.LocaleOptions.Minute.value != "")	Options.minute = document.LocaleOptions.Minute.value;
 	if	(document.LocaleOptions.Second.value != "")	Options.second	= document.LocaleOptions.Second.value;
-	if	(document.LocaleOptions.Msdigits.value != "")	Options.fractionalSecondDigits	= document.LocaleOptions.Msdigits.value;
 	if	(document.LocaleOptions.TimeZoneName.value != "")	Options.timeZoneName	= document.LocaleOptions.TimeZoneName.value;
 	if	(document.LocaleOptions.Hour12.value != "")	Options.hour12	= (document.LocaleOptions.Hour12.value == "true");
 	if	(document.LocaleOptions.HourCycle.value != "")	Options.hourCycle	= document.LocaleOptions.HourCycle.value;
@@ -112,7 +113,7 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 		extAskedOptions = new Intl.DateTimeFormat (extendedLocale);	// empty Options object
 	}
 	extUsedOptions = extAskedOptions.resolvedOptions();
-	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, custom);
+	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, customCalendar);
 
 
 	
@@ -132,7 +133,6 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	document.LocaleOptions.Ehour.value = usedOptions.hour;
 	document.LocaleOptions.Eminute.value = usedOptions.minute;
 	document.LocaleOptions.Esecond.value = usedOptions.second;
-	document.LocaleOptions.Emsdigits.value = usedOptions.fractionalSecondDigits;
 	document.LocaleOptions.Ehour12.checked = usedOptions.hour12;
 	document.LocaleOptions.EhourCycle.value = usedOptions.hourCycle;
 	document.LocaleOptions.EAmPm.value = usedOptions.dayPeriod;
@@ -141,10 +141,10 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	//document.LocaleOptions.Xlocale.value = extUsedOptions.locale;
 	//document.LocaleOptions.Xcalend.value = extUsedOptions.calendar;
 	//document.LocaleOptions.Xnum.value = extUsedOptions.numberingSystem;
-	//document.LocaleOptions.XtimeZoneName.value = extUsedOptions.timeZoneName;
 	//document.LocaleOptions.XdateStyle.value = extUsedOptions.dateStyle;
 	//document.LocaleOptions.XtimeStyle.value = extUsedOptions.timeStyle ;
 	//document.LocaleOptions.XTimeZone.value = extUsedOptions.timeZone;
+	document.LocaleOptions.XtimeZoneName.value = extUsedOptions.timeZoneName;
 	document.LocaleOptions.Xweekday.value = extUsedOptions.weekday;
 	document.LocaleOptions.Xera.value = extUsedOptions.Xra;
 	document.LocaleOptions.Xyear.value = extUsedOptions.year;
@@ -153,7 +153,6 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	document.LocaleOptions.Xhour.value = extUsedOptions.hour;
 	document.LocaleOptions.Xminute.value = extUsedOptions.minute;
 	document.LocaleOptions.Xsecond.value = extUsedOptions.second;
-	document.LocaleOptions.Xmsdigits.value = extUsedOptions.fractionalSecondDigits;
 	document.LocaleOptions.Xhour12.checked = extUsedOptions.hour12;
 	document.LocaleOptions.XhourCycle.value = extUsedOptions.hourCycle;
 	document.LocaleOptions.XAmPm.value = extUsedOptions.dayPeriod;
@@ -167,13 +166,18 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	extUsedOptions = referenceExtFormat.resolvedOptions();
 	referenceExtFormat = new ExtDateTimeFormat(extUsedOptions.locale,extUsedOptions);
 */
-	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, custom);
+	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, customCalendar);
 	// Certain Unicode calendars do not give a proper result: here is the control code.
-	let valid = ExtDateTimeFormat.unicodeValidDateinCalendar(targetDate, extUsedOptions.timeZone, custom);
+	let valid = ExtDateTimeFormat.unicodeValidDateinCalendar(targetDate, extUsedOptions.timeZone, customCalendar);
 	// Display with extended DateTimeFormat
 	document.getElementById("Xstring").innerHTML = (valid ? "" : "(!) ") + extAskedOptions.format(targetDate);
-	// Display custom calendar string
-	document.getElementById("Cstring").innerHTML = cusAskedOptions.format(targetDate);
+	// Display custom calendar string - error control
+	try {
+		document.getElementById("Cstring").innerHTML = cusAskedOptions.format(targetDate);
+	}
+	catch (e) {
+		document.getElementById("Cstring").innerHTML = e.message
+	}
 
 	let	myUnicodeElement = document.getElementById("Ustring");
 	try { 
@@ -191,6 +195,7 @@ function setDisplay () { // Considering that targetDate time has been set to the
 	// Time section
 	// Initiate Time zone mode for the "local" time from main display
 	TZSettings.mode = document.TZmode.TZcontrol.value;
+	TZDisplay = TZSettings.mode == "UTC" ? "UTC" : "";
 /** TZSettings.msoffset is JS time zone offset in milliseconds (UTC - local time)
  * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
 */
@@ -215,12 +220,12 @@ function setDisplay () { // Considering that targetDate time has been set to the
 			* (document.TZmode.TZOffset.value * Chronos.MINUTE_UNIT + document.TZmode.TZOffsetSec.value * Chronos.SECOND_UNIT);
 	}
 
-	shiftDate = new ExtDate (custom,targetDate.getTime() - TZSettings.msoffset);	// The UTC representation of targetDate date is the local date of TZ
+	shiftDate = new ExtDate (customCalendar,targetDate.getTime() - TZSettings.msoffset);	// The UTC representation of targetDate date is the local date of TZ
 	
 	// Initiate custom calendar form with present local date
 	let fields = shiftDate.getFields("UTC");
-	document.custom.calend.value = calendarnames[calendars.indexOf(custom)];	
-	document.custom.year.value = custom.fullYear(fields); // display fullYear, not just year. fields.year is displayed with era in date string.
+	document.custom.calend.value = customCalendar.id	;	
+	document.custom.year.value = customCalendar.fullYear(fields); // display fullYear, not just year. fields.year is displayed with era in date string.
 	document.custom.monthname.value = fields.month; // Display month value in 1..12 range.
 	document.custom.day.value = fields.day;
 
@@ -243,7 +248,7 @@ function setDisplay () { // Considering that targetDate time has been set to the
 
 	// Display UTC date & time in custom calendar, ISO, and Posix number
 	myElement = document.getElementById("dateString");
-	myElement.innerHTML = targetDate.toCalString();
+	myElement.innerHTML = targetDate.toCalString(TZDisplay);
 	myElement = document.getElementById("ISOdatetime");
 	myElement.innerHTML = targetDate.toISOString();
 	myElement = document.getElementById("Posixnumber");
@@ -252,10 +257,5 @@ function setDisplay () { // Considering that targetDate time has been set to the
 	// Write custom and Unicode strings following currently visible options
 	putStringOnOptions();
 	// Add week computation
-	try {
-		calcWeek();
-	}
-	catch (e) {
-		alert ("Week computations: " + e)
-	}
+	calcWeek();
 }

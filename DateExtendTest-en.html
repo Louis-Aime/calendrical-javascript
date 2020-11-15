@@ -16,10 +16,7 @@
 	<script type="text/javascript" src="Chronos.js"></script>
 	<script type="text/javascript" src="DateExtended.js"></script>
 	<script type="text/javascript" src="pldr.js"></script> <!-- must be defined ealier than referring calendars -->
-	<script type="text/javascript" src="MilesianCalendar.js"></script>
-	<script type="text/javascript" src="JulianCalendar.js"></script>
-	<script type="text/javascript" src="WesternCalendar.js"></script> 
-	<script type="text/javascript" src="DerivedCalendars.js"></script> 
+	<script type="text/javascript" src="Calendars.js"></script>
 
 	<script type="text/javascript" src="DateExtendTest.js"></script>
 
@@ -37,7 +34,7 @@ function calcGregorian() {
 	 month = Math.round (document.gregorian.monthname.value),
 	 year =  Math.round (document.gregorian.year.value);
 	 // HTML controls that day, month and year are numbers
-	custom = calendars[calendarnames.indexOf(document.custom.calend.value)];	// change custom calendar and valid with ISO button
+	customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar and valid with ISO button
 	let testDate = new Date (targetDate.valueOf());
 	switch (TZSettings.mode) {
 		case "TZ": 
@@ -46,14 +43,14 @@ function calcGregorian() {
 		case "UTC" : testDate.setUTCFullYear(year, month-1, day);
 			break;
 		case "Fixed" : 	
-			let shiftDate = new ExtDate (custom,targetDate.getTime() - TZSettings.msoffset);	// The shifted date, to be changed.
+			let shiftDate = new ExtDate (customCalendar,targetDate.getTime() - TZSettings.msoffset);	// The shifted date, to be changed.
 			shiftDate.setUTCFullYear (year, month-1, day); 
 			testDate.setTime(shiftDate.getTime() + TZSettings.msoffset);
 	} 
 	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
-		targetDate = new ExtDate (custom,testDate.valueOf());
+		targetDate = new ExtDate (customCalendar,testDate.valueOf());
 		setDisplay();
 	}
 }
@@ -64,18 +61,18 @@ function calcCustom() {
 	 year =  Math.round (document.custom.year.value),
 	 testDate;
 	 // HTML controls that day, month and year are numbers
-	custom = calendars[calendarnames.indexOf(document.custom.calend.value)];	// global variable
-	// let testDate = new ExtDate (custom, year, month, day);
+	customCalendar = calendars.find (item => item.id == document.custom.calend.value);	// global variable
+	// let testDate = new ExtDate (customCalendar, year, month, day);
 	switch (TZSettings.mode) {
 		case "TZ":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
-			testDate = new ExtDate (custom, year, month, day, targetDate.getHours(), targetDate.getMinutes(), targetDate.getSeconds(), targetDate.getMilliseconds())
+			testDate = new ExtDate (customCalendar, year, month, day, targetDate.getHours(), targetDate.getMinutes(), targetDate.getSeconds(), targetDate.getMilliseconds())
 			break;
 		case "UTC" : // // Set date object from custom calendar date indication, and with UTC time of day of currently displayed date.
-			testDate = new ExtDate (custom, year, month, day, targetDate.getUTCHours(), targetDate.getUTCMinutes(), targetDate.getUTCSeconds(), targetDate.getUTCMilliseconds())
+			testDate = new ExtDate (customCalendar, year, month, day, targetDate.getUTCHours(), targetDate.getUTCMinutes(), targetDate.getUTCSeconds(), targetDate.getUTCMilliseconds())
 			// testDate.setTime (testDate.valueOf - testDate.getRealTZmsOffset ())
 			break;
 		case "Fixed" : 	
-			testDate = new ExtDate (custom,year, month, day, 
+			testDate = new ExtDate (customCalendar,year, month, day, 
 				document.time.hours.value, document.time.mins.value, document.time.secs.value, document.time.ms.value);	// The shifted date, to be changed.
 			testDate.setTime(testDate.valueOf() + TZSettings.msoffset);
 
@@ -85,7 +82,7 @@ function calcCustom() {
 	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
-		targetDate = new ExtDate (custom,testDate.valueOf());
+		targetDate = new ExtDate (customCalendar,testDate.valueOf());
 		setDisplay();
 		}
 }
@@ -116,7 +113,8 @@ function calcCustom() {
 			<option value="french">France</option>
 			<option value="german">Germany</option>
 			<option value="english">United-Kingdom</option>
-			<option value="ethiopic">Ethiopia</option>
+			<option value="ethiopicf">Ethiopia</option>
+			<option value="frenchrev">French republic</option>
 			</select></td>
 		<td><input name="year" type="number" class="centered digit4"> </td>
 		<td><input name="monthname" type="number" min="1" max="13" class="centered digit2"></td>
@@ -156,7 +154,7 @@ function setDayOffset (sign=1) {
 		// clockRun(0);
 		}
 	else {
-		targetDate = new ExtDate (custom,testDate.valueOf());
+		targetDate = new ExtDate (customCalendar,testDate.valueOf());
 		setDisplay();
 	}
 }
@@ -182,7 +180,7 @@ function calcTime() { // Here the hours are deemed local hours
 		alert (milesianAlertMsg("invalidDate") + '"' + document.time.hours.value + '" "' + document.time.mins.value + '" "' 
 		+ document.time.secs.value + '.' + document.time.ms.value + '"')
 	 else {
-	  let testDate = new ExtDate (custom,targetDate.valueOf());
+	  let testDate = new ExtDate (customCalendar,targetDate.valueOf());
 	  switch (TZSettings.mode) {
 		case "TZ" : testDate.setHours(hours, mins, secs, ms); break;
 		case "UTC" : testDate.setUTCHours(hours, mins, secs, ms); break;
@@ -193,7 +191,7 @@ function calcTime() { // Here the hours are deemed local hours
 		}
 		if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
 		else {
-			targetDate = new ExtDate (custom,testDate.valueOf());
+			targetDate = new ExtDate (customCalendar,testDate.valueOf());
 			setDisplay();
 		}
 	}
@@ -234,7 +232,7 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 	testDate.setTime (testDate.getTime()+sign*addedTime); 
 	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
 	else {
-		targetDate = new ExtDate (custom,testDate.valueOf());
+		targetDate = new ExtDate (customCalendar,testDate.valueOf());
 		setDisplay();
 	}
 }
@@ -287,7 +285,7 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 <section class="centered"><!-- setting preselected time -->
 <script type="text/javascript">
 function setDateToNow(){ // Self explanatory
-    targetDate = new ExtDate(custom); // set new Date object.
+    targetDate = new ExtDate(customCalendar); // set new Date object.
 	setDisplay ();
 }
 function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
@@ -296,7 +294,7 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	testDate.setUTCHours(UTChours, 0, 0, 0);
 	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
 	else {
-		targetDate = new ExtDate (custom,testDate.valueOf());
+		targetDate = new ExtDate (customCalendar,testDate.valueOf());
 		setDisplay();
 	}
 }
@@ -541,31 +539,36 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	</table>
 	<table class="centered">
 		<tr>
-			<th></th><th>Fractional seconds</th><th>Time zone</th>
+			<th></th><th>Time zone</th><th>am/pm</th>
 		</tr>
 		<tr>
 			<th>Asked</th>
-			<td><input class="centered char8" name="Msdigits" type="number" min="0" max="3"></td>
 			<td><select name="TimeZoneName" class="centered" size="1">
 				<option value="" selected>default</option>
 				<option value="short">short</option>
 				<option value="long">long</option>
 				</select></td>
+			<td><select name="AmPm" size="1" class="centered">
+				<option value="" selected>default</option>
+				<option value="narrow">narrow</option>
+					<option value="short">short</option>
+					<option value="long">long</option>
+				</select></td>
 		</tr>
 		<tr>
 			<th>Intl</th>
-			<td><input class="centered char8" name="Emsdigits" type="text" disabled="disabled"></td>
 			<td><input class="centered char8" name="EtimeZoneName" type="text" disabled="disabled"></td>
+			<td><input class="centered char8" name="EAmPm" type="text" disabled="disabled"></td>
 		</tr>
 		<tr>
 			<th>Extended</th>
-			<td><input class="centered char8" name="Xmsdigits" type="text" disabled="disabled"></td>
 			<td><input class="centered char8" name="XtimeZoneName" type="text" disabled="disabled"></td>
+			<td><input class="centered char8" name="XAmPm" type="text" disabled="disabled"></td>
 		</tr>
 	</table>
 	<table class="centered">
 	  <tr> 
-		<th></th><th colspan="2">12 h</th><th>Hour cycle</th><th>am/pm</th>
+		<th></th><th colspan="2">12 h</th><th>Hour cycle</th>
 	  </tr> 
 	  <tr>
 		<th>Asked</th>
@@ -581,26 +584,18 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 			<option value="h23">h23</option>
 			<option value="h24">h24</option>
 			</select></td>
-		<td><select name="AmPm" size="1" class="centered">
-			<option value="" selected>default</option>
-			<option value="narrow">narrow</option>
-				<option value="short">short</option>
-				<option value="long">long</option>
-			</select></td>
 	  </tr>
 	  <tr>
 		<th>Intl</th>
 		<td>12 h</td>
 		<td><input class="centered" name="Ehour12" type="checkbox" disabled="disabled"></td>
 		<td><input class="centered char8" name="EhourCycle" type="text" disabled="disabled"></td>
-		<td><input class="centered char8" name="EAmPm" type="text" disabled="disabled"></td>
 	  </tr>
 	  <tr>
 		<th>Extended</th>
 		<td>12 h</td>
 		<td><input class="centered" name="Xhour12" type="checkbox" disabled="disabled"></td>
 		<td><input class="centered char8" name="XhourCycle" type="text" disabled="disabled"></td>
-		<td><input class="centered char8" name="XAmPm" type="text" disabled="disabled"></td>
 	  </tr>
 	</table>
 </section>
@@ -620,7 +615,7 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
   </form>
 </section>
 
-<section class="panel centered autoscroll"><h2 class="panelhead">Date strings</h2>
+<section class="panel centered autoscroll"><h2 class="panelhead">Unicode strings</h2>
 <h3 class="panelhead">Standard</h3>
 	<table class="centered">
 		<tr><td id="Ustring"></td></tr>
@@ -629,24 +624,18 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	<table class="centered">
 		<tr><td id="Xstring"></td></tr>
 	</table>
-<h3 class="panelhead">Custom calendar</h3>
+</section>
+
+<section class="panel centered autoscroll"><h2 class="panelhead">Custom calendar</h2>
+	<form name="week" method="post" autocomplete="off" action="javascript:calcWeek()">
+	<h3 class="panelhead">String</h3>
 	<table class="centered">
 		<tr><td id="Cstring"></td></tr>
 	</table>
-
-</section>
-
-<section class="panel centered autoscroll"><h2 class="panelhead">Week</h2>
-	<h3 class="panelhead">Custom calendar</h3>
-	<form name="week" method="post" autocomplete="off" action="javascript:calcWeek()">
-	<table class="centered">
-		<tr><th>mode&nbsp;: </th><td><select name="mode" size="1" class="centered">
-			<option value="" selected>local</option>
-			<option	value="UTC">UTC</option>
-		</select></td>
-		<td><button class="textline" >Ok</button></td>
-		</tr>
-		<tr><th>Year</th><th>Week</th><th>Jour</th></tr>
+	<h3 class="panelhead">Week</h3>
+	<table>
+		<tr><th>Mode: </th><td id="tzmode" colspan="2"></td></tr>
+		<tr><th>Year</th><th>Week</th><th>Day</th></tr>
 		<tr><td id="weekyear"></td><td id="weeknum"></td><td id="dayownum"></td></tr>
 		<tr><th>Week day&nbsp;</th><td colspan="2" id="dayname"></td></tr>
 		<tr><th colspan="2">Weeks in year&nbsp;: </th><td id="weeksinyear"></td></tr>
@@ -654,14 +643,15 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	</form>
 	<script type="text/javascript">
 	function calcWeek() {
+		document.getElementById("tzmode").innerHTML = TZDisplay == "UTC" ? "UTC" : "system time zone";
 		try {
-			document.getElementById("weekyear").innerHTML = targetDate.fullWeekYear(document.week.mode.value);
-			document.getElementById("weeknum").innerHTML = targetDate.weekNumber(document.week.mode.value);
-			document.getElementById("dayownum").innerHTML = targetDate.weekday(document.week.mode.value);
-			document.getElementById("weeksinyear").innerHTML = targetDate.weeksInYear(document.week.mode.value);
+			document.getElementById("weekyear").innerHTML = targetDate.fullWeekYear(TZDisplay);
+			document.getElementById("weeknum").innerHTML = targetDate.weekNumber(TZDisplay);
+			document.getElementById("dayownum").innerHTML = targetDate.weekday(TZDisplay);
+			document.getElementById("weeksinyear").innerHTML = targetDate.weeksInYear(TZDisplay);
 			document.getElementById("dayname").innerHTML = 
-				new Intl.DateTimeFormat (document.LocaleOptions.Locale,{weekday : "long", 
-				timeZone : document.week.mode.value == "" ? undefined : document.week.mode.value })
+				new ExtDateTimeFormat (document.LocaleOptions.Locale,{weekday : "long", 
+				timeZone : TZDisplay == "" ? undefined : TZDisplay },customCalendar)
 				.format(targetDate);
 		}
 		catch (e) {
@@ -669,7 +659,7 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 			document.getElementById("weeknum").innerHTML = "";
 			document.getElementById("dayownum").innerHTML = "";
 			document.getElementById("weeksinyear").innerHTML = "";
-			document.getElementById("dayname").innerHTML = "not implemented";
+			document.getElementById("dayname").innerHTML = e.message;
 		}
 	}
 	</script>
