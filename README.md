@@ -26,22 +26,24 @@ This module is used to make up enhancement of Intl functions.
 * ExtDate object extends the Date object. Project dates in calendars  you define yourself.
 * ExtDateTimeFormat extends the Intl.DateTimeFormat objet. You can customize the way dates are displayed with new options.
 
-## Calendars
+### Calendars
 With Chronos for the calendrical computations, and ExtDate for embedding in ordinary code, define custom calendars in a few lines. Here are some exemples.
-Other calendars will arrive in the future.
 
-### MilesianCalendar.js
+### MilesianCalendar
 A class specifies the Milesian calendar as defined p, Louis-Aime/Milesian-calendar, a very simple variant to `iso8601`.
 
-### JulianCalendar.js
+### JulianCalendar
 A class defines the Julian calendar.
 
-### WesternCalendar.js
+### WesternCalendar
 A class defines the calendar structure of most European countries: Julian calendar period, then switching to the Gregorian calendar. 
 Each instantiation specifies the switching date.
 
-### DerivedCalendar.js
-The Ethiopic calendar is tested here in order to display better eras.
+### frenchRevCalendar
+The calendar using under the French revolution, with the week replaced by the decade. A special solar intercalation algorithm.
+
+### myEthiopic
+The Ethiopic calendar is tested here in order to better display eras.
 
 ## Simple testing application
 This simple web page works on any computer and shows the possibilities described here.
@@ -49,3 +51,5 @@ This simple web page works on any computer and shows the possibilities described
 Routines for the page.
 ### DateExtendTest-fr.html
 French version of the page. Versions in other languages to be translated from this version.
+### DateExtendTest-en.html
+English version of the page.
