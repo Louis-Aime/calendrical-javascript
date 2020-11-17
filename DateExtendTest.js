@@ -9,7 +9,8 @@ Required:
 	DateExtended
 	Files of tested calendars
 */
-/*Versions:	M2020-11-24 list of calendars is in Calendar.js file
+/*Versions:	M2020-11-27 deprecate manual TZ offset
+	M2020-11-24 list of calendars is in Calendar.js file
 	M2020-11 in progress
 	2017-2020: Unicode Tester
 	preceding versions were a personal makeup page
@@ -68,7 +69,6 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	// Add extension
 	let unicodeExtension = "-u";
 	let extendedLocale = Locale;
-//	if (Calendar !== "") unicodeExtension += "-ca-" + Calendar;
 	if (unicodeAskedExtension !== "") unicodeExtension += "-" + unicodeAskedExtension;
 	if (unicodeExtension !== "-u") extendedLocale += unicodeExtension; 
 	
@@ -196,15 +196,15 @@ function setDisplay () { // Considering that targetDate time has been set to the
 	// Initiate Time zone mode for the "local" time from main display
 	TZSettings.mode = document.TZmode.TZcontrol.value;
 	TZDisplay = TZSettings.mode == "UTC" ? "UTC" : "";
-/** TZSettings.msoffset is JS time zone offset in milliseconds (UTC - local time)
- * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
-*/
+	/** TZSettings.msoffset is JS time zone offset in milliseconds (UTC - local time)
+	 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
+	*/
 	TZSettings.msoffset = targetDate.getRealTZmsOffset().valueOf();
 	let myElement = document.getElementById("sysTZoffset");
 	myElement.innerHTML = new Intl.NumberFormat().format(targetDate.getTimezoneOffset());
 	let
-		systemSign = (TZSettings.msoffset > 0 ? -1 : 1), // invert sign because of JS convention for time zone
-		absoluteRealOffset = - systemSign * TZSettings.msoffset,
+		systemSign = (TZSettings.msoffset > 0 ? 1 : -1), // sign is as of JS convention
+		absoluteRealOffset = systemSign * TZSettings.msoffset,
 		absoluteTZmin = Math.floor (absoluteRealOffset / Chronos.MINUTE_UNIT),
 		absoluteTZsec = Math.floor ((absoluteRealOffset - absoluteTZmin * Chronos.MINUTE_UNIT) / Chronos.SECOND_UNIT);
 	switch (TZSettings.mode) {
@@ -215,10 +215,10 @@ function setDisplay () { // Considering that targetDate time has been set to the
 			document.TZmode.TZOffset.value = absoluteTZmin;
 			document.TZmode.TZOffsetSec.value = absoluteTZsec;
 			break;
-		case "Fixed" : TZSettings.msoffset = // Here compute specified time zone offset
+/*		case "Fixed" : TZSettings.msoffset = // Here compute specified time zone offset
 			- document.TZmode.TZOffsetSign.value 
 			* (document.TZmode.TZOffset.value * Chronos.MINUTE_UNIT + document.TZmode.TZOffsetSec.value * Chronos.SECOND_UNIT);
-	}
+*/	}
 
 	shiftDate = new ExtDate (customCalendar,targetDate.getTime() - TZSettings.msoffset);	// The UTC representation of targetDate date is the local date of TZ
 	
@@ -234,7 +234,7 @@ function setDisplay () { // Considering that targetDate time has been set to the
     document.gregorian.monthname.value = shiftDate.getUTCMonth() + 1; // Display month value in 1..12 range.
     document.gregorian.day.value = shiftDate.getUTCDate();
 	try {
-		document.custom.dayofweek.value = (new Intl.DateTimeFormat("fr-FR", {weekday : "long", timeZone : "UTC"})).format(shiftDate);
+		document.custom.dayofweek.value = (new Intl.DateTimeFormat(undefined, {weekday : "long", timeZone : "UTC"})).format(shiftDate);
 		}
 	catch (e) {
 		alert (e.message + "\n" + e.fileName + " line " + e.lineNumber);

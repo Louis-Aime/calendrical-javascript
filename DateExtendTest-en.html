@@ -42,11 +42,11 @@ function calcGregorian() {
 			break;
 		case "UTC" : testDate.setUTCFullYear(year, month-1, day);
 			break;
-		case "Fixed" : 	
+/*		case "Fixed" : 	
 			let shiftDate = new ExtDate (customCalendar,targetDate.getTime() - TZSettings.msoffset);	// The shifted date, to be changed.
 			shiftDate.setUTCFullYear (year, month-1, day); 
 			testDate.setTime(shiftDate.getTime() + TZSettings.msoffset);
-	} 
+*/	} 
 	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
@@ -184,11 +184,11 @@ function calcTime() { // Here the hours are deemed local hours
 	  switch (TZSettings.mode) {
 		case "TZ" : testDate.setHours(hours, mins, secs, ms); break;
 		case "UTC" : testDate.setUTCHours(hours, mins, secs, ms); break;
-		case "Fixed" : 
+/*		case "Fixed" : 
 			testDate = new Date(ExtDate.fullUTC (document.gregorian.year.value, document.gregorian.monthname.value, document.gregorian.day.value));
 			testDate.setUTCHours(hours, mins, secs, ms); 
 			testDate.setTime(testDate.getTime() + TZSettings.msoffset);
-		}
+*/		}
 		if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
 		else {
 			targetDate = new ExtDate (customCalendar,testDate.valueOf());
@@ -256,22 +256,22 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 					<select name="TZcontrol" size="1" class="centered">
 					<option value="UTC">UTC</option>
 					<option value="TZ" selected>System</option>
-					<option value="Fixed">Fixed offset</option>
+<!--					<option value="Fixed">Fixed offset</option> -->
 					</select></td>
+				<td><button class="textline">Ok</button></td>
 			</tr>
 	</table>
 	<table class="centered">
 			<tr>
-				<th>Offset&nbsp;: </th> 
-				<td><select name="TZOffsetSign" class="centered" size="2">
+				<th>Real offset&nbsp;: </th> 
+				<td><select name="TZOffsetSign" class="centered" size="2" disabled>
 				<option value="1">+</option>
 				<option value="-1">-</option>
 				</select> </td>
-				<td><input name="TZOffset" type="number" min="0" max="1500" class="centered digit4"></td>
+				<td><input name="TZOffset" type="number" min="0" max="1500" class="centered digit4" disabled></td>
 				<td>min</td>
-				<td><input name="TZOffsetSec" type="number" min="0" max="59" class="centered digit2"></td>
+				<td><input name="TZOffsetSec" type="number" min="0" max="59" class="centered digit2" disabled></td>
 				<td>s</td>
-				<td><button class="textline">Ok</button></td>
 			</tr>
 	</table>
 	<table class="centered">
@@ -320,7 +320,7 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 			<td id="dateString"></td>
 		</tr>
 		<tr>
-			<th>Posix&nbsp;:</th>
+			<th>Timestamp&nbsp;:</th>
 			<td id="Posixnumber"></td>
 		</tr>
 	</table>
