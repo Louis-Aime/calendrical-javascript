@@ -66,7 +66,9 @@ button.textline {
 button.symbol {
   width: 3em;
 }
-
+.attention {
+	background-color: yellow;
+}
 /* Elements on dials */
 .clockhand {
 	fill:orange; 
