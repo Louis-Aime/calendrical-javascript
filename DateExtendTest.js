@@ -9,7 +9,7 @@ Required:
 	DateExtended
 	Files of tested calendars
 */
-/*Versions:	M2020-11-27 deprecate manual TZ offset
+/*Versions:	M2020-11-27 deprecate manual TZ offset and all MilesianAlertMsg
 	M2020-11-24 list of calendars is in Calendar.js file
 	M2020-11 in progress
 	2017-2020: Unicode Tester
@@ -42,8 +42,6 @@ var
 	targetDate = new ExtDate(milesian),
 	shiftDate = new ExtDate (milesian,targetDate.getTime() - targetDate.getRealTZmsOffset()),
 	customCalendar = milesian,
-	// calendars = [milesian, julian, vatican, french, german, english, myEthiopic],
-	// calendarnames = ["milesian", "julian", "vatican", "french", "german", "english", "ethiopic"],
 	TZSettings = {mode : "TZ", msoffset : 0},	// initialisation to be superseded
 	TZDisplay = ""; 
 
@@ -59,9 +57,8 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 		else askedOptions = new Intl.DateTimeFormat(Locale);
 	}
 	catch (e) {
-		alert (e.message + "\n" + e.fileName + " line " + e.lineNumber); 
-		document.LocaleOptions.Locale.value = ''; 	// Reset Locale indication to empty string
-		askedOptions = new Intl.DateTimeFormat()
+		alert (e.message + "\nCheck locale and extensions" ); 
+		return
 	}
 	Locale = askedOptions.resolvedOptions().locale;	// Locale is no longer empty
 	Locale = Locale.includes("-u-") ?  Locale.substring (0,Locale.indexOf("-u-")) : Locale; // Remove Unicode extension
@@ -99,8 +96,8 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 		askedOptions = new Intl.DateTimeFormat (extendedLocale, Options);
 		}
 	catch (e) {
-		alert (e.message + "\nasked options ignored" ); 
-		askedOptions = new Intl.DateTimeFormat (extendedLocale);	// empty Options object
+		alert (e.message + "\nCheck options" ); 
+		return
 	}
 	usedOptions = askedOptions.resolvedOptions();
 	
@@ -109,8 +106,8 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 		extAskedOptions = new ExtDateTimeFormat (extendedLocale, Options);
 		}
 	catch (e) {
-		alert (e.message + "\nasked options ignored" ); 
-		extAskedOptions = new Intl.DateTimeFormat (extendedLocale);	// empty Options object
+		alert (e.message + "\nCheck options for ExtDateTimeFormat" ); 
+		return
 	}
 	extUsedOptions = extAskedOptions.resolvedOptions();
 	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, customCalendar);
