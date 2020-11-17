@@ -9,7 +9,8 @@ Contents
 	One new method for Date for generalised time zone offset management
 	Extension of Intl.DateTimeFormat
 */
-/* Version	M2020-11-25 replace any literal other than " " that follows numeric field with option "numeric" (not with option "2-digit")
+/* Version	M2020-11-27 only replace ":" literals in time part of string with " h ", " min " or " s " indication if corresponding option is "numeric"
+	M2020-11-25 replace any literal other than " " that follows numeric field with option "numeric" (not with option "2-digit")
 	M2020-11-24 - Add week-related fields added to date object for formatToParts
 	M2020-11-22 complete comments
 	M2020-11-19 Adapt to monthBase = 1 while keeping ancient getter and setter with monthBase = 0, add TZ parameter
@@ -119,14 +120,14 @@ class ExtDate extends Date {
 	/** Construct a date to be deployed in a custom calendar. Date elements shall be integer.
 	 * @param (Object) calendar : 
 			the calendar object that describes the custom calendar,
-			a string that refers to a built-in calendar (but computations are not implemented in this version, except for "iso8601" (default) and "gregory".
-			undefined : deemed to be the string is "iso8601"
+			a string that refers to a built-in calendar; however computations are not implemented in this version, except for "iso8601" (default) and "gregory".
+			undefined : deemed to be "iso8601"
 	 * @param (parameter list): the arguments as passed to the Date object.
 		empty -> now
 		one numerical argument: Posix counter in milliseconds
 		one string argument: an ISO string for the date, passed to Date.
 		several numerical arguments: the arguments of Date constructor, as would be passed to Date, but
-			year is full year, e.g. year 1 is 1, not 1901
+			year is full year, e.g. year 1 is 0001, not 1901
 			the date elements are those of the target calendar, not of gregory neither iso8601; year is always a full year, not era dependant.
 	 * @return Date value. The date is deemed local in system time zone.
 	*/
@@ -215,16 +216,16 @@ class ExtDate extends Date {
 		localTime.setUTCHours(localTC[10].value, localTC[12].value, localTC[14].value); //Hours, minutes and seconds
 		return localTime;
 	}
-	/** calendar date fields generator method from Date.valueOf(), local or UTC.
+	/** calendar date fields generator method from Date.valueOf(), local or UTC. Month in range 1..12
 	 * @param (string) TZ: if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
-	 * @return (Object) object with date fields { (era if applicable), year, month, day, hours, minutes, seconds, milliseconds}
+	 * @return (Object) object with date fields { (era if applicable), year, month (range 1..12), day, hours, minutes, seconds, milliseconds}
 	*/
 	getFields(TZ) {
 		// compute offset to use
 		var offset = this.getRealTZmsOffset(TZ), 
 			shiftDate;
-		// compute Fields from a shifted value
-		if (typeof this.calendar == String) switch (this.calendar) {	// calendar is a string: a built-in calendar, we presently one know gregory and iso8601
+		// compute Fields from a shifted value. Month is in the range 1..12
+		if (typeof this.calendar == String) switch (this.calendar) {	// calendar is a string: a built-in calendar, presently only "gregory" or "iso8601"
 			case "iso8601": case "gregory" : 
 				shiftDate = new Date (this.valueOf() - offset)
 				return {
@@ -362,7 +363,7 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		super (locale, options);
 		// Resolve own options
 		this.calendar = calendar;
-		this.options = {...options};	// originally asked options.
+		this.options = {...options};	// copy originally asked options.
 		this.locale = locale;
 		// Resolve case where no field is asked for display : if none of weekday, year, month, day, hour, minute, second is asked, set a standard suite
 		if (this.options == undefined) this.options = {};
@@ -372,7 +373,9 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			&& this.options.day == undefined
 			&& this.options.hour == undefined
 			&& this.options.minute == undefined
-			&& this.options.second == undefined) this.options.year = this.options.month = this.options.day = "numeric";
+			&& this.options.second == undefined
+			&& this.options.dateStyle == undefined
+			&& this.options.timeStyle == undefined) this.options.year = this.options.month = this.options.day = "numeric";
 		this.DTFOptions = super.resolvedOptions();	// should hold all locale resolved information in DTFOptions.locale
 		this.options.locale = this.DTFOptions.locale;
 		this.options.calendar = this.calendar == undefined ? this.DTFOptions.calendar : this.calendar.canvas;
@@ -443,13 +446,13 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			}
 		}
 		// Special options for days of week
-		this.dayContext = this.options.day == null ? 'stand-alone' : 'format';
+		this.dayContext = (this.options.day == null && this.options.month == null && this.options.year == null) ? 'stand-alone' : 'format';
 		// stringFormat "fields" option is only possible with a calendar that uses Roman months
 		if (this.calendar != undefined && this.calendar.stringFormat == "fields") switch (this.calendar.canvas) {
 			case "iso8601": case "gregory": case "buddhist": case "japanese": case "roc": break;
 			default : throw ExtDateTimeFormat.unimplementedOption; 
 		}
-		// Exclude lunar calendar models - for now...
+		// Exclude lunar calendar models as canvas - for now...
 		if (this.calendar != undefined) switch (this.calendar.canvas) {
 			case "chinese": case "dangi": case "hebraic" : throw ExtDateTimeFormat.unimplementedOption; // the month number is not always associated with the same month
 			default : ;
@@ -503,8 +506,12 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 					let eraFormat = new Intl.DateTimeFormat ( this.options.locale, { calendar : this.options.calendar, year : "numeric", era : "short" } ),
 						dateParts = eraFormat.formatToParts(date),
 						todaysParts = eraFormat.formatToParts(today);
-						for (let i = 0; i < dateParts.length; i++) 
-							if (dateParts[i].type == "era") return !(dateParts[i].value == todaysParts[i].value);
+						let eraIndex = dateParts.findIndex(item => item.type == "era");
+						if (eraIndex >= 0) return !(dateParts[eraIndex].value == todaysParts[eraIndex].value);
+						
+//						for (let i = 0; i < dateParts.length; i++) 
+//							if (dateParts[i].type == "era") return !(dateParts[i].value == todaysParts[i].value);
+
 						return false; // no era part was found... answer no because no era part // throw ExtDateTimeFormat.invalidEra	// if we arrive here, there is something inconsistent in the data. 
 				}
 				else 	// a custom calendar with era, simplier to use
@@ -661,7 +668,7 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 							case "weekday": 
 								myParts[i].value = pldrFetch ("weekday", options.weekday, date.dayOfWeek); break;
 							case "hour": switch (options.hour) {
-								case "numeric" :	// This options is often tranformed in 2-digit with ":" separators, force to individual printing
+								case "numeric" :	// This option is often tranformed in 2-digit with ":" separators, force to individual printing
 									let ftime = new Intl.DateTimeFormat (options.locale, {timeZone : options.timeZone, hour : "numeric", timeZoneName : "short"}),
 										tparts = ftime.formatToParts(myAbsoluteDate), tindex = tparts.indexOf ( (item) => item.type == "hour" );
 									myParts[i].value = this.figure1.format(tparts[tindex].value); 
@@ -670,7 +677,7 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 								}
 								break;
 							case "minute": switch (options.minute) {
-								case "numeric" :	// This options is often tranformed in 2-digit with ":" separators, force to individual printing
+								case "numeric" :	// This option is often tranformed in 2-digit with ":" separators, force to individual printing
 									let ftime = new Intl.DateTimeFormat (options.locale, {timeZone : options.timeZone, minute : "numeric", timeZoneName : "short"}),
 										tparts = ftime.formatToParts(myAbsoluteDate), tindex = tparts.indexOf ( (item) => item.type == "minute" );
 									myParts[i].value = this.figure1.format(tparts[tindex].value); 
@@ -679,7 +686,7 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 								}
 								break;
 							case "second": switch (options.second) {
-								case "numeric" :	// This options is often tranformed in 2-digit with ":" separators, force to individual printing
+								case "numeric" :	// This option is often tranformed in 2-digit with ":" separators, force to individual printing
 									let ftime = new Intl.DateTimeFormat (options.locale, {timeZone : options.timeZone, second : "numeric", timeZoneName : "short"}),
 										tparts = ftime.formatToParts(myAbsoluteDate), tindex = tparts.indexOf ( (item) => item.type == "second" );
 									myParts[i].value = this.figure1.format(tparts[tindex].value);
@@ -694,23 +701,23 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			} 		// end of forEach function body
 			,this);	// Inside the function, this should be the same as here
 		}	// End of if (this.calendar.partsFormat != undefined)
-
-		// Erase 2-digit effects on numeric-asked fields, including related literals.
+		// Erase 2-digit effects on numeric-asked fields, not including related literals.
 		myParts.forEach ( function (item, i) {
-			if (options[item.type] != undefined && options[item.type] == "numeric")	{	// Intl.DateTimeFormat often converts to 2-digit and inserts "/" literals
+			if (options[item.type] != undefined && options[item.type] == "numeric")	{	// Intl.DateTimeFormat often converts to 2-digit and inserts literals
 				if (!isNaN(myParts[i].value)) myParts[i].value = this.figure1.format(item.value);
 				switch (item.type) {
-					case "month" : case "day" : if (i+1 < myParts.length && myParts[i+1].value != ' ') myParts[i+1].value = ' '; break;
-					case "hour" : case "minute" : if (i+1 < myParts.length && myParts[i+1].value == ":") myParts[i+1].value = item.type == "hour" ? " h " : " min ";
+					// case "month" : case "day" : if (i+1 < myParts.length && myParts[i+1].value != ' ') myParts[i+1].value = ' '; break; // pb with month before year
+					case "hour" : case "minute" : if (i+1 < myParts.length && myParts[i+1].value == ":") myParts[i+1].value = item.type == "hour" ? " h " : " min "; break;
+					case "second" : if (i+1 < myParts.length) { if (myParts[i+1].value == " ") myParts[i+1].value = " s " }
+									else myParts.push({ type : "literal", value : " s"} );
 				}
 			}
 		},this)
 		// suppress era part if required
 		if (!displayEraOfDate) {
-			let n = myParts.findIndex((item) => (item.type == "era")) //   let n = myParts.length; for (let i = 0; i < myParts.length; i++) if (myParts[i].type == "era") n = i;
-			
+			let n = myParts.findIndex((item) => (item.type == "era"));
 			if (n >= 0) { //(n < myParts.length) // there is an undesired era section
-				if (n > 0) n--;		// era is not the 1st section, suppress also the blank before; if 1st, suppress the blank after.
+				if (n > 0) n--;		// era is not the 1st section, suppress also the blank before; if first, suppress the blank after.
 				myParts.splice (n, 2)
 			}
 		}
