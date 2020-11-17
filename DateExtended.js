@@ -9,7 +9,14 @@ Contents
 	One new method for Date for generalised time zone offset management
 	Extension of Intl.DateTimeFormat
 */
-/* Version	M2020-11-27 only replace ":" literals in time part of string with " h ", " min " or " s " indication if corresponding option is "numeric"
+/* Version	M2020-11-27 Modify literals of time part only, not of date part, solve a few bugs
+		only replace ":" literals in time part of string with " h ", " min " or " s " indication if corresponding option is "numeric"
+		add getISOFields method
+		toCalString displays ISOString for built-in calendars
+		two bugs in pseudo-properties functions day and inLeapYear
+		bug in setFromFields, one field was forgotten
+		empty option case of DateTimeFormat was not properly evaluated
+		setFromFields: day field was not taken into account
 	M2020-11-25 replace any literal other than " " that follows numeric field with option "numeric" (not with option "2-digit")
 	M2020-11-24 - Add week-related fields added to date object for formatToParts
 	M2020-11-22 complete comments
@@ -207,14 +214,20 @@ class ExtDate extends Date {
 		let numericSettings = {weekday: 'long', era: 'short', year: 'numeric',  month: 'numeric',  day: 'numeric',  
 				hour: 'numeric',  minute: 'numeric',  second: 'numeric', hour12: false};
 		if (!(TZ == (undefined || ""))) numericSettings.timeZone = TZ;	
-		var numericOptions = new Intl.DateTimeFormat ("en-GB", numericSettings);
+		var numericOptions = new Intl.DateTimeFormat ("en-GB", numericSettings);	// gregory calendar in British english
 		let	localTC = numericOptions.formatToParts(this); // Local date and time components at TZ
 		// Construct a UTC date based on the figures of the local date.
-		localTime.setUTCFullYear (
+/*		localTime.setUTCFullYear (
 			(localTC[8].value == "BC") ? 1-localTC[6].value : localTC[6].value, // year component
 			localTC[4].value-1, localTC[2].value); // month and date components 
 		localTime.setUTCHours(localTC[10].value, localTC[12].value, localTC[14].value); //Hours, minutes and seconds
 		return localTime;
+*/
+		return new ExtDate(this.calendar, ExtDate.fullUTC (
+			localTC[8].value == "BC" ? 1-localTC[6].value : +localTC[6].value, // year component (a full year)
+			+localTC[4].value, +localTC[2].value, // month and date components (month is 1..12)
+			+localTC[10].value, +localTC[12].value, +localTC[14].value, //Hours, minutes and seconds
+			localTime.getUTCMilliseconds())); // We can't obtain milliseconds from DateTimeFormat, but they always remain the same while changing time zone.
 	}
 	/** calendar date fields generator method from Date.valueOf(), local or UTC. Month in range 1..12
 	 * @param (string) TZ: if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
@@ -225,7 +238,7 @@ class ExtDate extends Date {
 		var offset = this.getRealTZmsOffset(TZ), 
 			shiftDate;
 		// compute Fields from a shifted value. Month is in the range 1..12
-		if (typeof this.calendar == String) switch (this.calendar) {	// calendar is a string: a built-in calendar, presently only "gregory" or "iso8601"
+		if (typeof this.calendar == "string") switch (this.calendar) {	// calendar is a string: a built-in calendar, presently only "gregory" or "iso8601"
 			case "iso8601": case "gregory" : 
 				shiftDate = new Date (this.valueOf() - offset)
 				return {
@@ -242,13 +255,22 @@ class ExtDate extends Date {
 		else 
 			return this.calendar.fieldsFromCounter (this.valueOf() - offset);
 	}
+	/**	ISO fields at UTC, like for Temporal.PlainDate
+	*/
+	getISOFields() {
+		return {
+			isoYear : this.getUTCFullYear(),
+			isoMonth : this.getUTCMonth() + 1,
+			isoDay : this.getUTCDate()
+		}
+	}
 	/** week fields generator method from Date.valueOf(), local or UTC.
 	 * @param (string) TZ: if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return (Object) object with week fields { weekNumber: number (1..53) of the week. weekday : number (1..7, 1 = Monday) of the weekday,
 		weekYearOffset : -1/0/1 shift fullYear by one to obtain the year the week belongs to, weeksInYear: number of weeks in the year the week belons to }
 	*/
 	getWeekFields(TZ) {
-		if (typeof this.calendar == String) throw ExtDate.unimplementedOption
+		if (typeof this.calendar == "string") throw ExtDate.unimplementedOption
 		else return this.calendar.weekFieldsFromCounter (this.valueOf() - this.getRealTZmsOffset(TZ))
 	}
 	/** setter method, from the fields representing the date in the target calendar, comput date timestamp 
@@ -267,15 +289,9 @@ class ExtDate extends Date {
 		if (ExtDate.numericFields.some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) throw ExtDate.invalidDateFields;
 		ExtDate.numericFields.forEach ( (item) => { if (fields[item.name] == undefined) 
 			fields[item.name] = startingFields[item.name] } );
-		// Control validity of fields and of TZ
-		switch (TZ) {
-			case undefined: TZ = ""; case "": // local time
-			case "UTC": break;
-			default: throw ExtDate.unimplementedOption;
-		}
 		// Construct an object with the date indication only, at 0 h UTC
-		let dateFields = {}; ExtDate.numericFields.slice(0,2).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
-		if (typeof this.calendar == String) switch (this.calendar) {
+		let dateFields = {}; ExtDate.numericFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
+		if (typeof this.calendar == "string") switch (this.calendar) {
 			case "iso8601": case "gregory":
 				this.setTime (ExtDate.fullUTC(dateFields.year, dateFields.month, dateFields.day));
 				break;
@@ -292,7 +308,7 @@ class ExtDate extends Date {
 	/** is this date in a leap year of the calendar ? 
 	*/
 	inLeapYear ( TZ ) {
-		if (typeof this.calendar.inLeapYear != "function") throw ExtDate.unimplementedOption
+		if (typeof this.calendar.inLeapYear != "function") throw ExtDate.unimplementedOption;
 		return this.calendar.inLeapYear( this.getFields (TZ) );
 	}
 	/** extract a simple string with the calendar name, then era code (if applicable), then the figures for year, month, day, and time components.
@@ -300,6 +316,7 @@ class ExtDate extends Date {
 	 * @return (String) : the date as a string
 	*/
 	toCalString( TZ ) {
+		if (typeof this.calendar == "string") return this.toISOString() + "[c=" + this.calendar + "]";
 		let fn6 = Intl.NumberFormat(undefined,{minimumIntegerDigits : 6, useGrouping : false}),
 			fn4 = Intl.NumberFormat(undefined,{minimumIntegerDigits : 4, useGrouping : false}), 
 			fn3 = Intl.NumberFormat(undefined,{minimumIntegerDigits : 3}),
@@ -330,7 +347,7 @@ class ExtDate extends Date {
 	}
 	day (TZ) {			//  day in month
 		let fields = this.getFields(TZ);
-		return fields.year
+		return fields.day
 	}
 	weekday (TZ) {
 		let fields = this.getWeekFields(TZ);
