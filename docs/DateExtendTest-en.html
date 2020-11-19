@@ -3,7 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Date and DateTimeFormat enhanced</title>
-<!-- Version M2020-11-22 translation from French
+<!-- Version	M2020-11-29 same changes as in French
+	M2020-11-22 translation from French
 -->
 	
 	<meta name="creator" content="Louis-Aimé de Fouquières">
@@ -47,7 +48,7 @@ function calcGregorian() {
 			shiftDate.setUTCFullYear (year, month-1, day); 
 			testDate.setTime(shiftDate.getTime() + TZSettings.msoffset);
 */	} 
-	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
 		targetDate = new ExtDate (customCalendar,testDate.valueOf());
@@ -79,7 +80,7 @@ function calcCustom() {
 			//testDate.setTime (testDate.valueOf() - testDate.getRealTZmsOffset ())
 			//testDate.setTime (testDate.valueOf() + TZSettings.msoffset);	// The shifted date, to be changed.
 	}
-	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
 		targetDate = new ExtDate (customCalendar,testDate.valueOf());
@@ -136,7 +137,7 @@ var
 function changeDayOffset () { 
 	let days = +document.control.shift.value;
 	if (isNaN(days) || days < 0) {
-		alert (milesianAlertMsg("invalidInput"));
+		alert ("Invalid input");
 		// clockRun(0);
 		}
 	else 
@@ -150,7 +151,7 @@ function setDayOffset (sign=1) {
 	let testDate = new Date(targetDate.valueOf());
 	testDate.setTime (testDate.getTime()+sign*dayOffset*Chronos.DAY_UNIT);
 	if (isNaN(testDate.valueOf())) { 
-		alert (milesianAlertMsg("outOfRange"));
+		alert ("Out of range");
 		// clockRun(0);
 		}
 	else {
@@ -177,7 +178,7 @@ function calcTime() { // Here the hours are deemed local hours
 	var hours = Math.round (document.time.hours.value), mins = Math.round (document.time.mins.value), 
 		secs = Math.round (document.time.secs.value), ms = Math.round (document.time.ms.value);
 	if (isNaN(hours) || isNaN (mins) || isNaN (secs) || isNaN (ms)) 
-		alert (milesianAlertMsg("invalidDate") + '"' + document.time.hours.value + '" "' + document.time.mins.value + '" "' 
+		alert ("Invalid date " + '"' + document.time.hours.value + '" "' + document.time.mins.value + '" "'
 		+ document.time.secs.value + '.' + document.time.ms.value + '"')
 	 else {
 	  let testDate = new ExtDate (customCalendar,targetDate.valueOf());
@@ -189,7 +190,7 @@ function calcTime() { // Here the hours are deemed local hours
 			testDate.setUTCHours(hours, mins, secs, ms); 
 			testDate.setTime(testDate.getTime() + TZSettings.msoffset);
 */		}
-		if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+		if (isNaN(testDate.valueOf())) alert ("Out of range")
 		else {
 			targetDate = new ExtDate (customCalendar,testDate.valueOf());
 			setDisplay();
@@ -218,7 +219,7 @@ var addedTime = 60000; //Global variable, time to add or substract, in milliseco
 function changeAddTime() {
 	let msecs = +document.timeShift.shift.value; 
 	if (isNaN(msecs) || msecs <= 0) 
-		alert (milesianAlertMsg("invalidInput"))
+		alert ("Invalid input")
 	else
 		{ 
 		addedTime = msecs; // Global variable updated
@@ -230,7 +231,7 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 	changeAddTime();	// Force a valid value in field
 	let testDate = new Date(targetDate.valueOf());
 	testDate.setTime (testDate.getTime()+sign*addedTime); 
-	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		targetDate = new ExtDate (customCalendar,testDate.valueOf());
 		setDisplay();
@@ -292,7 +293,7 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
 	let testDate = new Date (targetDate.valueOf());
 	testDate.setUTCHours(UTChours, 0, 0, 0);
-	if (isNaN(testDate.valueOf())) alert (milesianAlertMsg("outOfRange"))
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		targetDate = new ExtDate (customCalendar,testDate.valueOf());
 		setDisplay();
@@ -432,14 +433,27 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	</table>
 </section>
 </section>
-<section class="panel centered autoscroll"><h2 class="panelhead">Field options</h3>
-<section class="centered"><h3 class="panelhead">Standard</h3>
+<section class="panel centered autoscroll"><h2 class="panelhead">Field options : date</h2>
 	<table class="centered"> 
 	<tr>
 		<td><button class="textline" type="reset">No option</button></td>
 		<td><button class="textline" >Ok</button></td> <td></td>
 	</tr>
    </table>
+<section class="centered"><h3 class="panelhead">Experimental options</h3>
+	<table class="centered">
+		<tr>
+			<th>Era display</th>
+			<td><select name="eraDisplay" class="centered" size="1">
+				<option value="" selected>default</option>
+				<option value="never">never</option>
+				<option value="always">always</option>
+				<option value="auto">auto</option>
+			</select></td>
+		</tr>
+	</table>
+</section>
+<section class="centered"><h3 class="panelhead">Date options</h3>
 	 <table class="centered">
 	  <tr>
 		<th></th><th>Day</th><th>Month</th><th>Year</th>
@@ -508,6 +522,15 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 		<td><input class="centered char8" name="Xera" type="text" disabled="disabled"></td>
 	  </tr>	
 	</table>
+</section>
+</section>
+<section class="panel centered autoscroll"><h2 class="panelhead">Field options : time</h2>
+	<table class="centered"> 
+	<tr>
+		<td><button class="textline" type="reset">No option</button></td>
+		<td><button class="textline" >Ok</button></td> <td></td>
+	</tr>
+   </table>
 	<table class="centered">
 	  <tr>
 		<th></th><th>Hour</th><th>Minute</th><th>Second</th>
@@ -605,40 +628,28 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	  </tr>
 	</table>
 </section>
-<section class="centered"><h3 class="panelhead">Experimental options</h3>
-	<table class="centered">
-		<tr>
-			<th>Era display</th>
-			<td><select name="eraDisplay" class="centered" size="1">
-				<option value="" selected>default</option>
-				<option value="never">never</option>
-				<option value="always">always</option>
-				<option value="auto">auto</option>
-			</select></td>
-		</tr>
-	</table>
-</section>
-  </form>
-</section>
+</form>
 
-<section class="panel centered autoscroll"><h2 class="panelhead">Unicode strings</h2>
-<h3 class="panelhead">Standard</h3>
+<section class="panel centered autoscroll"><h2 class="panelhead">Display</h2>
+<section class="panel centered autoscroll"><h3 class="panelhead">DateTimeFormat</h3>
+<h4 class="panelhead">Standard</h4>
 	<table class="centered">
 		<tr><td id="Ustring"></td></tr>
 	</table>
-<h3 class="panelhead">Extended</h3>
+<h4 class="panelhead">Extended</h4>
 	<table class="centered">
 		<tr><td id="Xstring"></td></tr>
 	</table>
 </section>
 
-<section class="panel centered autoscroll"><h2 class="panelhead">Custom calendar</h2>
+<section class="panel centered autoscroll"><h3 class="panelhead">Custom calendar</h3>
 	<form name="week" method="post" autocomplete="off" action="javascript:calcWeek()">
-	<h3 class="panelhead">String</h3>
+	<h4 class="panelhead">ExtDateTimeFormat</h4>
 	<table class="centered">
 		<tr><td id="Cstring"></td></tr>
 	</table>
-	<h3 class="panelhead">Week</h3>
+</section>
+<section class="panel centered autoscroll"><h3 class="panelhead">Other fields</h3>
 	<table>
 		<tr><th>Mode: </th><td id="tzmode" colspan="2"></td></tr>
 		<tr><th>Year</th><th>Week</th><th>Day</th></tr>
@@ -669,6 +680,7 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 		}
 	}
 	</script>
+</section>
 </section>
 <footer class="centered">
  <p>References&nbsp;: 
