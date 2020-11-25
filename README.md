@@ -1,7 +1,7 @@
 # calendrical-JS
 Basic routines in JS for computations on calendars, including the Cycle Based Calendar Computation Engine
 
-## Page for test and demos
+## Site for test and demos
 https://louis-aime.github.io/calendrical-JS/
 
 ## Basic toolkit
@@ -18,9 +18,6 @@ A second class enable conversion with Julian Day.
 
 ### pldr.js
 A "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars.
-
-### dialsandpanels.css
-A cascaded style sheet adapted to dials, movable panels, and data commonly used in date display.
 
 ## Extension of JS Objects
 
@@ -55,6 +52,9 @@ The mini-site https://louis-aime.github.io/calendrical-JS/ enables you to test m
 
 ### DateExtendTest.js
 Routines for the page.
+
+### dialsandpanels.css
+A cascaded style sheet adapted to dials, movable panels, and data commonly used in date display.
 
 ### DateExtendTest-fr.html
 French version of the page. Versions in other languages to be translated from this version.
