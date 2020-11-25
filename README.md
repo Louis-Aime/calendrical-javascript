@@ -51,10 +51,13 @@ The calendar using under the French revolution, with the week replaced by the de
 The Ethiopic calendar is tested here in order to better display eras.
 
 ## Simple testing application
-This simple web page works on any computer and shows the possibilities described here.
+The mini-site https://louis-aime.github.io/calendrical-JS/ enables you to test most facilities of this package. The source of this site is not provided with the package. The contents is given to facilitate debug.
+
 ### DateExtendTest.js
 Routines for the page.
+
 ### DateExtendTest-fr.html
 French version of the page. Versions in other languages to be translated from this version.
+
 ### DateExtendTest-en.html
 English version of the page.
