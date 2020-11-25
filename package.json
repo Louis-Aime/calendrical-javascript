@@ -1,7 +1,7 @@
 {
   "name": "calendrical-JS",
   "version": "1.0.0",
-  "description": "Basic routines in JavaScript for computations on calendars, including the Cycle Based Calendar Computation Engine",
+  "description": "Basic routines in JS for computations on calendars, including the Cycle Based Calendar Computation Engine",
   "main": "Calendars.js",
   "directories": {
     "doc": "docs"
@@ -25,8 +25,5 @@
   "bugs": {
     "url": "https://github.com/Louis-Aime/calendrical-JS/issues"
   },
-  "homepage": "https://github.com/Louis-Aime/calendrical-JS#readme",
-  "dependencies": {
-    "calendrical-JS": "file:docs\\calendrical-JS-1.0.0.tgz"
-  }
+  "homepage": "https://github.com/Louis-Aime/calendrical-JS#readme"
 }
