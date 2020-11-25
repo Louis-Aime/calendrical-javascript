@@ -13,11 +13,20 @@
     "type": "git",
     "url": "git+https://github.com/Louis-Aime/calendrical-JS.git"
   },
-  "keywords": ["calendar","calendrical","Date","Intl.DateTimeFormat","Cycle Base Calendrical Computation Engine"],
+  "keywords": [
+    "calendar",
+    "calendrical",
+    "Date",
+    "Intl.DateTimeFormat",
+    "Cycle Base Calendrical Computation Engine"
+  ],
   "author": "Louis-Aimé de Fouquières, Miletus",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Louis-Aime/calendrical-JS/issues"
   },
-  "homepage": "https://github.com/Louis-Aime/calendrical-JS#readme"
+  "homepage": "https://github.com/Louis-Aime/calendrical-JS#readme",
+  "dependencies": {
+    "calendrical-JS": "file:docs\\calendrical-JS-1.0.0.tgz"
+  }
 }
