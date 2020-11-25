@@ -1,0 +1,23 @@
+{
+  "name": "calendrical-JS",
+  "version": "1.0.0",
+  "description": "Basic routines in JavaScript for computations on calendars, including the Cycle Based Calendar Computation Engine",
+  "main": "Calendars.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Test and demo page available at https://louis-aime.github.io/calendrical-JS/ \" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Louis-Aime/calendrical-JS.git"
+  },
+  "keywords": ["calendar","calendrical","Date","Intl.DateTimeFormat","Cycle Base Calendrical Computation Engine"],
+  "author": "Louis-Aimé de Fouquières, Miletus",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Louis-Aime/calendrical-JS/issues"
+  },
+  "homepage": "https://github.com/Louis-Aime/calendrical-JS#readme"
+}
