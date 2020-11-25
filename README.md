@@ -1,6 +1,9 @@
 # calendrical-JS
 Basic routines in JS for computations on calendars, including the Cycle Based Calendar Computation Engine
 
+## Page for test and demos
+https://louis-aime.github.io/calendrical-JS/
+
 ## Basic toolkit
 Routines that help developing calendrical computations for new calendars
 
@@ -26,11 +29,13 @@ This module is used to make up enhancement of Intl functions.
 * ExtDate object extends the Date object. Project dates in calendars  you define yourself.
 * ExtDateTimeFormat extends the Intl.DateTimeFormat objet. You can customize the way dates are displayed with new options.
 
-### Calendars
+## Calendars
 With Chronos for the calendrical computations, and ExtDate for embedding in ordinary code, define custom calendars in a few lines. Here are some exemples.
 
+Expected data for calendar objects are described in Chronos.js. The calendar.js file gives examples.
+
 ### MilesianCalendar
-A class specifies the Milesian calendar as defined p, Louis-Aime/Milesian-calendar, a very simple variant to `iso8601`.
+A class specifies the Milesian calendar as defined p, Louis-Aime/Milesian-calendar, a simple variant to `iso8601`.
 
 ### JulianCalendar
 A class defines the Julian calendar.
