@@ -8,17 +8,17 @@ Certain custom calendar ("ethiopic") do not handle date entry, but you may still
 At the bottom of the first panel, you can read the standard "toISOString" result and a special string, 
 the date projected to the custom calendar.
 
-Panel 2 and 3 hold the locale and options passed to Intl.DateTimeFormat and ExtDateTimeFormat.
+Panels 2, 3 and 4 hold the locale and options passed to Intl.DateTimeFormat and ExtDateTimeFormat.
 You can see  how the options are resolved, using standard Intl and using our extended version.
 
-Panel 4 displays the results of Intl.DateTimeFormat.format and ExtDateTimeFormat.format respectively.
-
-Panel 5 displays more results obtained with ExtDate and ExtDateTimeFormat with custom calendars, 
-provided that the computations are implemented for the specified custom calendar.
+Panel 5 is divided into 3 display subpanels
+ * formated date unded Intl.DateTimeFormat and ExtDateTimeFormat
+ * formated date with the selected custom calendar
+ * other result that a custom calendar can deliver, with basic routines of Chronos.
 
 ## Links
  * [French version](https://louis-aime.github.io/calendrical-JS/DateExtendTest-fr)
  * [English version](https://louis-aime.github.io/calendrical-JS/DateExtendTest-en)
  
- ## Comments and proposal
+## Comments and proposal
  Use this repository's [issues](https://github.com/Louis-Aime/calendrical-JS/issues).
