@@ -1,7 +1,7 @@
 # calendrical-JS
 Basic routines in JS for computations on calendars, including 
  * the Cycle Based Calendar Computation Engine
- * ExtDate and ExtDateTimeFormat, that extends Date and Intl.DateTimeFormat respectively
+ * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively
  * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars.
 The software object anticipate the Temporal initiative of Ecma TC39.
 
@@ -15,7 +15,7 @@ Routines that help developing calendrical computations for new calendars
 The Chronos class offers common routines and tools for calendrical computations: 
  * Basic div and mod computations for calendrical purposes.
  * Basic computation of leap years for julian and gregorian calendars.
- * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendar defined by algorithm.
+ * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendars defined by an algorithm.
  * A procedure for computing week figures: day of week, week number, number of weeks in year, week year that includes a date
  * Key figures for converting milliseconds (used in present Javascript environment) into days, hours, minutes, seconds and the reverse
 A second class enable conversion from Julian Day to iso8601 and the reverse.
