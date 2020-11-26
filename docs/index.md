@@ -1,5 +1,5 @@
 # General calendrical routines for JavaScript
-From this site (https://louis-aime.github.io/calendrical-JS/) you may test the calendrical routines
+From this site (https://louis-aime.github.io/calendrical-javascript/) you may test the calendrical routines
 and compare their results with those of the standard Intl.DateTimeFormat object.
 
 ## Usage
@@ -17,8 +17,8 @@ Panel 5 is divided into 3 display subpanels
  * other result that a custom calendar can deliver, with basic routines of Chronos.
 
 ## Links
- * [French version](https://louis-aime.github.io/calendrical-JS/DateExtendTest-fr)
- * [English version](https://louis-aime.github.io/calendrical-JS/DateExtendTest-en)
+ * [French version](https://louis-aime.github.io/calendrical-javascript/DateExtendTest-fr)
+ * [English version](https://louis-aime.github.io/calendrical-javascript/DateExtendTest-en)
  
 ## Comments and proposal
- Use this repository's [issues](https://github.com/Louis-Aime/calendrical-JS/issues).
+ Use this repository's [issues](https://github.com/Louis-Aime/calendrical-javascript/issues).
