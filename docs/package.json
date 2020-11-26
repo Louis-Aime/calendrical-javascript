@@ -1,5 +1,5 @@
 {
-  "name": "calendrical-JS",
+  "name": "calendrical-javascript",
   "version": "1.0.0",
   "description": "Basic routines in JS for computations on calendars, including the Cycle Based Calendar Computation Engine",
   "main": "Calendars.js",
@@ -7,11 +7,11 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Test and demo page available at https://louis-aime.github.io/calendrical-JS/ \" && exit 1"
+    "test": "echo \"Test and demo page available at https://louis-aime.github.io/calendrical-javascript/ \" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Louis-Aime/calendrical-JS.git"
+    "url": "git+https://github.com/Louis-Aime/calendrical-javascript.git"
   },
   "keywords": [
     "calendar",
@@ -23,7 +23,7 @@
   "author": "Louis-Aimé de Fouquières, Miletus",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Louis-Aime/calendrical-JS/issues"
+    "url": "https://github.com/Louis-Aime/calendrical-javascript/issues"
   },
-  "homepage": "https://github.com/Louis-Aime/calendrical-JS#readme"
+  "homepage": "https://github.com/Louis-Aime/calendrical-javascript#readme"
 }
