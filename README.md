@@ -1,12 +1,12 @@
-# calendrical-JS
-Basic routines in JS for computations on calendars, including 
+# calendrical-javascript
+Basic routines in javascript for computations on calendars, including 
  * the Cycle Based Calendar Computation Engine
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively
  * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars.
 The software object anticipate the Temporal initiative of Ecma TC39.
 
 ## GitHub Page site for test and demos
-https://louis-aime.github.io/calendrical-JS/
+https://louis-aime.github.io/calendrical-javascript/
 
 ## Basic toolkit
 Routines that help developing calendrical computations for new calendars
@@ -25,7 +25,7 @@ The parameters for using these classes are described in details in the source. E
 ### pldr.js
 A "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars.
 
-## Extension of JS Objects
+## Extension of Javascript objects
 
 ### DateExtended.js
 This module enhances calendrical functions in JavaScript
@@ -53,7 +53,7 @@ The calendar used under the French revolution, with the week replaced by the dec
 The Unicode built-in Ethiopic calendar is tested here in order to better display eras.
 
 ## Simple testing application
-The mini-site https://louis-aime.github.io/calendrical-JS/ enables you to test most facilities of this package. The source of this site is not provided with the package. The contents is listed here to facilitate understanding.
+The mini-site https://louis-aime.github.io/calendrical-javascript/ enables you to test most facilities of this package. The source of this site is not provided with the package. The contents is listed here to facilitate understanding.
 
 ### DateExtendTest.js
 Routines for the page.
