@@ -483,11 +483,10 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	}	// end constructor
 	static invalidOption = new RangeError ("invalid value for option in this context")
 	static unimplementedOption = new RangeError ("function, case or option value not implemented")
-	static invalidEra = new RangeError("invalid era value for calendar and date")
 	static dateFieldNames = ["era", "year", "month", "day"]
 	/** Validity of certain Unicode calendars (before version 68 of ICUs)
 	 * @param (object) aDate, represent the date under test
-	 * @param (string) mytTZ, either "UTC" (aDate is UTC) or "", (system time zone)
+	 * @param (string) mytTZ, the name of a time zone
 	 * @param (string) myCalendar, the name of the built-in calendar
 	 * @return (boolean) if true, the date may be displayed. If false, DateTimeFormat give erratic results.
 	*/
