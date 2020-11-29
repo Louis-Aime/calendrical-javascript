@@ -3,7 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Page de test calendriers</title>
-<!-- Version
+<!-- Version	M2020-12-09 page adapted to ES modules
+	M2020-12-05 install package in subdirectories
 	M2020-11-29 Modify layout, suppress AlertMsg
 	M2020-11-21 first complete
 -->
@@ -13,47 +14,40 @@
 	<meta name="keywords" content="Unicode calendrier, Unicode calendars">
 	<meta name="viewport" content="width=device-width">	
 
-<!-- package -->
-	<script type="text/javascript" src="Chronos.js"></script>
-	<script type="text/javascript" src="DateExtended.js"></script>
-	<script type="text/javascript" src="pldr.js"></script> <!-- must be defined ealier than referring calendars -->
-	<script type="text/javascript" src="Calendars.js"></script>
-
 <!-- page environment -->
 	<link href="dialsandpanels.css" rel="stylesheet"/>
-	<script type="text/javascript" src="DateExtendTest.js"></script>
+	<script type="module" src="dateextendtest.js"></script>
 
 </head>
 
-<body class="centered" onload="setDateToNow()">
+<body class="centered">  <!-- "setDateToNow()" with event handler in ES 6 modules environment -->
 <section class="centered"><h1 class="panelhead">Page de test calendriers</h1>
 </section>
 <section class="panel"><h2 class="panelhead">Date, heure, fuseau, navigation</h2>
 <section class="centered"><!-- setting date -->
-<script type="text/javascript">
+<script type="module">
+import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
+import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./node_modules/calendrical-javascript/calendars.js";
+import {register, setDisplay} from "./DateExtendTest.js";
 function calcGregorian() {
 	var 
 	 day =  Math.round (document.gregorian.day.value),
 	 month = Math.round (document.gregorian.monthname.value),
 	 year =  Math.round (document.gregorian.year.value);
 	 // HTML controls that day, month and year are numbers
-	customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar and valid with ISO button
-	let testDate = new Date (targetDate.valueOf());
-	switch (TZSettings.mode) {
+	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar
+	let testDate = new Date (register.targetDate.valueOf());
+	switch (register.TZSettings.mode) {
 		case "TZ": 
 			testDate.setFullYear(year, month-1, day); 	// Set date object from calendar date indication, without changing time-in-the-day.
 			break;
 		case "UTC" : testDate.setUTCFullYear(year, month-1, day);
 			break;
-		case "Fixed" : 	
-			let shiftDate = new ExtDate (customCalendar,targetDate.getTime() - TZSettings.msoffset);	// The shifted date, to be changed.
-			shiftDate.setUTCFullYear (year, month-1, day); 
-			testDate.setTime(shiftDate.getTime() + TZSettings.msoffset);
 	} 
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
-		targetDate = new ExtDate (customCalendar,testDate.valueOf());
+		register.targetDate = new ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
 		setDisplay();
 	}
 }
@@ -64,31 +58,32 @@ function calcCustom() {
 	 year =  Math.round (document.custom.year.value),
 	 testDate;
 	 // HTML controls that day, month and year are numbers
-	customCalendar = calendars.find (item => item.id == document.custom.calend.value);	// global variable
-	// let testDate = new ExtDate (customCalendar, year, month, day);
-	switch (TZSettings.mode) {
+	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);	// global variable
+	// let testDate = new ExtDate (register.customCalendar, year, month, day);
+	switch (register.TZSettings.mode) {
 		case "TZ":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
-			testDate = new ExtDate (customCalendar, year, month, day, targetDate.getHours(), targetDate.getMinutes(), targetDate.getSeconds(), targetDate.getMilliseconds())
+			testDate = new ExtDate (register.customCalendar, year, month, day, register.targetDate.getHours(), register.targetDate.getMinutes(), register.targetDate.getSeconds(), register.targetDate.getMilliseconds())
 			break;
 		case "UTC" : // // Set date object from custom calendar date indication, and with UTC time of day of currently displayed date.
-			testDate = new ExtDate (customCalendar, year, month, day, targetDate.getUTCHours(), targetDate.getUTCMinutes(), targetDate.getUTCSeconds(), targetDate.getUTCMilliseconds())
+			testDate = new ExtDate (register.customCalendar, year, month, day, register.targetDate.getUTCHours(), register.targetDate.getUTCMinutes(), register.targetDate.getUTCSeconds(), register.targetDate.getUTCMilliseconds())
 			// testDate.setTime (testDate.valueOf - testDate.getRealTZmsOffset ())
 			break;
-		case "Fixed" : 	
-			testDate = new ExtDate (customCalendar,year, month, day, 
-				document.time.hours.value, document.time.mins.value, document.time.secs.value, document.time.ms.value);	// The shifted date, to be changed.
-			testDate.setTime(testDate.valueOf() + TZSettings.msoffset);
-
-			//testDate.setTime (testDate.valueOf() - testDate.getRealTZmsOffset ())
-			//testDate.setTime (testDate.valueOf() + TZSettings.msoffset);	// The shifted date, to be changed.
 	}
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
-		targetDate = new ExtDate (customCalendar,testDate.valueOf());
+		register.targetDate = new ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
 		setDisplay();
 		}
 }
+document.gregorian.addEventListener("submit", function (event) {
+	event.preventDefault();
+	calcGregorian()
+})
+document.custom.addEventListener("submit", function (event) {
+	event.preventDefault();
+	calcCustom()
+})
 </script>
 	<table class="centered">
 	  <tr>
@@ -99,7 +94,7 @@ function calcCustom() {
 		<th> </th>
 	  </tr>
 	  <tr>
-		<form name="gregorian" method="post" action="javascript:calcGregorian()">
+		<form name="gregorian"> <!-- action set to void(), no method indicated (used to be "post") -->
 		<td>iso8601</td>
 		<td><input name="year" type="number" class="centered digit4"> </td>
 		<td><input name="monthname" type="number" min="1" max="12" class="centered digit2"></td>
@@ -107,7 +102,7 @@ function calcCustom() {
 		<td><button class="textline">Ok</button></td>
 		</form>
 	  </tr>
-	  <form name="custom" method="post" action="javascript:calcCustom()">
+	  <form name="custom">
 	  <tr>
 		<td><select name="calend" size="1" class="centered">
 			<option value="milesian" selected>milésien</option>
@@ -132,7 +127,10 @@ function calcCustom() {
 	</table>
 </section>
 <section class="centered"><!-- date navigation -->
-<script type="text/javascript">
+<script type="module">
+import {Chronos} from "./node_modules/calendrical-javascript/chronos.js";
+import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
+import {register, setDisplay, setDateToNow} from "./DateExtendTest.js";
 var 
 	dayOffset = 1; // Days (decimal) to add or substract
 // no setDateToToday
@@ -150,32 +148,47 @@ function changeDayOffset () {
 }
 function setDayOffset (sign=1) {
 	changeDayOffset();	// Force a valid value in field
-	let testDate = new Date(targetDate.valueOf());
-	testDate.setTime (testDate.getTime()+sign*dayOffset*Chronos.DAY_UNIT);
+	let testDate = new Date(register.targetDate.valueOf());
+	testDate.setTime (testDate.getTime() + sign * dayOffset * Chronos.DAY_UNIT);
 	if (isNaN(testDate.valueOf())) { 
 		alert ("Out of range");
 		// clockRun(0);
 		}
 	else {
-		targetDate = new ExtDate (customCalendar,testDate.valueOf());
+		register.targetDate.setTime( testDate.valueOf() );
 		setDisplay();
 	}
 }
+document.control.addEventListener("submit", function (event) {
+	event.preventDefault();
+	changeDayOffset()
+})
+document.control.now.addEventListener("click", function (event) {
+	setDateToNow()
+})
+document.control.minus.addEventListener("click", function (event) {
+	setDayOffset(-1)
+})
+document.control.plus.addEventListener("click", function (event) {
+	setDayOffset(+1)
+})
 </script>
-<form name="control" method="post" action="javascript:changeDayOffset()">
+<form name="control">
  <table class="centered">
   <tr>
-	<td><button class="textline" type="button" onclick="javascript:setDateToNow()">Maintenant</button></td>
+	<td><button name="now" class="textline" type="button">Maintenant</button></td>
 		<th>+/- jours&nbsp;: </th>
-		<td><button type="button" class="textline symbol" onclick="javascript:setDayOffset(-1)">-</button></td>
+		<td><button name="minus" type="button" class="textline symbol">-</button></td>
 		<td><input name="shift" type="number" value="1" min="0" step="any" class="centered digit4"></td> 
-		<td><button type="button" class="textline symbol" onclick="javascript:setDayOffset(+1)">+</button></td>
+		<td><button name="plus" type="button" class="textline symbol">+</button></td>
   </tr>
  </table>
 </form>
 </section>
 <section class="centered"><!-- setting time by elements -->
-<script type="text/javascript">
+<script type="module">
+import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
+import {register, setDisplay} from "./DateExtendTest.js";
 function calcTime() { // Here the hours are deemed local hours
 	var hours = Math.round (document.time.hours.value), mins = Math.round (document.time.mins.value), 
 		secs = Math.round (document.time.secs.value), ms = Math.round (document.time.ms.value);
@@ -183,24 +196,28 @@ function calcTime() { // Here the hours are deemed local hours
 		alert ("Invalid date " + '"' + document.time.hours.value + '" "' + document.time.mins.value + '" "' 
 		+ document.time.secs.value + '.' + document.time.ms.value + '"')
 	 else {
-	  let testDate = new ExtDate (customCalendar,targetDate.valueOf());
-	  switch (TZSettings.mode) {
+	  let testDate = new ExtDate (register.customCalendar,register.targetDate.valueOf());
+	  switch (register.TZSettings.mode) {
 		case "TZ" : testDate.setHours(hours, mins, secs, ms); break;
 		case "UTC" : testDate.setUTCHours(hours, mins, secs, ms); break;
 /*		case "Fixed" : 
 			testDate = new Date(ExtDate.fullUTC (document.gregorian.year.value, document.gregorian.monthname.value, document.gregorian.day.value));
 			testDate.setUTCHours(hours, mins, secs, ms); 
-			testDate.setTime(testDate.getTime() + TZSettings.msoffset);
+			testDate.setTime(testDate.getTime() + register.TZSettings.msoffset);
 */		}
 		if (isNaN(testDate.valueOf())) alert ("Out of range")
 		else {
-			targetDate = new ExtDate (customCalendar,testDate.valueOf());
+			register.targetDate = new ExtDate (register.customCalendar,testDate.valueOf());
 			setDisplay();
 		}
 	}
 }
+document.time.addEventListener("submit", function (event) {
+	event.preventDefault();
+	calcTime()
+})
 </script>
-  <form name="time" method="post" autocomplete="off" action="javascript:calcTime()">
+  <form name="time" autocomplete="off">
 	<table class="centered">
 	  <tr> 
 		 <th colspan="5">Heure du fuseau ou du mode</th>
@@ -216,7 +233,9 @@ function calcTime() { // Here the hours are deemed local hours
   </form>
 </section>
 <section class="centered"><!-- time navigation -->
-<script type="text/javascript">
+<script type="module">
+import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
+import {register, setDisplay} from "./DateExtendTest.js";
 var addedTime = 60000; //Global variable, time to add or substract, in milliseconds.
 function changeAddTime() {
 	let msecs = +document.timeShift.shift.value; 
@@ -231,28 +250,55 @@ function changeAddTime() {
 
 function addTime (sign = 1) { // addedTime ms is added or subtracted to or from the Timestamp.
 	changeAddTime();	// Force a valid value in field
-	let testDate = new Date(targetDate.valueOf());
-	testDate.setTime (testDate.getTime()+sign*addedTime); 
+	let testDate = new Date(register.targetDate.valueOf());
+	testDate.setTime (testDate.getTime() + sign * addedTime); 
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
-		targetDate = new ExtDate (customCalendar,testDate.valueOf());
+		register.targetDate.setTime( testDate.valueOf() );
 		setDisplay();
 	}
 }
+document.timeShift.addEventListener("submit", function (event) {
+	event.preventDefault();
+	changeAddTime()
+})
+document.timeShift.minus.addEventListener("click", function (event) {
+	addTime(-1)
+})
+document.timeShift.plus.addEventListener("click", function (event) {
+	addTime(+1)
+})
 </script>	 
-  <form name="timeShift" method="post" action="javascript:changeAddTime()">
+  <form name="timeShift">
 	<table class="centered"> 
 	  <tr>
 		<td>+/- ms</td>
-		<td><button type="button" class="textline symbol" onclick="javascript:addTime(-1)">-</button></td>
+		<td><button name="minus" type="button" class="textline symbol">-</button></td>
 		<td><input name="shift" type="number" value="60000" min="1" class="centered char8"></td>
-		<td><button type="button" class="textline symbol" onclick="javascript:addTime(1)">+</button></td>
+		<td><button name="plus" type="button" class="textline symbol">+</button></td>
 	  </tr>
 	</table>
   </form>
 </section>
 <section class="centered autoscroll"><!-- time zone option -->
-  <form name="TZmode" autocomplete="off" method="post" action="javascript:setDisplay()">
+	<script type="module">
+		import {register, setDisplay} from "./DateExtendTest.js";
+		function getMode() {
+			// Initiate Time zone mode for the "local" time from main display
+			register.TZSettings.mode = document.TZmode.TZcontrol.value;
+			register.TZDisplay = register.TZSettings.mode == "UTC" ? "UTC" : "";
+			/** register.TZSettings.msoffset is JS time zone offset in milliseconds (UTC - local time)
+			 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
+			*/
+
+		}
+		document.TZmode.addEventListener("submit", function (event) {
+			event.preventDefault();
+			getMode();
+			setDisplay();
+		})
+	</script>
+  <form name="TZmode" autocomplete="off">
 	<table class="centered">
 			<tr><th>Mode&nbsp;: </th>
 				<td>
@@ -286,27 +332,30 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
   </form>
 </section>
 <section class="centered"><!-- setting preselected time -->
-<script type="text/javascript">
-function setDateToNow(){ // Self explanatory
-    targetDate = new ExtDate(customCalendar); // set new Date object.
-	setDisplay ();
-}
+<script type="module">
+import {register, setDisplay} from "./DateExtendTest.js";
 function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
-	let testDate = new Date (targetDate.valueOf());
+	let testDate = new Date (register.targetDate.valueOf());
 	testDate.setUTCHours(UTChours, 0, 0, 0);
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
-		targetDate = new ExtDate (customCalendar,testDate.valueOf());
+		register.targetDate.setTime (testDate.valueOf());
 		setDisplay();
 	}
 }
+document.getElementById("h0").addEventListener("click", function (event) {
+	setUTCHoursFixed(0)
+})
+document.getElementById("h12").addEventListener("click", function (event) {
+	setUTCHoursFixed(12)
+})
 </script>
 	  <table class="centered">
 	  <tr>
 		<th>Même date à</th>
-		<td><button class="textline" type="button" name="0h" onclick="javascript:setUTCHoursFixed(0)">0 h</button></td>
-		<td><button class="textline" type="button" name="12h" onclick="javascript:setUTCHoursFixed(12)">12 h</button></td>
+		<td><button id="h0" class="textline" type="button">0 h</button></td>
+		<td><button id="h12" class="textline" type="button">12 h</button></td>
 		<th>UTC</th>
 	  </tr>
 	 </table>
@@ -330,10 +379,18 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 </section>
 </section>
 <section class="panel centered autoscroll"><h2 class="panelhead">Options générales de présentation</h2>
-	<form name="LocaleOptions" method="post" action="javascript:putStringOnOptions()">
+<script type="module">
+	import {putStringOnOptions} from "./DateExtendTest.js";
+	document.LocaleOptions.addEventListener ("submit", function (event) {
+		event.preventDefault();
+		putStringOnOptions()
+	})
+
+</script>
+	<form name="LocaleOptions">
 	<table class="centered"> 
 		<tr>
-			<td><button class="textline" type="reset">Aucune option</button></td>
+			<td><button type="reset" class="textline" >Aucune option</button></td>
 			<td><button class="textline" >Ok</button></td> <td></td>
 		</tr>
 	</table>
@@ -651,37 +708,22 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 </section>
 
 <section class="panel centered autoscroll"><h3 class="panelhead">Champs supplémentaires</h3>
-	<form name="week" method="post" autocomplete="off" action="javascript:calcWeek()">
-	<table>
-		<tr><th>Mode&nbsp;: </th><td id="tzmode" colspan="2"></td></tr>
+	<table class="centered"><form name="yeartype">
+		<tr><th colspan="2">Année algébrique et type</th></tr>
+		<tr><td id="fullyear"></td><td>
+			<select name="leapyear" disabled class="centered" size="1">
+				<option value="false">commune</option>
+				<option value="true">longue</option>
+			</select></td>
+		</tr>
+	</form></table>
+	<table class="centered">
+		<tr><th colspan="3">Calendrier en semaines</th></tr>
 		<tr><th>Année</th><th>Semaine</th><th>Jour</th></tr>
 		<tr><td id="weekyear"></td><td id="weeknum"></td><td id="dayownum"></td></tr>
 		<tr><th>Jour&nbsp;</th><td colspan="2" id="dayname"></td></tr>
 		<tr><th colspan="2">Semaines dans l'année&nbsp;: </th><td id="weeksinyear"></td></tr>
 	</table>
-	</form>
-	<script type="text/javascript">
-	function calcWeek() {
-		document.getElementById("tzmode").innerHTML = TZDisplay == "UTC" ? "UTC" : "fuseau système";
-		try {
-			document.getElementById("weekyear").innerHTML = targetDate.fullWeekYear(TZDisplay);
-			document.getElementById("weeknum").innerHTML = targetDate.weekNumber(TZDisplay);
-			document.getElementById("dayownum").innerHTML = targetDate.weekday(TZDisplay);
-			document.getElementById("weeksinyear").innerHTML = targetDate.weeksInYear(TZDisplay);
-			document.getElementById("dayname").innerHTML = 
-				new ExtDateTimeFormat (document.LocaleOptions.Locale,{weekday : "long", 
-				timeZone : TZDisplay == "" ? undefined : TZDisplay },customCalendar)
-				.format(targetDate);
-		}
-		catch (e) {
-			document.getElementById("weekyear").innerHTML = "";
-			document.getElementById("weeknum").innerHTML = "";
-			document.getElementById("dayownum").innerHTML = "";
-			document.getElementById("weeksinyear").innerHTML = "";
-			document.getElementById("dayname").innerHTML = e.message;
-		}
-	}
-	</script>
 </section>
 </section>
 <footer class="centered">

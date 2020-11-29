@@ -1,10 +1,11 @@
-/* Calendars using ExtDate
+/* A set of calendars using Chronos, JulianDayIso and ExtDate.
 	Character set is UTF-8
 	Customise calendar with an extended Date object and an extended Intl.DateTimeFormat object.
 Contents: 
 	Classes and instances to define calendars
 */
-/* Versions:	M2020-11-23 - Collect all calendars in a single file
+/* Versions:	M2020-12-08 use import from JS modules
+	M2020-11-23 - Collect all calendars in a single file
 	M2020-11-21	Enhance with DateExtended
 	M2020-11-12	Adapt to week handler	Source: since 2017
 	M2020-10-22 construct using class Chronos
@@ -36,10 +37,13 @@ or the use or other dealings in the software.
 Inquiries: www.calendriermilesien.org
 */
 "use strict";
-const
+import {Chronos, JulianDayIso} from "./chronos.js";
+import {ExtDate} from "./dateextended.js";
+import pldrDOM from "./pldr.js";
+export const
 	JDConvert = new JulianDayIso(1);	// ISO8601 to Julian Day bidirectional conversion, with month number starting at 1 // check whether used ?
 
-class MilesianCalendar { 
+export class MilesianCalendar { 
 	/** Define a specific Milesian calendar
 	 * @param (string) name : the name used with .toCalString method of ExtDate
 	 * @param (string) id: a built-in calendar for ExtDateTimeFormat. Must be in the list of existing built-in.
@@ -124,7 +128,7 @@ class MilesianCalendar {
 		return Chronos.isGregorianLeapYear ( this.fullYear(fields) + 1 )
 	}
 }
-class JulianCalendar  {
+export class JulianCalendar  {
 	constructor (id, pldr) { // specific name, possible pldr for kabyle or so
 		this.id = id;
 		this.pldr = pldr;
@@ -225,7 +229,7 @@ class JulianCalendar  {
 		return Chronos.isJulianLeapYear(this.fullYear(fields))
 	}
 } // end of calendar class
-class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
+export class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
 	constructor (id, switchingDate) {
 		this.id = id;
 		this.switchingDate = new Date(switchingDate);	// first date where Gregorien calendar is used. switchingDate may be a ISO string
@@ -318,7 +322,7 @@ class WesternCalendar { // Framework for calendars of European countries, first 
 		else return Chronos.isGregorianLeapYear (this.fullYear (fields))
 	}
 } // end of calendar class
-class EthiopicCalendar {
+export class EthiopicCalendar {
 	constructor (name) {
 		this.id = name;
 		this.canvas = "ethiopic";
@@ -380,7 +384,7 @@ class EthiopicCalendar {
 		return Chronos.isJulianLeapYear (this.relativeYear (fields) + 1)
 	}
 } // end of calendar class
-class FrenchRevCalendar {
+export class FrenchRevCalendar {
 	constructor (id, pldr) {
 		this.id = id;
 		this.pldr = pldr;
@@ -475,4 +479,4 @@ const
 	myEthiopic = new EthiopicCalendar ("ethiopicf"),
 	frenchRev = new FrenchRevCalendar ("frenchrev"),
 	calendars = [milesian, julian, vatican, french, german, english, myEthiopic, frenchRev];
-
+export {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev};

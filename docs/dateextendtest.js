@@ -9,7 +9,8 @@ Required:
 	DateExtended
 	Files of tested calendars
 */
-/*Versions:	M2020-11-27 deprecate manual TZ offset and all MilesianAlertMsg
+/*Versions:	M2020-12-09 Calendrical routines as ES modules
+	M2020-11-27 deprecate manual TZ offset and all MilesianAlertMsg
 	M2020-11-24 list of calendars is in Calendar.js file
 	M2020-11 in progress
 	2017-2020: Unicode Tester
@@ -38,13 +39,31 @@ or the use or other dealings in the software.
 Inquiries: www.calendriermilesien.org
 */
 "use strict";
-var 
-	targetDate = new ExtDate(milesian),
-	shiftDate = new ExtDate (milesian,targetDate.getTime() - targetDate.getRealTZmsOffset()),
-	customCalendar = milesian,
-	TZSettings = {mode : "TZ", msoffset : 0},	// initialisation to be superseded
-	TZDisplay = ""; 
-
+// var calendrical = require("calendrical-javascript"), // for the CommonJS version
+import {Chronos} from "./node_modules/calendrical-javascript/chronos.js";
+import {ExtDate, ExtDateTimeFormat} from "./node_modules/calendrical-javascript/dateextended.js";
+import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./node_modules/calendrical-javascript/calendars.js";
+var register = {		// this register is also used by the small modules written in HTML page
+	targetDate : new ExtDate(milesian),
+	shiftDate : new ExtDate (milesian),			// unable to compute with unfinished object. register.targetDate.getTime() - register.targetDate.getRealTZmsOffset()),
+	customCalendar : milesian,
+	TZSettings : {mode : "TZ", msoffset : 0},	// initialisation to be superseded
+	TZDisplay : "" 
+}
+function setDateToNow(){ // Self explanatory
+	register.targetDate = new ExtDate(register.customCalendar); // set new Date object.
+	setDisplay ();
+}
+function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
+	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
+	let testDate = new Date (register.targetDate.valueOf());
+	testDate.setUTCHours(UTChours, 0, 0, 0);
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
+	else {
+		register.targetDate.setTime (testDate.valueOf());
+		setDisplay();
+	}
+}
 function putStringOnOptions() { // get Locale, calendar indication and Options given on page, print String. Called by setDisplay
 	let Locale = document.LocaleOptions.Locale.value;
 	let unicodeAskedExtension = document.LocaleOptions.UnicodeExt.value;
@@ -110,7 +129,7 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 		return
 	}
 	extUsedOptions = extAskedOptions.resolvedOptions();
-	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, customCalendar);
+	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, register.customCalendar);
 
 
 	
@@ -163,14 +182,14 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	extUsedOptions = referenceExtFormat.resolvedOptions();
 	referenceExtFormat = new ExtDateTimeFormat(extUsedOptions.locale,extUsedOptions);
 */
-	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, customCalendar);
+	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, register.customCalendar);
 	// Certain Unicode calendars do not give a proper result: here is the control code.
-	let valid = ExtDateTimeFormat.unicodeValidDateinCalendar(targetDate, extUsedOptions.timeZone, customCalendar);
+	let valid = ExtDateTimeFormat.unicodeValidDateinCalendar(register.targetDate, extUsedOptions.timeZone,usedOptions.calendar);
 	// Display with extended DateTimeFormat
-	document.getElementById("Xstring").innerHTML = (valid ? "" : "(!) ") + extAskedOptions.format(targetDate);
+	document.getElementById("Xstring").innerHTML = (valid ? "" : "(!) ") + extAskedOptions.format(register.targetDate);
 	// Display custom calendar string - error control
 	try {
-		document.getElementById("Cstring").innerHTML = cusAskedOptions.format(targetDate);
+		document.getElementById("Cstring").innerHTML = cusAskedOptions.format(register.targetDate);
 	}
 	catch (e) {
 		document.getElementById("Cstring").innerHTML = e.message
@@ -178,81 +197,99 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 
 	let	myUnicodeElement = document.getElementById("Ustring");
 	try { 
-		myUnicodeElement.innerHTML = (valid ? "" : "(!) ") + askedOptions.format(targetDate); // askedOptions.format(targetDate); 
+		myUnicodeElement.innerHTML = (valid ? "" : "(!) ") + askedOptions.format(register.targetDate); // askedOptions.format(register.targetDate); 
 		}
 	catch (e) { 
 		alert (e.message + "\n" + e.fileName + " line " + e.lineNumber);
 		myUnicodeElement.innerHTML = "(!)"; 
 		}
-
+	// Add week computation
+	calcWeek();
+}
+function calcWeek() {
+	try {
+		document.getElementById("fullyear").innerHTML = register.targetDate.fullYear(register.TZDisplay);
+		document.yeartype.leapyear.value = register.targetDate.inLeapYear(register.TZDisplay);
+		document.getElementById("weekyear").innerHTML = register.targetDate.fullWeekYear(register.TZDisplay);
+		document.getElementById("weeknum").innerHTML = register.targetDate.weekNumber(register.TZDisplay);
+		document.getElementById("dayownum").innerHTML = register.targetDate.weekday(register.TZDisplay);
+		document.getElementById("weeksinyear").innerHTML = register.targetDate.weeksInYear(register.TZDisplay);
+		document.getElementById("dayname").innerHTML = 
+			new ExtDateTimeFormat (document.LocaleOptions.Elocale.value,{weekday : "long", 
+			timeZone : register.TZDisplay == "" ? undefined : register.TZDisplay },register.customCalendar)
+			.format(register.targetDate);
+	}
+	catch (e) {
+		document.getElementById("weekyear").innerHTML = "";
+		document.getElementById("weeknum").innerHTML = "";
+		document.getElementById("dayownum").innerHTML = "";
+		document.getElementById("weeksinyear").innerHTML = "";
+		document.getElementById("dayname").innerHTML = e.message;
+	}
 }
 
-function setDisplay () { // Considering that targetDate time has been set to the desired date, this routines updates all form fields.
-
-	// Time section
-	// Initiate Time zone mode for the "local" time from main display
-	TZSettings.mode = document.TZmode.TZcontrol.value;
-	TZDisplay = TZSettings.mode == "UTC" ? "UTC" : "";
-	/** TZSettings.msoffset is JS time zone offset in milliseconds (UTC - local time)
-	 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
-	*/
-	TZSettings.msoffset = targetDate.getRealTZmsOffset().valueOf();
+function setDisplay () { // Considering that register.targetDate time has been set to the desired date, this routines updates all form fields.
+	// Set time zone offset at asked date, display parameters
+	register.TZSettings.msoffset = register.targetDate.getRealTZmsOffset().valueOf();
 	let myElement = document.getElementById("sysTZoffset");
-	myElement.innerHTML = new Intl.NumberFormat().format(targetDate.getTimezoneOffset());
+	myElement.innerHTML = new Intl.NumberFormat().format(register.targetDate.getTimezoneOffset());
 	let
-		systemSign = (TZSettings.msoffset > 0 ? 1 : -1), // sign is as of JS convention
-		absoluteRealOffset = systemSign * TZSettings.msoffset,
+		systemSign = (register.TZSettings.msoffset > 0 ? 1 : -1), // sign is as of JS convention
+		absoluteRealOffset = systemSign * register.TZSettings.msoffset,
 		absoluteTZmin = Math.floor (absoluteRealOffset / Chronos.MINUTE_UNIT),
 		absoluteTZsec = Math.floor ((absoluteRealOffset - absoluteTZmin * Chronos.MINUTE_UNIT) / Chronos.SECOND_UNIT);
-	switch (TZSettings.mode) {
+	switch (register.TZSettings.mode) {
 		case "UTC" : 
-			TZSettings.msoffset = 0; // Set offset to 0, but leave time zone offset on display
+			register.TZSettings.msoffset = 0; // Set offset to 0, but leave time zone offset on display
 		case "TZ" : 
 			document.TZmode.TZOffsetSign.value = systemSign;
 			document.TZmode.TZOffset.value = absoluteTZmin;
 			document.TZmode.TZOffsetSec.value = absoluteTZsec;
 			break;
-/*		case "Fixed" : TZSettings.msoffset = // Here compute specified time zone offset
+/*		case "Fixed" : register.TZSettings.msoffset = // Here compute specified time zone offset
 			- document.TZmode.TZOffsetSign.value 
 			* (document.TZmode.TZOffset.value * Chronos.MINUTE_UNIT + document.TZmode.TZOffsetSec.value * Chronos.SECOND_UNIT);
 */	}
-
-	shiftDate = new ExtDate (customCalendar,targetDate.getTime() - TZSettings.msoffset);	// The UTC representation of targetDate date is the local date of TZ
-	
+	// Initiate a representation of local date
+	register.shiftDate = new ExtDate (register.customCalendar,register.targetDate.getTime() - register.TZSettings.msoffset);	// The UTC representation of register.targetDate date is the local date of TZ
 	// Initiate custom calendar form with present local date
-	let fields = shiftDate.getFields("UTC");
-	document.custom.calend.value = customCalendar.id	;	
-	document.custom.year.value = customCalendar.fullYear(fields); // display fullYear, not just year. fields.year is displayed with era in date string.
+	let fields = register.shiftDate.getFields("UTC");
+	document.custom.calend.value = register.customCalendar.id	;	
+	document.custom.year.value = register.customCalendar.fullYear(fields); // display fullYear, not just year. fields.year is displayed with era in date string.
 	document.custom.monthname.value = fields.month; // Display month value in 1..12 range.
 	document.custom.day.value = fields.day;
 
 	// Initiate Gregorian form with present local date
-    document.gregorian.year.value = shiftDate.getUTCFullYear(); // uses the local variable - not UTC
-    document.gregorian.monthname.value = shiftDate.getUTCMonth() + 1; // Display month value in 1..12 range.
-    document.gregorian.day.value = shiftDate.getUTCDate();
+    document.gregorian.year.value = register.shiftDate.getUTCFullYear(); // uses the local variable - not UTC
+    document.gregorian.monthname.value = register.shiftDate.getUTCMonth() + 1; // Display month value in 1..12 range.
+    document.gregorian.day.value = register.shiftDate.getUTCDate();
 	try {
-		document.custom.dayofweek.value = (new Intl.DateTimeFormat(undefined, {weekday : "long", timeZone : "UTC"})).format(shiftDate);
+		document.custom.dayofweek.value = (new Intl.DateTimeFormat(undefined, {weekday : "long", timeZone : "UTC"})).format(register.shiftDate);
 		}
 	catch (e) {
 		alert (e.message + "\n" + e.fileName + " line " + e.lineNumber);
 		document.custom.dayofweek.value = "(!)"; 
 		}
 	// Update local time fields - using	Date properties
-	document.time.hours.value = shiftDate.getUTCHours();
-	document.time.mins.value = shiftDate.getUTCMinutes();
-	document.time.secs.value = shiftDate.getUTCSeconds();
-	document.time.ms.value = shiftDate.getUTCMilliseconds();
+	document.time.hours.value = register.shiftDate.getUTCHours();
+	document.time.mins.value = register.shiftDate.getUTCMinutes();
+	document.time.secs.value = register.shiftDate.getUTCSeconds();
+	document.time.ms.value = register.shiftDate.getUTCMilliseconds();
 
 	// Display UTC date & time in custom calendar, ISO, and Posix number
 	myElement = document.getElementById("dateString");
-	myElement.innerHTML = targetDate.toCalString(TZDisplay);
+	myElement.innerHTML = register.targetDate.toCalString(register.TZDisplay);
 	myElement = document.getElementById("ISOdatetime");
-	myElement.innerHTML = targetDate.toISOString();
+	myElement.innerHTML = register.targetDate.toISOString();
 	myElement = document.getElementById("Posixnumber");
-	myElement.innerHTML = targetDate.valueOf();
+	myElement.innerHTML = register.targetDate.valueOf();
 
 	// Write custom and Unicode strings following currently visible options
 	putStringOnOptions();
-	// Add week computation
-	calcWeek();
 }
+/* Events handlers
+*/
+window.onload = function () {setDateToNow()};
+/* Export
+*/
+export {register, setDisplay, setDateToNow, putStringOnOptions}

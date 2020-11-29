@@ -1,4 +1,4 @@
-/* Chronos: Basic functions for calendrical computations
+/* chronos.js: Basic functions for calendrical computations
 Character set is UTF-8
 Chronos class holds basic values, functions and methods for calendrical computations.
 May be used with the legacy Date classical environment, and in the Temporal-style environment
@@ -24,7 +24,8 @@ const JulianDayIso
 	toJulianDay from ISO fields
 	toIsoFields from Julian Day
 */
-/* Version	M2020-11-24 add two cases of irregular week cycles, add notification of special cycle e.g. leap year etc. in Cycle Base Calendrical Computation Engine
+/* Version	M2020-12-08 use export
+	M2020-11-24 add two cases of irregular week cycles, add notification of special cycle e.g. leap year etc. in Cycle Base Calendrical Computation Engine
 	M2020-11-22 enhance comments
 	M2020-11-12 enhance week rules
 	M2020-11-09 enhance
@@ -375,3 +376,4 @@ class JulianDayIso { // Base functions for Temporal computations and iso8601 wee
 		return {weekYearOffset : myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
 	}
 }
+export {Chronos, JulianDayIso}
