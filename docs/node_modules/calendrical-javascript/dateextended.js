@@ -1,4 +1,4 @@
-/* Extension of Date and Intl.DateTimeFormat objects
+/* dateextended.js : Extension of Date and Intl.DateTimeFormat objects
 Character set is UTF-8
 Purpose
 	Handle custom calendars
@@ -9,7 +9,8 @@ Contents
 	One new method for Date for generalised time zone offset management
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/* Version	M2020-12-07	Do not change time part if language is among right-to-left.
+/* Version	M2020-12-08 Use import and export
+	M2020-12-07	Do not change time part if language is among right-to-left.
 	M2020-11-29 control calendar parameter to ExtDate and ExtDateTimeFormat constructors
 	M2020-11-27 Modify literals of time part only, not of date part, solve a few bugs
 		only replace ":" literals in time part of string with " h ", " min " or " s " indication if corresponding option is "numeric"
@@ -108,7 +109,7 @@ class CustomCalendar {
 	a calendar field is optional. This field may only be a custom calendar (options exist fir built-in calendars).
 */
 "use strict";
-/** Compute the system time zone offset at this date, in ms.
+/** Compute the system time zone offset at this date, in ms. This extension is not exported.
  * rationale: with Chrome (and others ?), the TZOffset returned value losses the seconds. 
  * @returns {number} the time zone offset in milliseconds: UTC - local (same sign as TimezoneOffset)
 */
@@ -752,3 +753,4 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		return parts.map(({type, value}) => {return value;}).reduce((buf, part)=> buf + part, "");
 	}
 }
+export {ExtDate, ExtDateTimeFormat}
