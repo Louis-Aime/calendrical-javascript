@@ -1,15 +1,14 @@
-/* DateExtendTest: test custom calendars formatting capabilities. 
-To be used with dateextended.html or a language variant
+/* JS routines for dateextendtest: test custom calendars formatting capabilities. 
+To be used with dateextendtest.html
 Character set is UTF-8
 Contents: general structure is as MilesianClock.
 	setDisplay: modify displayed page after a change
 	putStringOnOptions : specifically modify date strings. Called by setDisplay.
 Required:
-	Chronos
-	DateExtended
-	Files of tested calendars
+	Install calendrical-javascript
 */
-/*Versions:	M2020-12-09 Calendrical routines as ES modules
+/* Version:	M2020-12-10 Aggregate links to module in this file
+	M2020-12-09 Calendrical routines as ES modules
 	M2020-11-27 deprecate manual TZ offset and all MilesianAlertMsg
 	M2020-11-24 list of calendars is in Calendar.js file
 	M2020-11 in progress
@@ -40,9 +39,11 @@ Inquiries: www.calendriermilesien.org
 */
 "use strict";
 // var calendrical = require("calendrical-javascript"), // for the CommonJS version
-import {Chronos} from "./chronos.js";
-import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
-import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./calendars.js";
+ 
+import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./aggregate.js";
+import {ExtDate, ExtDateTimeFormat} from "./aggregate.js";
+import {Chronos} from "./aggregate.js";;
+
 var register = {		// this register is also used by the small modules written in HTML page
 	targetDate : new ExtDate(milesian),
 	shiftDate : new ExtDate (milesian),			// unable to compute with unfinished object. register.targetDate.getTime() - register.targetDate.getRealTZmsOffset()),

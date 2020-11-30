@@ -26,9 +26,8 @@
 <section class="panel"><h2 class="panelhead">Date, time, time zone</h2>
 <section class="centered"><!-- setting date -->
 <script type="module">
-import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
-import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./node_modules/calendrical-javascript/calendars.js";
-import {register, setDisplay} from "./DateExtendTest.js";
+import {ExtDate, calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./aggregate.js";
+import {register, setDisplay} from "./dateextendtest.js";
 function calcGregorian() {
 	var 
 	 day =  Math.round (document.gregorian.day.value),
@@ -128,9 +127,8 @@ document.custom.addEventListener("submit", function (event) {
 </section>
 <section class="centered"><!-- date navigation -->
 <script type="module">
-import {Chronos} from "./node_modules/calendrical-javascript/chronos.js";
-import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
-import {register, setDisplay, setDateToNow} from "./DateExtendTest.js";
+import {Chronos, ExtDate} from "./aggregate.js";
+import {register, setDisplay, setDateToNow} from "./dateextendtest.js";
 var 
 	dayOffset = 1; // Days (decimal) to add or substract
 // no setDateToToday
@@ -187,8 +185,8 @@ document.control.plus.addEventListener("click", function (event) {
 </section>
 <section class="centered"><!-- setting time by elements -->
 <script type="module">
-import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
-import {register, setDisplay} from "./DateExtendTest.js";
+import {ExtDate} from "./aggregate.js";
+import {register, setDisplay} from "./dateextendtest.js";
 function calcTime() { // Here the hours are deemed local hours
 	var hours = Math.round (document.time.hours.value), mins = Math.round (document.time.mins.value), 
 		secs = Math.round (document.time.secs.value), ms = Math.round (document.time.ms.value);
@@ -234,8 +232,8 @@ document.time.addEventListener("submit", function (event) {
 </section>
 <section class="centered"><!-- time navigation -->
 <script type="module">
-import {ExtDate} from "./node_modules/calendrical-javascript/dateextended.js";
-import {register, setDisplay} from "./DateExtendTest.js";
+import {ExtDate} from "./aggregate.js";
+import {register, setDisplay} from "./dateextendtest.js";
 var addedTime = 60000; //Global variable, time to add or substract, in milliseconds.
 function changeAddTime() {
 	let msecs = +document.timeShift.shift.value; 
@@ -282,7 +280,7 @@ document.timeShift.plus.addEventListener("click", function (event) {
 </section>
 <section class="centered autoscroll"><!-- time zone option -->
 	<script type="module">
-		import {register, setDisplay} from "./DateExtendTest.js";
+		import {register, setDisplay} from "./dateextendtest.js";
 		function getMode() {
 			// Initiate Time zone mode for the "local" time from main display
 			register.TZSettings.mode = document.TZmode.TZcontrol.value;
@@ -333,7 +331,7 @@ document.timeShift.plus.addEventListener("click", function (event) {
 </section>
 <section class="centered"><!-- setting preselected time -->
 <script type="module">
-import {register, setDisplay} from "./DateExtendTest.js";
+import {register, setDisplay} from "./dateextendtest.js";
 function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
 	let testDate = new Date (register.targetDate.valueOf());
@@ -380,7 +378,7 @@ document.getElementById("h12").addEventListener("click", function (event) {
 </section>
 <section class="panel centered autoscroll"><h2 class="panelhead">General presentation options</h2>
 <script type="module">
-	import {putStringOnOptions} from "./DateExtendTest.js";
+	import {putStringOnOptions} from "./dateextendtest.js";
 	document.LocaleOptions.addEventListener ("submit", function (event) {
 		event.preventDefault();
 		putStringOnOptions()
