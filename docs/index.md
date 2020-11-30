@@ -17,8 +17,8 @@ Panel 5 is divided into 3 display subpanels
  * other result that a custom calendar can deliver, with basic routines of Chronos.
 
 ## Links
- * [French version](https://louis-aime.github.io/calendrical-javascript/DateExtendTest-fr)
- * [English version](https://louis-aime.github.io/calendrical-javascript/DateExtendTest-en)
+ * [French version](https://louis-aime.github.io/calendrical-javascript/dateextendtest-fr)
+ * [English version](https://louis-aime.github.io/calendrical-javascript/dateextendtest-en)
  
 ## Comments and proposal
  Use this repository's [issues](https://github.com/Louis-Aime/calendrical-javascript/issues).
