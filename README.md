@@ -1,9 +1,16 @@
 # calendrical-javascript
 Basic routines in javascript for computations on calendars, including 
  * the Cycle Based Calendar Computation Engine,
+ * basic conversion tool from iso 8601 date figures to Julian Day and the reverse,
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
- * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars.
+ * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars,
+ * a collection of custom calendars in order to demonstrate capacities.
 The software object anticipate the Temporal initiative of Ecma TC39.
+
+## Module architecture
+This module uses ES6 module syntax (export / import). chronos.js, dateextended.js and pldr.js only export objects. 
+calendars.js import all objects of other files and exports several new objects; this file can be considered an entry point to the module. 
+However the other files may be used separately.
 
 ## GitHub Page site for test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -11,48 +18,59 @@ https://louis-aime.github.io/calendrical-javascript/
 ## Basic toolkit
 Routines that help developing calendrical computations for new calendars.
 
-### Chronos.js
-The Chronos class offers common routines and tools for calendrical computations: 
+### chronos.js
+The **Chronos** exported class offers common routines and tools for calendrical computations: 
  * Basic div and mod computations for calendrical purposes.
  * Basic computation of leap years for julian and gregorian calendars.
  * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendars defined by an algorithm.
  * A procedure for computing week figures: day of week, week number, number of weeks in year, week year that includes a date.
- * Key figures for converting milliseconds (used in present Javascript environment) into days, hours, minutes, seconds and the reverse
-A second class enable conversion from Julian Day to iso8601 and the reverse.
+ * Key numeric constants for converting milliseconds (used in present Javascript environment) into days, hours, minutes, seconds and the reverse
+The **JulianDayIso** exported class enable conversion from Julian Day to iso8601 and the reverse.
 
 The parameters for using these classes are described in details in the source. Examples are given in the file Calendars.js.
 
 ### pldr.js
-A "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars.
+The default extended object is a DOM representing a "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars. 
+This is used only for the milesian calendar, but can be extended on the same principle to ohter custom of even Unicode built-in calendars.
 
 ## Extension of Javascript objects
 
-### DateExtended.js
+### dateextended.js
 This module enhances calendrical functions in JavaScript
-* ExtDate object extends the Date object. You can use date elements with calendars that you define yourself.
-* ExtDateTimeFormat extends the Intl.DateTimeFormat object. You can customize the way dates are displayed with new options and custom data.
+* **ExtDate** class extends the Date object. You can use date elements with calendars that you define yourself.
+* **ExtDateTimeFormat** extends the Intl.DateTimeFormat object. You can customize the way dates are displayed with new options and custom calendars.
 
-## Calendars
+## calendars.js
 With Chronos for the calendrical computations, and ExtDate for embedding in ordinary code, you can define custom calendars in a few lines. 
 This file proposes examples of calendars that are missing in Unicode's tools.
 
 ### MilesianCalendar
-A class specifies the Milesian calendar as defined at www.calendriermilesien.org.
+The **MilesianCalendar** exported class specifies the Milesian calendar as defined at www.calendriermilesien.org.
 
 ### JulianCalendar
-A class defines the Julian calendar.
+The **JulianCalendar** exported class defines the Julian calendar.
 
 ### WesternCalendar
-A class defines the calendar structure of most European countries: Julian calendar period, then switching to the Gregorian calendar. 
+The **WesternCalendar** exported class defines the calendar structure of most European countries: Julian calendar period, then switching to the Gregorian calendar. 
 The author specifies the switching date at instatiation.
 
-### frenchRevCalendar
-The calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm.
+### FrenchRevCalendar
+The **FrenchRevCalendar** instantied class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1992 to 1805.
+
+### Intantiations
+The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
+ * **milesian**: the milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required 
+ * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, which look very much like the Gregorian calendar's.  
+ * **vatican, french, german, english** : they instantiate the *WesternCalendar*, with diffenent switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
 
 ### myEthiopic
-The Unicode built-in Ethiopic calendar is tested here in order to better display eras.
+The Unicode built-in Ethiopic calendar is redefined with name "ethiopicf", and exported as object **myEthiopic**. 
+Here the era before Incarnation is displayed a different way from Unicode: years are not counted backwards.
 
-## Using this package
+### calendars
+The **calendars** exported array list all calendars mentionned above. Each item represents one of the calendar objects.
+
+## Usage
 
 ### Chronos : class
 #### Constructor (calendRule : object, weekdayRule : object)
@@ -76,8 +94,9 @@ The complete description of the parameters is available in Chronos.js. Calendars
  * getObject (askedNumber): object with date fields obtained from the number with the Cycle Based Calendar Computation Engine. The number may be the Posix time stamp or any other counter that designates an instant, as specified in calendRule.
  * getNumber (askedObject): number. The reverse operation with respect to getObject.
  * geWeekFigures (dayIndex, characDayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
+
 ### JulianDayIso : class
-Instantiate Julian Day to Iso8601 date fields converters. 
+Instantiate into Julian Day to Iso8601 date fields converters.
 #### constructor (monthBase)
  * *monthBase* is the number of the first month for the date's numeric fields, 0 (traditional with Date) or 1 (used in Temporal proposal with the remaining of this package).
 #### methods
@@ -89,15 +108,8 @@ Instantiate Julian Day to Iso8601 date fields converters.
    * weekday: 1 to 7 indicating Monday to Sunday
    * weeksInYear: the number of weeks (52 or 53) for this week year.
 
-### Date.prototype.getRealTZmsOffset(): number
-By exception, we have added a method to the traditional Date object's prototype.  
-The result is the time offset between the system time and UTC, *in milliseconds*, not in minutes. This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries.  
-Since the time zone system was not yet in place, the offset is any number of seconds, not a simple fraction of hour. 
-Chromium rounds up to the nearest integer number of minutes, whereas Firefox gives a fractional number of minutes.
-This function computes the real offset in milliseconds in all cases.
-
 ### ExtDate: class
-Extends the Date object with the flavour of Temporal proposal, using custom calendars. All method of the Date object are available.
+Extends the Date object with the flavour of Temporal proposal, using custom calendars. All method of the Date object are also available. **Notice** : with the built-in methods, the figure that represents the month begins with 0, with the extended ones, it begins with 1.
 #### constructor (calendar, otherArguments)
  * calendar is either a string that denotes a built-in calendar, or a custom calendar object; if undefined, "iso8601" is assumed
  * otherArguments is a list of arguments that are handled the same way as with Date.
@@ -111,7 +123,7 @@ However, in the last case,
    * the missing arguments are replaced by 1 for the day and 0 for all other.
    * the date is always evaluated as a local date.
 #### static objects
- * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value^* is a number, the default value.
+ * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value.
 #### static errors
  * invalidDateFields: thrown if the value of a date field is not a number.
  * invalidOption: thrown if an option field bears an invalid value.
@@ -122,10 +134,10 @@ However, in the last case,
    * the month element is in the range 1..12.
 #### methods
  * getRealTZmsOffset (TZ:string): number;
-   * if TZ is undefined or "", same as Date.prototype.getRealTZmsOffset();
-   * else, TZ is considered the name of a time zone; the time offset in millisecond for this time zone at this date is returne. 
+   * if TZ is undefined or "", return the real offset from UTC to system local time *in milliseconds*. This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries: as there were no time zones, the real offset is computed to the second, but the traditional method may round to minutes.   
+   * else, TZ is considered the name of a time zone; the time offset in millisecond for this time zone at this date is returned. 
  * toResolvedLocaleDate (TZ: string): ExtDate object. TZ is the name of a time zone. The method returns a Date object whose UTC field values correspond to the present date at the time zone. If TZ is not identified, the system local date is returned.
-In the next functions, the TZ parameter is either undefined or equal to ""; or equal to "UTC". The other parameters or results are evaluated at the system local time zone, or at UTC time zone respectively.
+In the next functions, the TZ parameter my be equal to "UTC", or to anything else including undefined. The other parameters or results are evaluated at the system local time zone, or at UTC time if and only if TZ == "UTC". 
 The time stamp is the number of milliseconds since Unix epoch (1 Jan. 1970 00:00 h UTC)
  * getFields (TZ): object. The fields of the date, in the associated custom calendar. The corresponding time stamp is returned.
  * getISOFields (TZ): object. The fields of the date in the ISO 8601 calandar.
@@ -168,17 +180,7 @@ This function shall be deprecated as soon as the corrected version of ICU is dep
  * formatToParts (aDate): same result as Intl.DateTimeFormat's. Custom calendar is used. The eraDisplay option is applied. Fields asked as "numeric" are not changed to "2-digit"; if time fields, the ":" is replaced by " h " or " min ", and a " s " or " s" is added. However, this change is not done with right-to-left languages.
  * format (date): like format, but using the enhanceements of formatToParts.
 
-## Simple testing application
-The mini-site https://louis-aime.github.io/calendrical-javascript/ enables you to test most facilities of this package. The source of this site is not provided with the package. The contents is listed here to facilitate understanding.
+## Simple demonstrating and testing application
+The mini-site https://louis-aime.github.io/calendrical-javascript/ enables you to test most facilities of this package. 
+The source of this site is not provided with the package, but is available at the GitHub repository in /docs.
 
-### DateExtendTest.js
-Routines for the page.
-
-### dialsandpanels.css
-A cascaded style sheet adapted to dials, movable panels, and data commonly used in date display.
-
-### DateExtendTest-fr.html
-French version of the page. Versions in other languages to be translated from this version.
-
-### DateExtendTest-en.html
-English version of the page.
