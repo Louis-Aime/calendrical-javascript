@@ -40,9 +40,9 @@ Inquiries: www.calendriermilesien.org
 */
 "use strict";
 // var calendrical = require("calendrical-javascript"), // for the CommonJS version
-import {Chronos} from "./node_modules/calendrical-javascript/chronos.js";
-import {ExtDate, ExtDateTimeFormat} from "./node_modules/calendrical-javascript/dateextended.js";
-import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./node_modules/calendrical-javascript/calendars.js";
+import {Chronos} from "./chronos.js";
+import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
+import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./calendars.js";
 var register = {		// this register is also used by the small modules written in HTML page
 	targetDate : new ExtDate(milesian),
 	shiftDate : new ExtDate (milesian),			// unable to compute with unfinished object. register.targetDate.getTime() - register.targetDate.getRealTZmsOffset()),
