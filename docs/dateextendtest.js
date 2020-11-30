@@ -1,5 +1,5 @@
 /* DateExtendTest: test custom calendars formatting capabilities. 
-To be used withDateExtendTest.html
+To be used with dateextended.html or a language variant
 Character set is UTF-8
 Contents: general structure is as MilesianClock.
 	setDisplay: modify displayed page after a change

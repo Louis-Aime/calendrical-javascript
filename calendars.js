@@ -4,7 +4,8 @@
 Contents: 
 	Classes and instances to define calendars
 */
-/* Versions:	M2020-12-08 use import from JS modules
+/* Versions:	M2020-12-10 import all names export from other files, as a main entry point.
+	M2020-12-08 use import from JS modules
 	M2020-11-23 - Collect all calendars in a single file
 	M2020-11-21	Enhance with DateExtended
 	M2020-11-12	Adapt to week handler	Source: since 2017
@@ -38,10 +39,8 @@ Inquiries: www.calendriermilesien.org
 */
 "use strict";
 import {Chronos, JulianDayIso} from "./chronos.js";
-import {ExtDate} from "./dateextended.js";
+import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 import pldrDOM from "./pldr.js";
-export const
-	JDConvert = new JulianDayIso(1);	// ISO8601 to Julian Day bidirectional conversion, with month number starting at 1 // check whether used ?
 
 export class MilesianCalendar { 
 	/** Define a specific Milesian calendar
