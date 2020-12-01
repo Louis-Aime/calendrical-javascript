@@ -12,6 +12,8 @@ This module uses ES6 module syntax (export / import). chronos.js, dateextended.j
 calendars.js import all objects of other files and exports several new objects; this file can be considered an entry point to the module. 
 However the other files may be used separately.
 
+Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js.
+
 ## GitHub Page site for test and demos
 https://louis-aime.github.io/calendrical-javascript/
 
