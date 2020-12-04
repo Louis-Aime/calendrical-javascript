@@ -23,6 +23,7 @@
 <body class="centered">  <!-- "setDateToNow()" with event handler in ES 6 modules environment -->
 <section class="centered"><h1 class="panelhead">Date and DateTimeFormat enhanced</h1>
 </section>
+<div class="mtych">
 <section class="panel"><h2 class="panelhead">Date, time, time zone</h2>
 <section class="centered"><!-- setting date -->
 <script type="module">
@@ -376,7 +377,7 @@ document.getElementById("h12").addEventListener("click", function (event) {
 	</table>
 </section>
 </section>
-<section class="panel centered autoscroll"><h2 class="panelhead">General presentation options</h2>
+<section class="panel centered autoscroll"><h2 class="panelhead">General options</h2>
 <script type="module">
 	import {putStringOnOptions} from "./dateextendtest.js";
 	document.LocaleOptions.addEventListener ("submit", function (event) {
@@ -410,22 +411,22 @@ document.getElementById("h12").addEventListener("click", function (event) {
 	 </table>	
 	 <table class="centered"> 
 	   <tr>
-		<th>Language-country&nbsp;: </th>
+		<th>Locale&nbsp;: </th>
 		<td><input name="Locale" autocomplete="language" type="text" class="centered" size="30"> </td>
 	   </tr>
 	   <tr>
-		<th>Unicode extension&nbsp;: </th>
+		<th>Extension&nbsp;: </th>
 		<td><input name="UnicodeExt" type="text" class="centered" size="30"></td>
 	   </tr>
 	   <tr>
-		<td>Resolved Locale&nbsp;: </td><td colspan="3"><input name="Elocale" type="text" disabled="disabled" class="centered" size="30"></td>
+		<td>Resolved&nbsp;: </td><td colspan="3"><input name="Elocale" type="text" disabled="disabled" class="centered" size="30"></td>
 	   </tr>
 	   <tr>
 	   <tr>
-	    <td>Numbering system&nbsp;: </td>
+	    <td>Numb. syst.&nbsp;: </td>
 	    <td><input name="Enum" type="text" disabled="disabled" class="centered"></td>
 	   </tr>
-		<th>Built-in calendar&nbsp;: </th>
+		<th>Calendar&nbsp;: </th>
 		<td>
 			<select name="Calendar" size="1" class="centered">
 			<option value="">Default</option>
@@ -451,13 +452,13 @@ document.getElementById("h12").addEventListener("click", function (event) {
 		</td>
 	   </tr>
 	   <tr>
-	    <td>Selected built-in calendar&nbsp;: </td>
+	    <td>Resolved&nbsp;: </td>
 	    <td><input name="Ecalend" type="text" disabled="disabled" class="centered"></td>
 	   </tr>
 		<tr><th>Time zone&nbsp;: </th>
 		<td><input name="TimeZone" type="text" autocomplete="country" class="centered" size="30"> </td>
 		</tr>
-		<tr><td>Resolved time zone&nbsp;: </td><td><input name="ETimeZone" type="text" disabled="disabled" class="centered" size="30"></td></tr>
+		<tr><td>Resolved TZ&nbsp;: </td><td><input name="ETimeZone" type="text" disabled="disabled" class="centered" size="30"></td></tr>
 		</table>
 </section>
 <section class="centered"><h3 class="panelhead">Style options</h3>
@@ -686,8 +687,9 @@ document.getElementById("h12").addEventListener("click", function (event) {
 	</table>
 </section>
 </form>
-
-<section class="panel centered autoscroll"><h2 class="panelhead">Display</h2>
+</div>
+<section class="centered"><h2 class="panelhead">Display</h2></section>
+<div class="mtych centered autoscroll">
 <section class="panel centered autoscroll"><h3 class="panelhead">DateTimeFormat</h3>
 <h4 class="panelhead">Standard</h4>
 	<table class="centered">
@@ -722,7 +724,7 @@ document.getElementById("h12").addEventListener("click", function (event) {
 		<tr><th colspan="2">Weeks in year&nbsp;: </th><td id="weeksinyear"></td></tr>
 	</table>
 </section>
-</section>
+</div>
 <footer class="centered">
  <p>References&nbsp;: 
 	<a target="_blank" href="http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">Language subtag registry</a>, 

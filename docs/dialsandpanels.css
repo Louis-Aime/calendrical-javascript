@@ -9,15 +9,11 @@ Main characteristics:
 /* Layout of general elements */
 /* .panel is a comprehensive item; panels are applied in line or next line
 The .panel section may be suppressed for panels inserted via a CMS */
-.panel {
-	/* next comments are the bad ideas
-	 overflow : auto;
-	 justify-content: center; */
-	display : inline-table; 
-	outline:  double;
-	margin: 3px;
-	text-align: center;
-	}
+/*.mtych {
+	/* display: flex;
+	/* text-align: centered; */
+	/* flex-direction: row;
+}*/
 .centered {
 	text-align: center;
 }	
@@ -26,7 +22,18 @@ table.centered {
 	margin-right: auto;
 	text-align: center;
 }
-.panelhead {	/* was milesianhead - no line spacing, to be used with  h1 to h6, set as class to avoid interactions */
+.panel {
+	/* next comments are the bad ideas
+	 overflow : auto;
+	 justify-content: center; */
+	display : /* table-cell; */  inline-table;
+	outline:  double;
+	margin: auto; /* 3px */
+	text-align: center;
+	}
+
+.panelhead {	/*  no line spacing, to be used with  h1 to h6, set as class to avoid interactions */
+	text-align: center;
 	line-height: 1;
 	margin: 0.3em auto;
 }
@@ -105,3 +112,10 @@ button.symbol {
 .lit {
 	fill 	: blanchedalmond
 }
+/* Responsive design 
+@media only screen and (max-width: 800px) {
+	.mtych {
+		display: flex;
+		flex-direction: column;
+	}
+}*/

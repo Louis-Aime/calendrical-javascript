@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 	<meta charset="UTF-8">
-	<title>Page de test calendriers</title>
+	<title>Extension Date et DateTimeFormat</title>
 <!-- Version	M2020-12-09 page adapted to ES modules
 	M2020-12-05 install package in subdirectories
 	M2020-11-29 Modify layout, suppress AlertMsg
@@ -21,8 +21,9 @@
 </head>
 
 <body class="centered">  <!-- "setDateToNow()" with event handler in ES 6 modules environment -->
-<section class="centered"><h1 class="panelhead">Page de test calendriers</h1>
+<section class="centered"><h1 class="panelhead">Extension Date et DateTimeFormat</h1>
 </section>
+<div class="mtych">
 <section class="panel"><h2 class="panelhead">Date, heure, fuseau, navigation</h2>
 <section class="centered"><!-- setting date -->
 <script type="module">
@@ -376,7 +377,7 @@ document.getElementById("h12").addEventListener("click", function (event) {
 	</table>
 </section>
 </section>
-<section class="panel centered autoscroll"><h2 class="panelhead">Options générales de présentation</h2>
+<section class="panel centered autoscroll"><h2 class="panelhead">Options générales</h2>
 <script type="module">
 	import {putStringOnOptions} from "./dateextendtest.js";
 	document.LocaleOptions.addEventListener ("submit", function (event) {
@@ -410,22 +411,22 @@ document.getElementById("h12").addEventListener("click", function (event) {
 	 </table>	
 	 <table class="centered"> 
 	   <tr>
-		<th>Code langue-pays&nbsp;: </th>
+		<th>Langue-pays&nbsp;: </th>
 		<td><input name="Locale" autocomplete="language" type="text" class="centered" size="30"> </td>
 	   </tr>
 	   <tr>
-		<th>Extension Unicode&nbsp;: </th>
+		<th>Extension&nbsp;: </th>
 		<td><input name="UnicodeExt" type="text" class="centered" size="30"></td>
 	   </tr>
 	   <tr>
-		<td>Locale effective&nbsp;: </td><td colspan="3"><input name="Elocale" type="text" disabled="disabled" class="centered" size="30"></td>
+		<td>Résolution&nbsp;: </td><td colspan="3"><input name="Elocale" type="text" disabled="disabled" class="centered" size="30"></td>
 	   </tr>
 	   <tr>
 	   <tr>
-	    <td>Système de numération&nbsp;: </td>
+	    <td>Numération&nbsp;: </td>
 	    <td><input name="Enum" type="text" disabled="disabled" class="centered"></td>
 	   </tr>
-		<th>Calendrier référencé&nbsp;: </th>
+		<th>Calendrier&nbsp;: </th>
 		<td>
 			<select name="Calendar" size="1" class="centered">
 			<option value="">par défaut</option>
@@ -451,7 +452,7 @@ document.getElementById("h12").addEventListener("click", function (event) {
 		</td>
 	   </tr>
 	   <tr>
-	    <td>Calendrier effectif&nbsp;: </td>
+	    <td>Effectif&nbsp;: </td>
 	    <td><input name="Ecalend" type="text" disabled="disabled" class="centered"></td>
 	   </tr>
 		<tr><th>Fuseau horaire&nbsp;: </th>
@@ -490,6 +491,7 @@ document.getElementById("h12").addEventListener("click", function (event) {
 	</table>
 </section>
 </section>
+
 <section class="panel centered autoscroll"><h2 class="panelhead">Options par champ : date</h2>
 	<table class="centered"> 
 		<tr>
@@ -685,8 +687,9 @@ document.getElementById("h12").addEventListener("click", function (event) {
 	</table>
 </section>
 </form>
-
-<section class="panel centered autoscroll"><h2 class="panelhead">Affichages calculés</h2>
+</div>
+<section class="centered"><h2 class="panelhead">Affichages calculés</h2></section>
+<div class="mtych centered autoscroll">
 <section class="panel centered autoscroll"><h3 class="panelhead">DateTimeFormat</h3>
 <h4 class="panelhead">Intl standard</h4>
 	<table class="centered">
@@ -723,7 +726,7 @@ document.getElementById("h12").addEventListener("click", function (event) {
 		<tr><th colspan="2">Semaines dans l'année&nbsp;: </th><td id="weeksinyear"></td></tr>
 	</table>
 </section>
-</section>
+</div>
 <footer class="centered">
  <p>Références&nbsp;: 
 	<a target="_blank" href="http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">Codes langues Unicode</a>, 
