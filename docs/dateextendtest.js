@@ -7,7 +7,8 @@ Contents: general structure is as MilesianClock.
 Required:
 	Install calendrical-javascript
 */
-/* Version:	M2020-12-10 Aggregate links to module in this file
+/* Version:	M2020-12-15 Collect all page-specific routines in this file
+	M2020-12-10 Aggregate links to module in this file
 	M2020-12-09 Calendrical routines as ES modules
 	M2020-11-27 deprecate manual TZ offset and all MilesianAlertMsg
 	M2020-11-24 list of calendars is in Calendar.js file
@@ -51,23 +52,9 @@ var register = {		// this register is also used by the small modules written in 
 	TZSettings : {mode : "TZ", msoffset : 0},	// initialisation to be superseded
 	TZDisplay : "" 
 }
-function setDateToNow(){ // Self explanatory
-	register.targetDate = new ExtDate(register.customCalendar); // set new Date object.
-	setDisplay ();
-}
-function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
-	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
-	let testDate = new Date (register.targetDate.valueOf());
-	testDate.setUTCHours(UTChours, 0, 0, 0);
-	if (isNaN(testDate.valueOf())) alert ("Out of range")
-	else {
-		register.targetDate.setTime (testDate.valueOf());
-		setDisplay();
-	}
-}
 function putStringOnOptions() { // get Locale, calendar indication and Options given on page, print String. Called by setDisplay
-	let Locale = document.LocaleOptions.Locale.value;
-	let unicodeAskedExtension = document.LocaleOptions.UnicodeExt.value;
+	let Locale = document.Locale.Locale.value;
+	let unicodeAskedExtension = document.Locale.UnicodeExt.value;
 	var askedOptions, usedOptions, extAskedOptions, extUsedOptions, cusAskedOptions; 
 
 	// Test specified Locale
@@ -91,25 +78,25 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	
 	// Add presentation options
 	let Options = {}; 
-	if	(document.LocaleOptions.LocaleMatcher.value != "")	Options.localeMatcher = document.LocaleOptions.LocaleMatcher.value;
-	if	(document.LocaleOptions.FormatMatcher.value != "")	Options.formatMatcher = document.LocaleOptions.FormatMatcher.value;
-	if	(document.LocaleOptions.TimeZone.value != "")	Options.timeZone = document.LocaleOptions.TimeZone.value;
-	if	(document.LocaleOptions.Calendar.value != "")	Options.calendar = document.LocaleOptions.Calendar.value;
-	if	(document.LocaleOptions.DateStyle.value != "") 	Options.dateStyle = document.LocaleOptions.DateStyle.value;
-	if	(document.LocaleOptions.TimeStyle.value != "") 	Options.timeStyle = document.LocaleOptions.TimeStyle.value;
-	if	(document.LocaleOptions.Weekday.value != "")	Options.weekday = document.LocaleOptions.Weekday.value;
-	if	(document.LocaleOptions.Day.value != "") 	Options.day = document.LocaleOptions.Day.value;
-	if	(document.LocaleOptions.Month.value != "") 	Options.month = document.LocaleOptions.Month.value;
-	if 	(document.LocaleOptions.Year.value != "")	Options.year = document.LocaleOptions.Year.value;
-	if	(document.LocaleOptions.Era.value != "")	Options.era	= document.LocaleOptions.Era.value;
-	if	(document.LocaleOptions.Hour.value != "")	Options.hour = document.LocaleOptions.Hour.value;
-	if	(document.LocaleOptions.Minute.value != "")	Options.minute = document.LocaleOptions.Minute.value;
-	if	(document.LocaleOptions.Second.value != "")	Options.second	= document.LocaleOptions.Second.value;
-	if	(document.LocaleOptions.TimeZoneName.value != "")	Options.timeZoneName	= document.LocaleOptions.TimeZoneName.value;
-	if	(document.LocaleOptions.Hour12.value != "")	Options.hour12	= (document.LocaleOptions.Hour12.value == "true");
-	if	(document.LocaleOptions.HourCycle.value != "")	Options.hourCycle	= document.LocaleOptions.HourCycle.value;
-	if	(document.LocaleOptions.AmPm.value != "")	Options.dayPeriod	= document.LocaleOptions.AmPm.value;
-	if	(document.LocaleOptions.eraDisplay.value != "")	Options.eraDisplay	= document.LocaleOptions.eraDisplay.value;
+	if	(document.Locale.LocaleMatcher.value != "")	Options.localeMatcher = document.Locale.LocaleMatcher.value;
+	if	(document.Locale.FormatMatcher.value != "")	Options.formatMatcher = document.Locale.FormatMatcher.value;
+	if	(document.Locale.TimeZone.value != "")	Options.timeZone = document.Locale.TimeZone.value;
+	if	(document.Locale.Calendar.value != "")	Options.calendar = document.Locale.Calendar.value;
+	if	(document.Locale.DateStyle.value != "") 	Options.dateStyle = document.Locale.DateStyle.value;
+	if	(document.Locale.TimeStyle.value != "") 	Options.timeStyle = document.Locale.TimeStyle.value;
+	if	(document.dateOptions.Weekday.value != "")	Options.weekday = document.dateOptions.Weekday.value;
+	if	(document.dateOptions.Day.value != "") 	Options.day = document.dateOptions.Day.value;
+	if	(document.dateOptions.Month.value != "") 	Options.month = document.dateOptions.Month.value;
+	if 	(document.dateOptions.Year.value != "")	Options.year = document.dateOptions.Year.value;
+	if	(document.dateOptions.Era.value != "")	Options.era	= document.dateOptions.Era.value;
+	if	(document.dateOptions.eraDisplay.value != "")	Options.eraDisplay	= document.dateOptions.eraDisplay.value;
+	if	(document.timeOptions.Hour.value != "")	Options.hour = document.timeOptions.Hour.value;
+	if	(document.timeOptions.Minute.value != "")	Options.minute = document.timeOptions.Minute.value;
+	if	(document.timeOptions.Second.value != "")	Options.second	= document.timeOptions.Second.value;
+	if	(document.timeOptions.TimeZoneName.value != "")	Options.timeZoneName	= document.timeOptions.TimeZoneName.value;
+	if	(document.timeOptions.Hour12.value != "")	Options.hour12	= (document.timeOptions.Hour12.value == "true");
+	if	(document.timeOptions.HourCycle.value != "")	Options.hourCycle	= document.timeOptions.HourCycle.value;
+	if	(document.timeOptions.AmPm.value != "")	Options.dayPeriod	= document.timeOptions.AmPm.value;
 	
 	// Test that Options set is acceptable. If not, display with empty options object
 	try {
@@ -135,44 +122,44 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 
 	
 	// Display all effective options
-	document.LocaleOptions.Elocale.value = usedOptions.locale;
-	document.LocaleOptions.Ecalend.value = usedOptions.calendar;
-	document.LocaleOptions.Enum.value = usedOptions.numberingSystem;
-	document.LocaleOptions.EtimeZoneName.value = usedOptions.timeZoneName;
-	document.LocaleOptions.EdateStyle.value = usedOptions.dateStyle;
-	document.LocaleOptions.EtimeStyle.value = usedOptions.timeStyle ;
-	document.LocaleOptions.ETimeZone.value = usedOptions.timeZone;
-	document.LocaleOptions.Eweekday.value = usedOptions.weekday;
-	document.LocaleOptions.Eera.value = usedOptions.era;
-	document.LocaleOptions.Eyear.value = usedOptions.year;
-	document.LocaleOptions.Emonth.value = usedOptions.month;
-	document.LocaleOptions.Eday.value = usedOptions.day;
-	document.LocaleOptions.Ehour.value = usedOptions.hour;
-	document.LocaleOptions.Eminute.value = usedOptions.minute;
-	document.LocaleOptions.Esecond.value = usedOptions.second;
-	document.LocaleOptions.Ehour12.checked = usedOptions.hour12;
-	document.LocaleOptions.EhourCycle.value = usedOptions.hourCycle;
-	document.LocaleOptions.EAmPm.value = usedOptions.dayPeriod;
+	document.Locale.Elocale.value = usedOptions.locale;
+	document.Locale.Enum.value = usedOptions.numberingSystem;
+	document.Locale.Ecalend.value = usedOptions.calendar;
+	document.Locale.EtimeZone.value = usedOptions.timeZone;
+	document.Locale.EdateStyle.value = usedOptions.dateStyle;
+	document.Locale.EtimeStyle.value = usedOptions.timeStyle ;
+	document.dateOptions.Eweekday.value = usedOptions.weekday;
+	document.dateOptions.Eera.value = usedOptions.era;
+	document.dateOptions.Eyear.value = usedOptions.year;
+	document.dateOptions.Emonth.value = usedOptions.month;
+	document.dateOptions.Eday.value = usedOptions.day;
+	document.timeOptions.EtimeZoneName.value = usedOptions.timeZoneName;
+	document.timeOptions.Ehour.value = usedOptions.hour;
+	document.timeOptions.Eminute.value = usedOptions.minute;
+	document.timeOptions.Esecond.value = usedOptions.second;
+	document.timeOptions.Ehour12.checked = usedOptions.hour12;
+	document.timeOptions.EhourCycle.value = usedOptions.hourCycle;
+	document.timeOptions.EAmPm.value = usedOptions.dayPeriod;
 	
 	// Display all effective options for extended formatter
-	//document.LocaleOptions.Xlocale.value = extUsedOptions.locale;
-	//document.LocaleOptions.Xcalend.value = extUsedOptions.calendar;
-	//document.LocaleOptions.Xnum.value = extUsedOptions.numberingSystem;
-	//document.LocaleOptions.XdateStyle.value = extUsedOptions.dateStyle;
-	//document.LocaleOptions.XtimeStyle.value = extUsedOptions.timeStyle ;
-	//document.LocaleOptions.XTimeZone.value = extUsedOptions.timeZone;
-	document.LocaleOptions.XtimeZoneName.value = extUsedOptions.timeZoneName;
-	document.LocaleOptions.Xweekday.value = extUsedOptions.weekday;
-	document.LocaleOptions.Xera.value = extUsedOptions.Xra;
-	document.LocaleOptions.Xyear.value = extUsedOptions.year;
-	document.LocaleOptions.Xmonth.value = extUsedOptions.month;
-	document.LocaleOptions.Xday.value = extUsedOptions.day;
-	document.LocaleOptions.Xhour.value = extUsedOptions.hour;
-	document.LocaleOptions.Xminute.value = extUsedOptions.minute;
-	document.LocaleOptions.Xsecond.value = extUsedOptions.second;
-	document.LocaleOptions.Xhour12.checked = extUsedOptions.hour12;
-	document.LocaleOptions.XhourCycle.value = extUsedOptions.hourCycle;
-	document.LocaleOptions.XAmPm.value = extUsedOptions.dayPeriod;
+	//document.Locale.Xlocale.value = extUsedOptions.locale;
+	//document.Locale.Xcalend.value = extUsedOptions.calendar;
+	//document.Locale.Xnum.value = extUsedOptions.numberingSystem;
+	//document.Locale.XdateStyle.value = extUsedOptions.dateStyle;
+	//document.Locale.XtimeStyle.value = extUsedOptions.timeStyle ;
+	//document.Locale.XTimeZone.value = extUsedOptions.timeZone;
+	document.dateOptions.Xweekday.value = extUsedOptions.weekday;
+	document.dateOptions.Xera.value = extUsedOptions.era;
+	document.dateOptions.Xyear.value = extUsedOptions.year;
+	document.dateOptions.Xmonth.value = extUsedOptions.month;
+	document.dateOptions.Xday.value = extUsedOptions.day;
+	document.timeOptions.XtimeZoneName.value = extUsedOptions.timeZoneName;
+	document.timeOptions.Xhour.value = extUsedOptions.hour;
+	document.timeOptions.Xminute.value = extUsedOptions.minute;
+	document.timeOptions.Xsecond.value = extUsedOptions.second;
+	document.timeOptions.Xhour12.checked = extUsedOptions.hour12;
+	document.timeOptions.XhourCycle.value = extUsedOptions.hourCycle;
+	document.timeOptions.XAmPm.value = extUsedOptions.dayPeriod;
 	
 	/*
 	// Build "reference" format object with asked options and ISO8601 calendar, and display non-Unicode calendar string
@@ -187,8 +174,10 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	// Certain Unicode calendars do not give a proper result: here is the control code.
 	let valid = ExtDateTimeFormat.unicodeValidDateinCalendar(register.targetDate, extUsedOptions.timeZone,usedOptions.calendar);
 	// Display with extended DateTimeFormat
+	document.getElementById("Calendname").innerHTML = usedOptions.calendar;
 	document.getElementById("Xstring").innerHTML = (valid ? "" : "(!) ") + extAskedOptions.format(register.targetDate);
 	// Display custom calendar string - error control
+	document.getElementById("Customname").innerHTML = register.customCalendar.id;
 	try {
 		document.getElementById("Cstring").innerHTML = cusAskedOptions.format(register.targetDate);
 	}
@@ -216,7 +205,7 @@ function calcWeek() {
 		document.getElementById("dayownum").innerHTML = register.targetDate.weekday(register.TZDisplay);
 		document.getElementById("weeksinyear").innerHTML = register.targetDate.weeksInYear(register.TZDisplay);
 		document.getElementById("dayname").innerHTML = 
-			new ExtDateTimeFormat (document.LocaleOptions.Elocale.value,{weekday : "long", 
+			new ExtDateTimeFormat (document.Locale.Elocale.value,{weekday : "long", 
 			timeZone : register.TZDisplay == "" ? undefined : register.TZDisplay },register.customCalendar)
 			.format(register.targetDate);
 	}
@@ -288,9 +277,207 @@ function setDisplay () { // Considering that register.targetDate time has been s
 	// Write custom and Unicode strings following currently visible options
 	putStringOnOptions();
 }
+function calcGregorian() {
+	var 
+	 day =  Math.round (document.gregorian.day.value),
+	 month = Math.round (document.gregorian.monthname.value),
+	 year =  Math.round (document.gregorian.year.value);
+	 // HTML controls that day, month and year are numbers
+	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar
+	let testDate = new Date (register.targetDate.valueOf());
+	switch (register.TZSettings.mode) {
+		case "TZ": 
+			testDate.setFullYear(year, month-1, day); 	// Set date object from calendar date indication, without changing time-in-the-day.
+			break;
+		case "UTC" : testDate.setUTCFullYear(year, month-1, day);
+			break;
+	} 
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
+	else {
+		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
+		register.targetDate = new ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
+		setDisplay();
+	}
+}
+function calcCustom() {
+	var 
+	 day =  Math.round (document.custom.day.value),
+	 month = Math.round (document.custom.monthname.value),
+	 year =  Math.round (document.custom.year.value),
+	 testDate;
+	 // HTML controls that day, month and year are numbers
+	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);	// global variable
+	// let testDate = new ExtDate (register.customCalendar, year, month, day);
+	switch (register.TZSettings.mode) {
+		case "TZ":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
+			testDate = new ExtDate (register.customCalendar, year, month, day, register.targetDate.getHours(), register.targetDate.getMinutes(), register.targetDate.getSeconds(), register.targetDate.getMilliseconds())
+			break;
+		case "UTC" : // // Set date object from custom calendar date indication, and with UTC time of day of currently displayed date.
+			testDate = new ExtDate (register.customCalendar, year, month, day, register.targetDate.getUTCHours(), register.targetDate.getUTCMinutes(), register.targetDate.getUTCSeconds(), register.targetDate.getUTCMilliseconds())
+			// testDate.setTime (testDate.valueOf - testDate.getRealTZmsOffset ())
+			break;
+	}
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
+	else {
+		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
+		register.targetDate = new ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
+		setDisplay();
+		}
+}
+var 
+	dayOffset = 1; // Days (decimal) to add or substract
+// no setDateToToday
+function changeDayOffset () { 
+	let days = +document.control.shift.value;
+	if (isNaN(days) || days < 0) {
+		alert ("Invalid input");
+		// clockRun(0);
+		}
+	else 
+	{ 
+		dayOffset = days; // Global variable updated
+		document.control.shift.value = days; // Confirm changed value
+	}
+}
+function setDayOffset (sign=1) {
+	changeDayOffset();	// Force a valid value in field
+	let testDate = new Date(register.targetDate.valueOf());
+	testDate.setTime (testDate.getTime() + sign * dayOffset * Chronos.DAY_UNIT);
+	if (isNaN(testDate.valueOf())) { 
+		alert ("Out of range");
+		// clockRun(0);
+		}
+	else {
+		register.targetDate.setTime( testDate.valueOf() );
+		setDisplay();
+	}
+}
+function calcTime() { // Here the hours are deemed local hours
+	var hours = Math.round (document.time.hours.value), mins = Math.round (document.time.mins.value), 
+		secs = Math.round (document.time.secs.value), ms = Math.round (document.time.ms.value);
+	if (isNaN(hours) || isNaN (mins) || isNaN (secs) || isNaN (ms)) 
+		alert ("Invalid date " + '"' + document.time.hours.value + '" "' + document.time.mins.value + '" "' 
+		+ document.time.secs.value + '.' + document.time.ms.value + '"')
+	 else {
+	  let testDate = new ExtDate (register.customCalendar,register.targetDate.valueOf());
+	  switch (register.TZSettings.mode) {
+		case "TZ" : testDate.setHours(hours, mins, secs, ms); break;
+		case "UTC" : testDate.setUTCHours(hours, mins, secs, ms); break;
+/*		case "Fixed" : 
+			testDate = new Date(ExtDate.fullUTC (document.gregorian.year.value, document.gregorian.monthname.value, document.gregorian.day.value));
+			testDate.setUTCHours(hours, mins, secs, ms); 
+			testDate.setTime(testDate.getTime() + register.TZSettings.msoffset);
+*/		}
+		if (isNaN(testDate.valueOf())) alert ("Out of range")
+		else {
+			register.targetDate = new ExtDate (register.customCalendar,testDate.valueOf());
+			setDisplay();
+		}
+	}
+}
+var addedTime = 60000; //Global variable, time to add or substract, in milliseconds.
+function changeAddTime() {
+	let msecs = +document.timeShift.shift.value; 
+	if (isNaN(msecs) || msecs <= 0) 
+		alert ("Invalid input")
+	else
+		{ 
+		addedTime = msecs; // Global variable updated
+		document.timeShift.shift.value = msecs; // Confirm changed value
+		}
+	}
+
+function addTime (sign = 1) { // addedTime ms is added or subtracted to or from the Timestamp.
+	changeAddTime();	// Force a valid value in field
+	let testDate = new Date(register.targetDate.valueOf());
+	testDate.setTime (testDate.getTime() + sign * addedTime); 
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
+	else {
+		register.targetDate.setTime( testDate.valueOf() );
+		setDisplay();
+	}
+}
+function getMode() {
+	// Initiate Time zone mode for the "local" time from main display
+	register.TZSettings.mode = document.TZmode.TZcontrol.value;
+	register.TZDisplay = register.TZSettings.mode == "UTC" ? "UTC" : "";
+	/** register.TZSettings.msoffset is JS time zone offset in milliseconds (UTC - local time)
+	 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
+	*/
+
+}
+function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
+	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
+	let testDate = new Date (register.targetDate.valueOf());
+	testDate.setUTCHours(UTChours, 0, 0, 0);
+	if (isNaN(testDate.valueOf())) alert ("Out of range")
+	else {
+		register.targetDate.setTime (testDate.valueOf());
+		setDisplay();
+	}
+}
+function setDateToNow(){ // Self explanatory
+	register.targetDate = new ExtDate(register.customCalendar); // set new Date object.
+	setDisplay ();
+}
 /* Events handlers
 */
 window.onload = function () {setDateToNow()};
-/* Export
-*/
-export {register, setDisplay, setDateToNow, putStringOnOptions}
+document.gregorian.addEventListener("submit", function (event) {
+	event.preventDefault();
+	calcGregorian()
+})
+document.custom.addEventListener("submit", function (event) {
+	event.preventDefault();
+	calcCustom()
+})
+document.control.addEventListener("submit", function (event) {
+	event.preventDefault();
+	changeDayOffset()
+})
+document.control.now.addEventListener("click", function (event) {
+	setDateToNow()
+})
+document.control.minus.addEventListener("click", function (event) {
+	setDayOffset(-1)
+})
+document.control.plus.addEventListener("click", function (event) {
+	setDayOffset(+1)
+})
+document.time.addEventListener("submit", function (event) {
+	event.preventDefault();
+	calcTime()
+})
+document.timeShift.addEventListener("submit", function (event) {
+	event.preventDefault();
+	changeAddTime()
+})
+document.timeShift.minus.addEventListener("click", function (event) {
+	addTime(-1)
+})
+document.timeShift.plus.addEventListener("click", function (event) {
+	addTime(+1)
+}) 
+document.TZmode.addEventListener("submit", function (event) {
+	event.preventDefault();
+	getMode();
+	setDisplay();
+})
+document.getElementById("h0").addEventListener("click", function (event) {
+	setUTCHoursFixed(0)
+})
+document.getElementById("h12").addEventListener("click", function (event) {
+	setUTCHoursFixed(12)
+})
+document.Locale.addEventListener ("submit", function (event) {
+	event.preventDefault();
+	putStringOnOptions()
+})
+document.dateOptions.addEventListener ("submit", function (event) {
+	event.preventDefault();
+	putStringOnOptions()
+})
+document.timeOptions.addEventListener ("submit", function (event) {
+	event.preventDefault();
+	putStringOnOptions()
+})
