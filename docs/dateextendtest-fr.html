@@ -419,10 +419,11 @@
 			</table>
 			<table class="centered">
 				<tr>
-					<th></th><th>Fuseau</th><th>am/pm</th>
+					<th></th><th>Fract. sec.</th><th>Fuseau</th><th>am/pm</th>
 				</tr>
 				<tr>
 					<th>Dem.</th>
+					<td><input class="centered digit2" name="Msdigits" type="number" min="0" max="3"></td>
 					<td><select name="TimeZoneName" class="centered" size="1">
 						<option value="" selected>absent</option>
 						<option value="short">court</option>
@@ -437,11 +438,13 @@
 				</tr>
 				<tr>
 					<th>Intl</th>
+					<td><input class="centered digit2" name="Emsdigits" type="text" disabled="disabled"></td>
 					<td><input class="centered char8" name="EtimeZoneName" type="text" disabled="disabled"></td>
 					<td><input class="centered char8" name="EAmPm" type="text" disabled="disabled"></td>
 				</tr>
 				<tr>
 					<th>Ext.</th>
+					<td><input class="centered digit2" name="Xmsdigits" type="text" disabled="disabled"></td>
 					<td><input class="centered char8" name="XtimeZoneName" type="text" disabled="disabled"></td>
 					<td><input class="centered char8" name="XAmPm" type="text" disabled="disabled"></td>
 				</tr>
