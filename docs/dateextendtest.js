@@ -7,7 +7,8 @@ Contents: general structure is as MilesianClock.
 Required:
 	Install calendrical-javascript
 */
-/* Version:	M2020-12-15 Collect all page-specific routines in this file
+/* Version:	M2020-12-28	Group all initialisation
+	M2020-12-15 Collect all page-specific routines in this file
 	M2020-12-10 Aggregate links to module in this file
 	M2020-12-09 Calendrical routines as ES modules
 	M2020-11-27 deprecate manual TZ offset and all MilesianAlertMsg
@@ -425,62 +426,64 @@ function setDateToNow(){ // Self explanatory
 }
 /* Events handlers
 */
-window.onload = function () {setDateToNow()};
-document.gregorian.addEventListener("submit", function (event) {
-	event.preventDefault();
-	calcGregorian()
-})
-document.custom.addEventListener("submit", function (event) {
-	event.preventDefault();
-	calcCustom()
-})
-document.control.addEventListener("submit", function (event) {
-	event.preventDefault();
-	changeDayOffset()
-})
-document.control.now.addEventListener("click", function (event) {
-	setDateToNow()
-})
-document.control.minus.addEventListener("click", function (event) {
-	setDayOffset(-1)
-})
-document.control.plus.addEventListener("click", function (event) {
-	setDayOffset(+1)
-})
-document.time.addEventListener("submit", function (event) {
-	event.preventDefault();
-	calcTime()
-})
-document.timeShift.addEventListener("submit", function (event) {
-	event.preventDefault();
-	changeAddTime()
-})
-document.timeShift.minus.addEventListener("click", function (event) {
-	addTime(-1)
-})
-document.timeShift.plus.addEventListener("click", function (event) {
-	addTime(+1)
-}) 
-document.TZmode.addEventListener("submit", function (event) {
-	event.preventDefault();
-	getMode();
-	setDisplay();
-})
-document.getElementById("h0").addEventListener("click", function (event) {
-	setUTCHoursFixed(0)
-})
-document.getElementById("h12").addEventListener("click", function (event) {
-	setUTCHoursFixed(12)
-})
-document.Locale.addEventListener ("submit", function (event) {
-	event.preventDefault();
-	putStringOnOptions()
-})
-document.dateOptions.addEventListener ("submit", function (event) {
-	event.preventDefault();
-	putStringOnOptions()
-})
-document.timeOptions.addEventListener ("submit", function (event) {
-	event.preventDefault();
-	putStringOnOptions()
-})
+window.onload = function () {
+	setDateToNow();
+	document.gregorian.addEventListener("submit", function (event) {
+		event.preventDefault();
+		calcGregorian()
+	})
+	document.custom.addEventListener("submit", function (event) {
+		event.preventDefault();
+		calcCustom()
+	})
+	document.control.addEventListener("submit", function (event) {
+		event.preventDefault();
+		changeDayOffset()
+	})
+	document.control.now.addEventListener("click", function (event) {
+		setDateToNow()
+	})
+	document.control.minus.addEventListener("click", function (event) {
+		setDayOffset(-1)
+	})
+	document.control.plus.addEventListener("click", function (event) {
+		setDayOffset(+1)
+	})
+	document.time.addEventListener("submit", function (event) {
+		event.preventDefault();
+		calcTime()
+	})
+	document.timeShift.addEventListener("submit", function (event) {
+		event.preventDefault();
+		changeAddTime()
+	})
+	document.timeShift.minus.addEventListener("click", function (event) {
+		addTime(-1)
+	})
+	document.timeShift.plus.addEventListener("click", function (event) {
+		addTime(+1)
+	}) 
+	document.TZmode.addEventListener("submit", function (event) {
+		event.preventDefault();
+		getMode();
+		setDisplay();
+	})
+	document.getElementById("h0").addEventListener("click", function (event) {
+		setUTCHoursFixed(0)
+	})
+	document.getElementById("h12").addEventListener("click", function (event) {
+		setUTCHoursFixed(12)
+	})
+	document.Locale.addEventListener ("submit", function (event) {
+		event.preventDefault();
+		putStringOnOptions()
+	})
+	document.dateOptions.addEventListener ("submit", function (event) {
+		event.preventDefault();
+		putStringOnOptions()
+	})
+	document.timeOptions.addEventListener ("submit", function (event) {
+		event.preventDefault();
+		putStringOnOptions()
+	})
+}
