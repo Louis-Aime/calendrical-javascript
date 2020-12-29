@@ -3,7 +3,10 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Extension Date et DateTimeFormat</title>
-<!-- Version	M2020-12-15 all routines in a separate file
+<!-- Version	M2021-01-09 Calendar button, back to modules, specify panel height
+	M2021-01-07 new chronos
+	M2020-12-28 back to scripts
+	M2020-12-15 all routines in a separate file
 	M2020-12-09 page adapted to ES modules
 	M2020-12-05 install package in subdirectories
 	M2020-11-29 Modify layout, suppress AlertMsg
@@ -19,6 +22,10 @@
 	<link href="dialsandpanels.css" rel="stylesheet"/>
 	<script type="module" src="dateextendtest.js"></script>
 
+<style>
+	.panel {height: 460px;}
+</style>
+
 </head>
 
 <body class="centered">  <!-- "setDateToNow()" with event handler in ES 6 modules environment -->
@@ -28,7 +35,7 @@
 		<section class="centered"><!-- setting date -->
 			<table class="centered">
 			  <tr>
-				<th>Calendrier</th>
+				<th><button id="customCalend" class="textline">Calendrier</button></th>
 				<th>Année</th>
 				<th>Mois</th>
 				<th>Quant.</th>
@@ -52,7 +59,6 @@
 					<option value="french">France</option>
 					<option value="german">Allemagne</option>
 					<option value="english">Royaume-Uni</option>
-					<option value="ethiopicf">Ethiopien</option>
 					<option value="frenchrev">Révolutionnaire</option>
 					</select></td>
 				<td><input name="year" type="number" class="centered digit4"> </td>
@@ -124,14 +130,7 @@
 			<table class="centered">
 					<tr>
 						<th>Décalage réel&nbsp;: </th> 
-						<td><select name="TZOffsetSign" class="centered" size="2" disabled>
-						<option value="1">+</option>
-						<option value="-1">-</option>
-						</select> </td>
-						<td><input name="TZOffset" type="number" min="0" max="1500" class="centered digit4" disabled></td>
-						<td>min</td>
-						<td><input name="TZOffsetSec" type="number" min="0" max="59" class="centered digit2" disabled></td>
-						<td>s</td>
+						<td id="realTZOffset"></td>
 					</tr>
 			</table>
 			<table class="centered">

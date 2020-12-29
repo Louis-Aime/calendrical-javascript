@@ -7,7 +7,13 @@ Contents: general structure is as MilesianClock.
 Required:
 	Install calendrical-javascript
 */
-/* Version:	M2020-12-28	Group all initialisation
+/* Version notes
+	This file was initialy prepared from the original Milesian clock.
+	Then adaptation to modular architecture was performed.
+	Optimisation remains possible within this file and also with milesianclockdisplay.js.
+*/
+/* Version:	M2021-01-09	Button for custom calendar
+	M2020-12-29 Back to script (no module)
 	M2020-12-15 Collect all page-specific routines in this file
 	M2020-12-10 Aggregate links to module in this file
 	M2020-12-09 Calendrical routines as ES modules
@@ -17,7 +23,7 @@ Required:
 	2017-2020: Unicode Tester
 	preceding versions were a personal makeup page
 */
-/* Copyright Miletus 2017-2020 - Louis A. de Fouquières
+/* Copyright Miletus 2017-2021 - Louis A. de Fouquières
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -42,9 +48,9 @@ Inquiries: www.calendriermilesien.org
 "use strict";
 // var calendrical = require("calendrical-javascript"), // for the CommonJS version
  
-import {calendars, milesian, julian, vatican, french, german, english, myEthiopic, frenchRev} from "./aggregate.js";
+import {calendars, milesian, julian, vatican, french, german, english, frenchRev} from "./aggregate.js";
 import {ExtDate, ExtDateTimeFormat} from "./aggregate.js";
-import {Chronos} from "./aggregate.js";;
+import {Milliseconds} from "./aggregate.js";;
 
 var register = {		// this register is also used by the small modules written in HTML page
 	targetDate : new ExtDate(milesian),
@@ -52,6 +58,11 @@ var register = {		// this register is also used by the small modules written in 
 	customCalendar : milesian,
 	TZSettings : {mode : "TZ", msoffset : 0},	// initialisation to be superseded
 	TZDisplay : "" 
+}
+function setCalend() {	// set current custom calend to new value and compute fields
+	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar
+	register.targetDate = new ExtDate(register.customCalendar, register.targetDate.valueOf());	// set custom calendar if changed, and set date.
+	setDisplay();
 }
 function putStringOnOptions() { // get Locale, calendar indication and Options given on page, print String. Called by setDisplay
 	let Locale = document.Locale.Locale.value;
@@ -230,20 +241,14 @@ function setDisplay () { // Considering that register.targetDate time has been s
 	let
 		systemSign = (register.TZSettings.msoffset > 0 ? 1 : -1), // sign is as of JS convention
 		absoluteRealOffset = systemSign * register.TZSettings.msoffset,
-		absoluteTZmin = Math.floor (absoluteRealOffset / Chronos.MINUTE_UNIT),
-		absoluteTZsec = Math.floor ((absoluteRealOffset - absoluteTZmin * Chronos.MINUTE_UNIT) / Chronos.SECOND_UNIT);
+		absoluteTZmin = Math.floor (absoluteRealOffset / Milliseconds.MINUTE_UNIT),
+		absoluteTZsec = Math.floor ((absoluteRealOffset - absoluteTZmin * Milliseconds.MINUTE_UNIT) / Milliseconds.SECOND_UNIT);
 	switch (register.TZSettings.mode) {
 		case "UTC" : 
 			register.TZSettings.msoffset = 0; // Set offset to 0, but leave time zone offset on display
 		case "TZ" : 
-			document.TZmode.TZOffsetSign.value = systemSign;
-			document.TZmode.TZOffset.value = absoluteTZmin;
-			document.TZmode.TZOffsetSec.value = absoluteTZsec;
-			break;
-/*		case "Fixed" : register.TZSettings.msoffset = // Here compute specified time zone offset
-			- document.TZmode.TZOffsetSign.value 
-			* (document.TZmode.TZOffset.value * Chronos.MINUTE_UNIT + document.TZmode.TZOffsetSec.value * Chronos.SECOND_UNIT);
-*/	}
+			document.querySelector("#realTZOffset").innerHTML = (systemSign == 1 ? "+ ":"- ") + absoluteTZmin + " min " + absoluteTZsec + " s";
+	}
 	// Initiate a representation of local date
 	register.shiftDate = new ExtDate (register.customCalendar,register.targetDate.getTime() - register.TZSettings.msoffset);	// The UTC representation of register.targetDate date is the local date of TZ
 	// Initiate custom calendar form with present local date
@@ -346,7 +351,7 @@ function changeDayOffset () {
 function setDayOffset (sign=1) {
 	changeDayOffset();	// Force a valid value in field
 	let testDate = new Date(register.targetDate.valueOf());
-	testDate.setTime (testDate.getTime() + sign * dayOffset * Chronos.DAY_UNIT);
+	testDate.setTime (testDate.getTime() + sign * dayOffset * Milliseconds.DAY_UNIT);
 	if (isNaN(testDate.valueOf())) { 
 		alert ("Out of range");
 		// clockRun(0);
@@ -431,6 +436,10 @@ window.onload = function () {
 	document.gregorian.addEventListener("submit", function (event) {
 		event.preventDefault();
 		calcGregorian()
+	})
+	document.getElementById("customCalend").addEventListener("click", function (event) {
+		event.preventDefault();
+		setCalend()
 	})
 	document.custom.addEventListener("submit", function (event) {
 		event.preventDefault();
