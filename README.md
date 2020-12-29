@@ -1,10 +1,12 @@
 # calendrical-javascript
 Basic routines in javascript for computations on calendars, including 
  * the Cycle Based Calendar Computation Engine,
- * basic conversion tool from iso 8601 date figures to Julian Day and the reverse,
+ * a week computation engine that works with ISO 8601 weeks and other types of weeks,
+ * a basic conversion tool from iso 8601 date figures to any day counter (Julian Day, Microsoft, Unix-Posix...) and the reverse,
+ * basic constants to convert to or from day counter to milliseconds counter,
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
  * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars,
- * a collection of custom calendars in order to demonstrate capacities.
+ * a collection of custom calendars in order to demonstrate capacities, including a class for any western calendar that switches from Julian to Gregorian at a given date.
 The software object anticipate the Temporal initiative of Ecma TC39.
 
 ## Module architecture
@@ -12,7 +14,7 @@ This module uses ES6 module syntax (export / import). chronos.js, dateextended.j
 calendars.js import all objects of other files and exports several new objects; this file can be considered an entry point to the module. 
 However the other files may be used separately.
 
-Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js.
+Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js. These software pieces are used that way for the [Milesian calendar](https://github.com/Louis-Aime/Milesian-calendar).
 
 ## GitHub Page site for test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -21,13 +23,23 @@ https://louis-aime.github.io/calendrical-javascript/
 Routines that help developing calendrical computations for new calendars.
 
 ### chronos.js
+Exported const **Milliseconds**: key numeric constants for converting milliseconds (used in present Javascript environment) into days, hours, minutes, seconds and the reverse. 
+
 The **Chronos** exported class offers common routines and tools for calendrical computations: 
  * Basic div and mod computations for calendrical purposes.
- * Basic computation of leap years for julian and gregorian calendars.
- * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendars defined by an algorithm.
- * A procedure for computing week figures: day of week, week number, number of weeks in year, week year that includes a date.
- * Key numeric constants for converting milliseconds (used in present Javascript environment) into days, hours, minutes, seconds and the reverse
-The **JulianDayIso** exported class enable conversion from Julian Day to iso8601 and the reverse.
+ * Basic computation of leap years for Julian and Gregorian calendars.
+ * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendars defined by an algorithm, including
+    * the Julian and Gregorian calendars,
+    * the Milesian calendar,
+    * solar calendars with Julian intercalation rule, like coptic, ethiopic...,
+    * the Meton cycle implied with the Hebrew calendar,
+    * other calendars with "regular" intercalation rules.
+
+The **WeekClock** exported class computes week figures: day of week, week number, number of weeks in year, week year that includes a date.
+
+The **IsoCOunter** exported class enables conversion from any day counter to iso8601 and the reverse. The author specifies the epoch for the counter using a date in Iso 8601.
+
+The **JulianDayIso** is deprecated, here suppressed.
 
 The parameters for using these classes are described in details in the source. Examples are given in the file Calendars.js.
 
@@ -57,7 +69,7 @@ The **WesternCalendar** exported class defines the calendar structure of most Eu
 The author specifies the switching date at instatiation.
 
 ### FrenchRevCalendar
-The **FrenchRevCalendar** instantied class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1992 to 1805.
+The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1992 to 1805.
 
 ### Intantiations
 The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
@@ -66,21 +78,24 @@ The above mentionned calendar classes are intantiated in the following calendar 
  * **vatican, french, german, english** : they instantiate the *WesternCalendar*, with diffenent switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
 
 ### myEthiopic
+_Deprecated, suppressed in this version._ 
 The Unicode built-in Ethiopic calendar is redefined with name "ethiopicf", and exported as object **myEthiopic**. 
 Here the era before Incarnation is displayed a different way from Unicode: years are not counted backwards.
 
 ### calendars
-The **calendars** exported array list all calendars mentionned above. Each item represents one of the calendar objects.
+The **calendars** exported array list all used calendars mentionned above. Each item represents one of the calendar objects.
 
 ## Usage
+
+### Milliseconds : static object
+ * DAY_UNIT, HOUR_UNIT, MINUTE_UNIT, SECOND_UNIT : number of milliseconds in these units.
 
 ### Chronos : class
 #### Constructor (calendRule : object, weekdayRule : object)
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * calendRule is a compound object that describes how to transform a counter into a compound object with date fields, and the reverse. The calendar should follow the integral postfix intercalation rule. The Roman (julian-gregorian) calendar follows this rule if the beginning of the year is shifted to 1 March.
  * weekdayRule is a compound object that summerizes the rules regarding weeks. Regular 7-days weeks are handled, as well as systems with epagomenal days: one or two epagomenal days each at different places in the year, or several epagomenal days at the end of the year.
-#### static values
- * DAY_UNIT, HOUR_UNIT, MINUTE_UNIT, SECOND_UNIT : number of milliseconds in these units.
+  
 #### static errors
  * notANumber : error thrown when a non-numeric value is passed for a numeric field.
  * nonInteger : error thrown when a non-integer value is passed where an integer value is expected.
@@ -95,20 +110,25 @@ The complete description of the parameters is available in Chronos.js. Calendars
 #### methods
  * getObject (askedNumber): object with date fields obtained from the number with the Cycle Based Calendar Computation Engine. The number may be the Posix time stamp or any other counter that designates an instant, as specified in calendRule.
  * getNumber (askedObject): number. The reverse operation with respect to getObject.
- * geWeekFigures (dayIndex, characDayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
+
+### WeekCLock : class
+#### Constructor (weekdayRule : object)
+The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
+ * weekdayRule is a compound object that summerizes the rules regarding weeks. Regular 7-days weeks are handled, as well as systems with epagomenal days: one or two epagomenal days each at different places in the year, or several epagomenal days at the end of the year.
+#### methods
+  * geWeekFigures (dayIndex, characDayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
 
 ### JulianDayIso : class
-Instantiate into Julian Day to Iso8601 date fields converters.
-#### constructor (monthBase)
- * *monthBase* is the number of the first month for the date's numeric fields, 0 (traditional with Date) or 1 (used in Temporal proposal with the remaining of this package).
+_This class is deprecated and suppressed. The next class has more power._
+
+### IsoCounter : class
+
+#### constructor (originYear, originMonth, originDay)
+ * The iso coordinates of the epoch for this counter. Note that originMonth is in the range 1 to 12, not 0 to 11. By default the Unix epoch (1970, 1, 1) is assumed.
 #### methods
- * toJulianDay ( isoFields: object): number. *isoFields* shall hold the numeric fields *isoYear, isoMonth, isoDay,* the element of the date in ISO 8601, except for *isoMonth* that is in the range 0..11 if *monthBase*, the constructor's parameter is 0. returns the Julian Day, an integer number such as -004713-11-24, or Monday 1 Jan. 4713 B.C., is Julian Day 0.
- * toIsoFields (julianDay: number): object. The Julian Day is the integer number defined above. The returned objects holds the three fields described above.
- * toIsoWeekFields (julianDay: number) : object. The week figures for the date that *julianDay* represents
-   * weekYearOffset: -1/0/1, figure to add to the date's year in order to get the weekyear. This figure may be e.g. -1 for a Friday 1 Jan, or +1 for a Wednesday 31 Dec.
-   * weekNumber: the number of the week in the year under ISO 8601
-   * weekday: 1 to 7 indicating Monday to Sunday
-   * weeksInYear: the number of weeks (52 or 53) for this week year.
+ * toCounter ( isoFields: object): number since epoch specified in contructor. 
+ *isoFields* shall hold the numeric fields *isoYear, isoMonth, isoDay,* the element of the date in ISO 8601, *isoMonth* is in the range 1..12.
+ * toIsoFields (counter: number): object. The counter is the number of days since specifed epoch. The decimal number is converted to integer floor before conversion. The returned objects holds the date as year, month (1 to 12) and day follwing iso 8601.
 
 ### ExtDate: class
 Extends the Date object with the flavour of Temporal proposal, using custom calendars. All method of the Date object are also available. **Notice** : with the built-in methods, the figure that represents the month begins with 0, with the extended ones, it begins with 1.
@@ -122,8 +142,8 @@ Extends the Date object with the flavour of Temporal proposal, using custom cale
 However, in the last case, 
    * the first number is a *full year*, that is 14 means the year where Tiberius takes the power in Rome after Augustus' death, not the beginning of World War 1.
    * the second number is the month number in the range 1..12, not 0..11.
-   * the missing arguments are replaced by 1 for the day and 0 for all other.
-   * the date is always evaluated as a local date.
+   * the missing arguments are replaced by 1 for the day and 0 for all other (hour to milliseconds)
+   * the date is always evaluated as a local date with respect to the system time zone.
 #### static objects
  * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value.
 #### static errors
