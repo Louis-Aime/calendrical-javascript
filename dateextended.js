@@ -9,7 +9,10 @@ Contents
 	One new method for Date for generalised time zone offset management
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/* Version	M2020-12-18 resolving partly eraDisplay at construction
+/*	Version M2021-01-09 set h12 and hourCycle as in original Intl
+	M2021-01-08 - when a field is undefined and should be displayed, tagging as "field" yield a void field
+	M2020-12-27 no export
+	M2020-12-18 resolving partly eraDisplay at construction
 	M2020-12-08 Use import and export
 	M2020-12-07	Do not change time part if language is among right-to-left.
 	M2020-11-29 control calendar parameter to ExtDate and ExtDateTimeFormat constructors
@@ -60,13 +63,13 @@ class CustomCalendar {
 	stringFormat : a field expressing how date string is computed. Possible values are
 		"built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then modify each part as stated by "partsFormat" object
 		"fields" : general structure of string is as stated from options, but values are changed following fields of this calendar, and modified as stated by "partsFormat"
-				// as of now, this option only works with 
+				// as of now, this option only works with Roman-like calendars
 		"auto" (default): means "built-in".
 	partsFormat : an Object, that specify how to format each part corresponding to each date field. Each tag is the name of a part to display (e.g. "era").
 		Each value is itself an object with the following fields:
 			mode: how to find the value: 
 				"cldr" : leave value set by standard FormatToParts (equivalent to no object for this part name).
-				"field": put field as is. For test and debug.
+				"field": put field as is; if undefined, put "". For test and debug, and for void fields.
 				"list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found in "codes"
 				"pldr" : values to be found in calendar.pldr, a DOM which represents a "private locale data register" designated with its URI/URL or identifier
 			source : the reference to the values, if "list" or "pldr".
@@ -195,7 +198,8 @@ class ExtDate extends Date {
 	*/
 	getRealTZmsOffset (TZ) {	// 2 functions in one: if TZ == undefined, compute real offset between system TZ offset at this time. if TZ = "UTC", 0. 
 								// if TZ is a named zone, use toResolvedLocalDate in order to compute offset in ms.
-		if (TZ == undefined || TZ == "") {
+		if (TZ == "UTC") return 0;		// avoid complex computation for a trivial and frequent case
+		if (TZ == undefined || TZ == "") {	// system time zone
 		// Gregorian coordinates of the system local date
 			let localCoord = 
 				{year: this.getFullYear(), month: this.getMonth(), date: this.getDate(), 
@@ -206,7 +210,7 @@ class ExtDate extends Date {
 			localDate.setUTCHours (localCoord.hours, localCoord.minutes, localCoord.seconds, localCoord.milliseconds);
 			return this.valueOf() - localDate.valueOf()
 		}
-		else return this.valueOf() - this.toResolvedLocalDate(TZ)
+		else return this.valueOf() - this.toResolvedLocalDate(TZ).valueOf()
 	}
 	/** Construct a date that represents the "best fit" value of the given date shifted as UTC to the named time zone. 
 	 * The computation of the time zone is that of Unicode, or of the standard TZOffset if Unicode's is not available.
@@ -411,6 +415,11 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		this.options.numberingSystem = this.DTFOptions.numberingSystem;
 		this.options.timeZone = this.DTFOptions.timeZone;
 		this.options.timeZoneName = this.DTFOptions.timeZoneName;
+		this.options.dayPeriod = this.DTFOptions.dayPeriod;
+		this.options.hour12 = this.DTFOptions.hour12;
+		this.options.hourCycle = this.DTFOptions.hourCycle;
+
+		
 		// Control and resolve specific options
 		if (this.options.eraDisplay == undefined) this.options.eraDisplay = "auto";
 		switch (this.options.eraDisplay) {
@@ -654,7 +663,7 @@ class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			myParts.forEach( function (item, i) { 
 				if (this.calendar.partsFormat[item.type] != undefined ) switch (this.calendar.partsFormat[item.type].mode){
 					case "cldr" : break; // already computed
-					case "field" : myParts[i].value = myDateFields[item.type]; break; // insert field directly, whatever it is (number, era code...)
+					case "field" : myParts[i].value = myDateFields[item.type] == undefined ? "" : myDateFields[item.type] ; break; // insert field directly, blank if undefined
 					case "list" : switch (item.type) {
 						case "era" : myParts[i].value = this.calendar.partsFormat[item.type].source[this.calendar.partsFormat[item.type].codes.indexOf(myDateFields[item.type])];
 							break;
