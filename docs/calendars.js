@@ -4,7 +4,10 @@
 Contents: 
 	Classes and instances to define calendars
 */
-/* Versions: M2021-01-09 eras and decade for the French Rev. calendar
+/* Versions: M2021-01-12 last version as modules
+	M2021-01-09 
+		eras and decade for the French Rev. calendar
+		separate class from instances
 	M2021-01-06 adapt to new chronos.js
 	M2020-12-29 no module, no myEthiopic, add Julian Day
 	M2020-12-10 import all names export from other files, as a main entry point.
@@ -18,7 +21,6 @@ Contents:
 /* Required
 	Package Chronos -> the general calendar computation engine.
 	ExtDate
-	pldrDOM (used only for the "milesian" instance) 
 */
 /* Copyright Miletus 2016-2021 - Louis A. de FOUQUIERES
 Permission is hereby granted, free of charge, to any person obtaining
@@ -44,9 +46,8 @@ Inquiries: www.calendriermilesien.org
 "use strict";
 import {Milliseconds, Chronos, WeekClock} from "./chronos.js";
 import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
-import pldrDOM from "./pldr.js";
 
-class isoWeek {	// only to compute ISO week figures with a date in Posix timestamp (UTC)
+/* export */ class isoWeek {	// only to compute ISO week figures with a date in Posix timestamp (UTC)
 	constructor () {}
 	static isoWeekClock = new WeekClock ({	// Display ISO week figures
 			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
@@ -64,7 +65,7 @@ class isoWeek {	// only to compute ISO week figures with a date in Posix timesta
 		return {weekYearOffset : myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
 	}
 }
-class MilesianCalendar { 
+/* export */ class MilesianCalendar { 
 	/** Define a specific Milesian calendar
 	 * @param (string) name : the name used with .toCalString method of ExtDate
 	 * @param (string) id: a built-in calendar for ExtDateTimeFormat. Must be in the list of existing built-in.
@@ -153,7 +154,7 @@ class MilesianCalendar {
 		return Chronos.isGregorianLeapYear ( this.fullYear(fields) + 1 )
 	}
 }
-class JulianCalendar  {
+/* export */ class JulianCalendar  {
 	constructor (id, pldr) { // specific name, possible pldr for kabyle or so
 		this.id = id;
 		this.pldr = pldr;
@@ -255,7 +256,7 @@ class JulianCalendar  {
 		return Chronos.isJulianLeapYear(this.fullYear(fields))
 	}
 } // end of calendar class
-class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
+/* export */ class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
 	constructor (id, switchingDate) {
 		this.id = id;
 		this.switchingDate = new Date(switchingDate);	// first date where Gregorien calendar is used. switchingDate may be a ISO string
@@ -352,7 +353,7 @@ class WesternCalendar { // Framework for calendars of European countries, first 
 		else return Chronos.isGregorianLeapYear (this.fullYear (fields))
 	}
 } // end of calendar class
-class FrenchRevCalendar {
+/* export */ class FrenchRevCalendar {
 	constructor (id, pldr) {
 		this.id = id;
 		this.pldr = pldr;
@@ -444,13 +445,4 @@ class FrenchRevCalendar {
 
 }
 
-const 
-	milesian = new MilesianCalendar ("milesian",pldrDOM), // A Milesian calendar with pldr data.
-	julian = new JulianCalendar ("julian"),	// An instantied Julian calendar, no pldr
-	vatican = new WesternCalendar ("vatican", "1582-10-15"),
-	french = new WesternCalendar ("french", "1582-12-20"),
-	german = new WesternCalendar ("german", "1700-03-01"),
-	english = new WesternCalendar ("english","1752-09-14"),
-	frenchRev = new FrenchRevCalendar ("frenchrev"),
-	calendars = [milesian, julian, vatican, french, german, english, frenchRev];
-export {isoWeek, MilesianCalendar, JulianCalendar, WesternCalendar, FrenchRevCalendar, calendars, milesian, julian, vatican, french, german, english, frenchRev};
+export {isoWeek, MilesianCalendar, JulianCalendar, WesternCalendar, FrenchRevCalendar};
