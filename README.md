@@ -38,7 +38,7 @@ The **Chronos** exported class offers common routines and tools for calendrical 
 
 The **WeekClock** exported class computes week figures: day of week, week number, number of weeks in year, week year that includes a date.
 
-The **IsoCOunter** exported class enables conversion from any day counter to iso8601 and the reverse. The author specifies the epoch for the counter using a date in Iso 8601.
+The **IsoCounter** exported class enables conversion from any day counter to iso8601 and the reverse. The author specifies the epoch for the counter using a date in Iso 8601.
 
 The **JulianDayIso** is deprecated, here suppressed.
 
@@ -72,19 +72,20 @@ The author specifies the switching date at instatiation.
 ### FrenchRevCalendar
 The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1992 to 1805.
 
-### Intantiations
+### calendars
+The **calendars** exported array list all used calendars mentionned above. Each item represents one of the calendar objects.
+
+## calendarinstant
 The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
  * **milesian**: the milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required 
  * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, which look very much like the Gregorian calendar's.  
  * **vatican, french, german, english** : they instantiate the *WesternCalendar*, with diffenent switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
+ * **frenchRev**: the calendar defined by the French Convention in 1793.
 
 ### myEthiopic
 _Deprecated, suppressed in this version._ 
 The Unicode built-in Ethiopic calendar is redefined with name "ethiopicf", and exported as object **myEthiopic**. 
 Here the era before Incarnation is displayed a different way from Unicode: years are not counted backwards.
-
-### calendars
-The **calendars** exported array list all used calendars mentionned above. Each item represents one of the calendar objects.
 
 ## Usage
 
@@ -92,11 +93,10 @@ The **calendars** exported array list all used calendars mentionned above. Each 
  * DAY_UNIT, HOUR_UNIT, MINUTE_UNIT, SECOND_UNIT : number of milliseconds in these units.
 
 ### Chronos : class
-#### Constructor (calendRule : object, weekdayRule : object)
+#### Constructor (calendRule : object)
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * calendRule is a compound object that describes how to transform a counter into a compound object with date fields, and the reverse. The calendar should follow the integral postfix intercalation rule. The Roman (julian-gregorian) calendar follows this rule if the beginning of the year is shifted to 1 March.
- * weekdayRule is a compound object that summerizes the rules regarding weeks. Regular 7-days weeks are handled, as well as systems with epagomenal days: one or two epagomenal days each at different places in the year, or several epagomenal days at the end of the year.
-  
+
 #### static errors
  * notANumber : error thrown when a non-numeric value is passed for a numeric field.
  * nonInteger : error thrown when a non-integer value is passed where an integer value is expected.
