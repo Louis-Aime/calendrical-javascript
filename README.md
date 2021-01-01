@@ -11,8 +11,9 @@ The software object anticipate the Temporal initiative of Ecma TC39.
 
 ## Module architecture
 This module uses ES6 module syntax (export / import). chronos.js, dateextended.js and pldr.js only export objects. 
-calendars.js import all objects of other files and exports several new objects; this file can be considered an entry point to the module. 
-However the other files may be used separately.
+calendars.js import all objects of chronos and dateextended files, and exports several classes. 
+calendarinstant only imports classes from calendars, and exports instances as constants. 
+aggregate.js re-exports all entry points.
 
 Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js. These software pieces are used that way for the [Milesian calendar](https://github.com/Louis-Aime/Milesian-calendar).
 
