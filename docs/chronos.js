@@ -6,7 +6,8 @@ Contents:
  * WeekClock: a class that yields week figures for a specified week structure.
  * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
 */
-/* Version	M2021-01-09, new version with no backward compatibility
+/* Version	M2021-01-19	fix Reference Error in IsoCounter.toIsoFields
+	M2021-01-09, new version with no backward compatibility
 		Collect conversion coefficients in a separate Milliseconds object
 		Collect week computations in a separate class, fix a bug for non-regular week system
 		Design a class for conversion between ISO and day counter since any epoch
@@ -225,7 +226,7 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
  * @param (Object)	weekdayRule: set of parameters for the computation of week elements
 	 * (number, required) originWeekday: weekday number of day index 0. Value is renormalised to 0..weekLength-1.
 	 * (function, required) daysInYear: function (year), number of days in year (using relative counting system). With solar calendars, result is 365 or 366.
-	 * (number, required) startOfWeek: number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. Value is renormalised to 0..weekLength-1.
+	 * (number) startOfWeek: number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. Value is renormalised to 0..weekLength-1.
 	 * (number) characWeekNumber: number of the week of the characDayIndex. Default is 1.
 	 * (number) dayBase: number of the first day in any week. May differ from startOfWeek. used for displaying result. Default is 1.
 	 * (number) weekBase: number of the first week in any year. May differ from characWeekNumber. Default is 1.
@@ -349,8 +350,7 @@ class IsoCounter {
 	*/
 	toIsoFields = function ( counter ) {
 		if (isNaN (counter) ) throw notANumber;
-		myCounter = Math.floor (counter);
-		let myFields = this.clockwork.getObject (myCounter);
+		let myFields = this.clockwork.getObject (Math.floor (counter));
 		[myFields.isoYear, myFields.isoMonth] = Chronos.shiftCycle (myFields.isoYear, myFields.isoMonth, 12, -2, 3); // replace last parameter if monthBase 0 is required
 		return myFields
 	}
