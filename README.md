@@ -40,9 +40,7 @@ The **WeekClock** exported class computes week figures: day of week, week number
 
 The **IsoCounter** exported class enables conversion from any day counter to iso8601 and the reverse. The author specifies the epoch for the counter using a date in Iso 8601.
 
-The **JulianDayIso** is deprecated, here suppressed.
-
-The parameters for using these classes are described in details in the source. Examples are given in the file Calendars.js.
+The parameters for using these classes are described in details in the source. Examples are given in the file calendars.js.
 
 ### pldr.js
 The default extended object is a DOM representing a "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars. 
@@ -118,9 +116,6 @@ The complete description of the parameters is available in Chronos.js. Calendars
  * weekdayRule is a compound object that summerizes the rules regarding weeks. Regular 7-days weeks are handled, as well as systems with epagomenal days: one or two epagomenal days each at different places in the year, or several epagomenal days at the end of the year.
 #### methods
   * geWeekFigures (dayIndex, characDayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
-
-### JulianDayIso : class
-_This class is deprecated and suppressed. The next class has more power._
 
 ### IsoCounter : class
 
