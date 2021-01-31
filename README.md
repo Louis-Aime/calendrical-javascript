@@ -6,16 +6,19 @@ Basic routines in javascript for computations on calendars, including
  * basic constants to convert to or from day counter to milliseconds counter,
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
  * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars,
- * a collection of custom calendars in order to demonstrate capacities, including a class for any western calendar that switches from Julian to Gregorian at a given date.
-The software object anticipate the Temporal initiative of Ecma TC39.
+ * classes for custom calendars that are not available from Unicode, including the Julian and the Milesian calendars, and a class for any western calendar that switches from Julian to Gregorian at a user-specified date.
+The package  anticipate a few features of the Temporal initiative of Ecma TC39.
+
+In the /docs folder, a demo application may be charged. It is also available from GitHub Pages .
 
 ## Module architecture
 This module uses ES6 module syntax (export / import). chronos.js, dateextended.js and pldr.js only export objects. 
 calendars.js import all objects of chronos and dateextended files, and exports several classes. 
-calendarinstant only imports classes from calendars, and exports instances as constants. 
 aggregate.js re-exports all entry points.
 
-Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js. These software pieces are used that way for the [Milesian calendar](https://github.com/Louis-Aime/Milesian-calendar).
+Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js. 
+
+The application in /docs demonstrate how to import the modules in a standard script (not a module) using `import ()` from aggregate.js.
 
 ## GitHub Page site for test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -69,21 +72,6 @@ The author specifies the switching date at instatiation.
 
 ### FrenchRevCalendar
 The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1992 to 1805.
-
-### calendars
-The **calendars** exported array list all used calendars mentionned above. Each item represents one of the calendar objects.
-
-## calendarinstant
-The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
- * **milesian**: the milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required 
- * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, which look very much like the Gregorian calendar's.  
- * **vatican, french, german, english** : they instantiate the *WesternCalendar*, with diffenent switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
- * **frenchRev**: the calendar defined by the French Convention in 1793.
-
-### myEthiopic
-_Deprecated, suppressed in this version._ 
-The Unicode built-in Ethiopic calendar is redefined with name "ethiopicf", and exported as object **myEthiopic**. 
-Here the era before Incarnation is displayed a different way from Unicode: years are not counted backwards.
 
 ## Usage
 
@@ -202,3 +190,10 @@ This function shall be deprecated as soon as the corrected version of ICU is dep
 The mini-site https://louis-aime.github.io/calendrical-javascript/ enables you to test most facilities of this package. 
 The source of this site is not provided with the package, but is available at the GitHub repository in /docs.
 
+### Calendars used in the demonstration site.
+
+The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
+ * **milesian**: the milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required 
+ * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, which look very much like the Gregorian calendar's.  
+ * **vatican, french, german, english** : they instantiate the *WesternCalendar*, with diffenent switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
+ * **frenchRev**: the calendar defined by the French Convention in 1793.
