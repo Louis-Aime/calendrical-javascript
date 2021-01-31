@@ -12,7 +12,8 @@ Required:
 	Then adaptation to modular architecture was performed.
 	Optimisation remains possible within this file and also with milesianclockdisplay.js.
 */
-/* Version:	M2021-01-09	Button for custom calendar
+/* Version:	M2021-02-12	Asynchronous import of calendrical objects - calendar classes are instantiated here
+	M2021-01-09	Button for custom calendar
 	M2020-12-29 Back to script (no module)
 	M2020-12-15 Collect all page-specific routines in this file
 	M2020-12-10 Aggregate links to module in this file
@@ -47,21 +48,52 @@ Inquiries: www.calendriermilesien.org
 */
 "use strict";
 // var calendrical = require("calendrical-javascript"), // for the CommonJS version
- 
-import {calendars, milesian, julian, vatican, french, german, english, frenchRev} from "./aggregate.js";
-import {ExtDate, ExtDateTimeFormat} from "./aggregate.js";
-import {Milliseconds} from "./aggregate.js";;
+
+
+// import {calendars, milesian, julian, vatican, french, german, english, frenchRev} from "./aggregate.js";
+// import {ExtDate, ExtDateTimeFormat} from "./aggregate.js";
+// import {Milliseconds} from "./aggregate.js";;
+
+var
+	modules,		// all modules here once imported
+	milesian,	// = new MilesianCalendar ("milesian",pldrDOM), // A Milesian calendar with pldr data.
+	julian,		// = new JulianCalendar ("julian"),	// An instantied Julian calendar, no pldr
+	vatican,	// = new WesternCalendar ("vatican", "1582-10-15"),
+	french,		// = new WesternCalendar ("french", "1582-12-20"),
+	german,		// = new WesternCalendar ("german", "1700-03-01"),
+	english,	// = new WesternCalendar ("english","1752-09-14"),
+	frenchRev,	// = new FrenchRevCalendar ("frenchrev"),
+	calendars;
 
 var register = {		// this register is also used by the small modules written in HTML page
-	targetDate : new ExtDate(milesian),
-	shiftDate : new ExtDate (milesian),			// unable to compute with unfinished object. register.targetDate.getTime() - register.targetDate.getRealTZmsOffset()),
-	customCalendar : milesian,
+	targetDate : {}, 	// new ExtDate(milesian),
+	shiftDate : {}, 	// new ExtDate (milesian),			// unable to compute with unfinished object. register.targetDate.getTime() - register.targetDate.getRealTZmsOffset()),
+	customCalendar : {}, 	// milesian,
 	TZSettings : {mode : "TZ", msoffset : 0},	// initialisation to be superseded
 	TZDisplay : "" 
 }
+
+async function loadmodules () {
+	modules = await import ('./aggregate.js');
+	milesian = new modules.MilesianCalendar ("milesian",modules.pldrDOM); // A Milesian calendar with pldr data.
+	julian = new modules.JulianCalendar ("julian");	// An instantied Julian calendar, no pldr
+	vatican = new modules.WesternCalendar ("vatican", "1582-10-15");
+	french = new modules.WesternCalendar ("french", "1582-12-20");
+	german = new modules.WesternCalendar ("german", "1700-03-01");
+	english = new modules.WesternCalendar ("english","1752-09-14");
+	frenchRev = new modules.FrenchRevCalendar ("frenchrev");
+	calendars = [milesian, julian, vatican, french, german, english, frenchRev];
+	register.targetDate = new modules.ExtDate(milesian);
+	register.shiftDate = new modules.ExtDate ( milesian, register.targetDate.getTime() - register.targetDate.getRealTZmsOffset() );
+	register.customCalendar = milesian;
+	setDateToNow ();	// initiate after all modules are loaded
+}
+
+loadmodules ();	// Launch initiate function.
+
 function setCalend() {	// set current custom calend to new value and compute fields
 	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar
-	register.targetDate = new ExtDate(register.customCalendar, register.targetDate.valueOf());	// set custom calendar if changed, and set date.
+	register.targetDate = new modules.ExtDate(register.customCalendar, register.targetDate.valueOf());	// set custom calendar if changed, and set date.
 	setDisplay();
 }
 function putStringOnOptions() { // get Locale, calendar indication and Options given on page, print String. Called by setDisplay
@@ -123,14 +155,14 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	
 	// Same for ExtDateTimeFormat
 	try {
-		extAskedOptions = new ExtDateTimeFormat (extendedLocale, Options);
+		extAskedOptions = new modules.ExtDateTimeFormat (extendedLocale, Options);
 		}
 	catch (e) {
 		alert (e.message + "\nCheck options for ExtDateTimeFormat" ); 
 		return
 	}
 	extUsedOptions = extAskedOptions.resolvedOptions();
-	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, register.customCalendar);
+	cusAskedOptions = new modules.ExtDateTimeFormat(extendedLocale, Options, register.customCalendar);
 
 
 	
@@ -185,9 +217,9 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	extUsedOptions = referenceExtFormat.resolvedOptions();
 	referenceExtFormat = new ExtDateTimeFormat(extUsedOptions.locale,extUsedOptions);
 */
-	cusAskedOptions = new ExtDateTimeFormat(extendedLocale, Options, register.customCalendar);
+	cusAskedOptions = new modules.ExtDateTimeFormat(extendedLocale, Options, register.customCalendar);
 	// Certain Unicode calendars do not give a proper result: here is the control code.
-	let valid = ExtDateTimeFormat.unicodeValidDateinCalendar(register.targetDate, extUsedOptions.timeZone,usedOptions.calendar);
+	let valid = modules.ExtDateTimeFormat.unicodeValidDateinCalendar(register.targetDate, extUsedOptions.timeZone,usedOptions.calendar);
 	// Display with extended DateTimeFormat
 	document.getElementById("Calendname").innerHTML = usedOptions.calendar;
 	document.getElementById("Xstring").innerHTML = (valid ? "" : "(!) ") + extAskedOptions.format(register.targetDate);
@@ -220,7 +252,7 @@ function calcWeek() {
 		document.getElementById("dayownum").innerHTML = register.targetDate.weekday(register.TZDisplay);
 		document.getElementById("weeksinyear").innerHTML = register.targetDate.weeksInYear(register.TZDisplay);
 		document.getElementById("dayname").innerHTML = 
-			new ExtDateTimeFormat (document.Locale.Elocale.value,{weekday : "long", 
+			new modules.ExtDateTimeFormat (document.Locale.Elocale.value,{weekday : "long", 
 			timeZone : register.TZDisplay == "" ? undefined : register.TZDisplay },register.customCalendar)
 			.format(register.targetDate);
 	}
@@ -241,8 +273,8 @@ function setDisplay () { // Considering that register.targetDate time has been s
 	let
 		systemSign = (register.TZSettings.msoffset > 0 ? 1 : -1), // sign is as of JS convention
 		absoluteRealOffset = systemSign * register.TZSettings.msoffset,
-		absoluteTZmin = Math.floor (absoluteRealOffset / Milliseconds.MINUTE_UNIT),
-		absoluteTZsec = Math.floor ((absoluteRealOffset - absoluteTZmin * Milliseconds.MINUTE_UNIT) / Milliseconds.SECOND_UNIT);
+		absoluteTZmin = Math.floor (absoluteRealOffset / modules.Milliseconds.MINUTE_UNIT),
+		absoluteTZsec = Math.floor ((absoluteRealOffset - absoluteTZmin * modules.Milliseconds.MINUTE_UNIT) / modules.Milliseconds.SECOND_UNIT);
 	switch (register.TZSettings.mode) {
 		case "UTC" : 
 			register.TZSettings.msoffset = 0; // Set offset to 0, but leave time zone offset on display
@@ -250,7 +282,7 @@ function setDisplay () { // Considering that register.targetDate time has been s
 			document.querySelector("#realTZOffset").innerHTML = (systemSign == 1 ? "+ ":"- ") + absoluteTZmin + " min " + absoluteTZsec + " s";
 	}
 	// Initiate a representation of local date
-	register.shiftDate = new ExtDate (register.customCalendar,register.targetDate.getTime() - register.TZSettings.msoffset);	// The UTC representation of register.targetDate date is the local date of TZ
+	register.shiftDate = new modules.ExtDate (register.customCalendar,register.targetDate.getTime() - register.TZSettings.msoffset);	// The UTC representation of register.targetDate date is the local date of TZ
 	// Initiate custom calendar form with present local date
 	let fields = register.shiftDate.getFields("UTC");
 	document.custom.calend.value = register.customCalendar.id	;	
@@ -304,7 +336,7 @@ function calcGregorian() {
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
-		register.targetDate = new ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
+		register.targetDate = new modules.ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
 		setDisplay();
 	}
 }
@@ -316,20 +348,20 @@ function calcCustom() {
 	 testDate;
 	 // HTML controls that day, month and year are numbers
 	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);	// global variable
-	// let testDate = new ExtDate (register.customCalendar, year, month, day);
+	// let testDate = new modules.ExtDate (register.customCalendar, year, month, day);
 	switch (register.TZSettings.mode) {
 		case "TZ":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
-			testDate = new ExtDate (register.customCalendar, year, month, day, register.targetDate.getHours(), register.targetDate.getMinutes(), register.targetDate.getSeconds(), register.targetDate.getMilliseconds())
+			testDate = new modules.ExtDate (register.customCalendar, year, month, day, register.targetDate.getHours(), register.targetDate.getMinutes(), register.targetDate.getSeconds(), register.targetDate.getMilliseconds())
 			break;
 		case "UTC" : // // Set date object from custom calendar date indication, and with UTC time of day of currently displayed date.
-			testDate = new ExtDate (register.customCalendar, year, month, day, register.targetDate.getUTCHours(), register.targetDate.getUTCMinutes(), register.targetDate.getUTCSeconds(), register.targetDate.getUTCMilliseconds())
+			testDate = new modules.ExtDate (register.customCalendar, year, month, day, register.targetDate.getUTCHours(), register.targetDate.getUTCMinutes(), register.targetDate.getUTCSeconds(), register.targetDate.getUTCMilliseconds())
 			// testDate.setTime (testDate.valueOf - testDate.getRealTZmsOffset ())
 			break;
 	}
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
-		register.targetDate = new ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
+		register.targetDate = new modules.ExtDate(register.customCalendar, testDate.valueOf());	// set custom calendar if changed, and set date.
 		setDisplay();
 		}
 }
@@ -351,7 +383,7 @@ function changeDayOffset () {
 function setDayOffset (sign=1) {
 	changeDayOffset();	// Force a valid value in field
 	let testDate = new Date(register.targetDate.valueOf());
-	testDate.setTime (testDate.getTime() + sign * dayOffset * Milliseconds.DAY_UNIT);
+	testDate.setTime (testDate.getTime() + sign * dayOffset * modules.Milliseconds.DAY_UNIT);
 	if (isNaN(testDate.valueOf())) { 
 		alert ("Out of range");
 		// clockRun(0);
@@ -368,18 +400,18 @@ function calcTime() { // Here the hours are deemed local hours
 		alert ("Invalid date " + '"' + document.time.hours.value + '" "' + document.time.mins.value + '" "' 
 		+ document.time.secs.value + '.' + document.time.ms.value + '"')
 	 else {
-	  let testDate = new ExtDate (register.customCalendar,register.targetDate.valueOf());
+	  let testDate = new modules.ExtDate (register.customCalendar,register.targetDate.valueOf());
 	  switch (register.TZSettings.mode) {
 		case "TZ" : testDate.setHours(hours, mins, secs, ms); break;
 		case "UTC" : testDate.setUTCHours(hours, mins, secs, ms); break;
 /*		case "Fixed" : 
-			testDate = new Date(ExtDate.fullUTC (document.gregorian.year.value, document.gregorian.monthname.value, document.gregorian.day.value));
+			testDate = new Date(modules.ExtDate.fullUTC (document.gregorian.year.value, document.gregorian.monthname.value, document.gregorian.day.value));
 			testDate.setUTCHours(hours, mins, secs, ms); 
 			testDate.setTime(testDate.getTime() + register.TZSettings.msoffset);
 */		}
 		if (isNaN(testDate.valueOf())) alert ("Out of range")
 		else {
-			register.targetDate = new ExtDate (register.customCalendar,testDate.valueOf());
+			register.targetDate = new modules.ExtDate (register.customCalendar,testDate.valueOf());
 			setDisplay();
 		}
 	}
@@ -426,13 +458,13 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	}
 }
 function setDateToNow(){ // Self explanatory
-	register.targetDate = new ExtDate(register.customCalendar); // set new Date object.
+	register.targetDate = new modules.ExtDate(register.customCalendar); // set new Date object.
 	setDisplay ();
 }
 /* Events handlers
 */
 window.onload = function () {
-	setDateToNow();
+
 	document.gregorian.addEventListener("submit", function (event) {
 		event.preventDefault();
 		calcGregorian()
