@@ -12,7 +12,8 @@ Required:
 	Then adaptation to modular architecture was performed.
 	Optimisation remains possible within this file and also with milesianclockdisplay.js.
 */
-/* Version:	M2021-02-12	Asynchronous import of calendrical objects - calendar classes are instantiated here
+/* Version:	M2021-02-13	Fetch pldr from an external XML file, not from a stringified version
+	M2021-02-12	Asynchronous import of calendrical objects - calendar classes are instantiated here
 	M2021-01-09	Button for custom calendar
 	M2020-12-29 Back to script (no module)
 	M2020-12-15 Collect all page-specific routines in this file
@@ -73,9 +74,13 @@ var register = {		// this register is also used by the small modules written in 
 	TZDisplay : "" 
 }
 
-async function loadmodules () {
-	modules = await import ('./aggregate.js');
-	milesian = new modules.MilesianCalendar ("milesian",modules.pldrDOM); // A Milesian calendar with pldr data.
+async function initial () {
+	modules = await import ('./aggregate-xml.js');
+	let pldrString = await import ('./pldr.js');
+	let	pldrDOM = await fetchDOM ("https://louis-aime.github.io/Milesian-calendar/pldr.xml")
+			.then ( (pldrDOM) => pldrDOM ) // The pldr data used by the Milesian calendar (and possibly others).
+			.catch ( (error) => { return pldrString.default() } );	// if error (no XML file) take default pldr 
+	milesian = new modules.MilesianCalendar ("milesian",pldrDOM);
 	julian = new modules.JulianCalendar ("julian");	// An instantied Julian calendar, no pldr
 	vatican = new modules.WesternCalendar ("vatican", "1582-10-15");
 	french = new modules.WesternCalendar ("french", "1582-12-20");
@@ -88,8 +93,7 @@ async function loadmodules () {
 	register.customCalendar = milesian;
 	setDateToNow ();	// initiate after all modules are loaded
 }
-
-loadmodules ();	// Launch initiate function.
+initial ();
 
 function setCalend() {	// set current custom calend to new value and compute fields
 	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar
