@@ -75,7 +75,7 @@ var register = {		// this register is also used by the small modules written in 
 }
 
 async function initial () {
-	modules = await import ('./aggregate-xml.js');
+	modules = await import ('./aggregate.js');
 	let pldrString = await import ('./pldr.js');
 	let	pldrDOM = await fetchDOM ("https://louis-aime.github.io/Milesian-calendar/pldr.xml")
 			.then ( (pldrDOM) => pldrDOM ) // The pldr data used by the Milesian calendar (and possibly others).
