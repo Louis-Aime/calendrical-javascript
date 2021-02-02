@@ -8,7 +8,8 @@ Notes:
 	2. pldrDOM must be declared after pldr.
 	3. With certain CMS, this file could not be exposed as a module. pldrDOM has to be made visible from a web page.
 */
-/*Version	M2020612-08 use export
+/*Version	M2021-02-13: A fallback function if the complete pldr is not available
+	M2020-12-08 use export
 	M2020-11-18:	No "numeric" monthWidth in stand-alone monthContext, formatToParts shall build 1 or 2 digit numbers
 	M2020-10-28: adapted and names changed for the new packaged version of calendar routines
 	M2020-01-12: strict mode
@@ -26,7 +27,7 @@ Inquiries: www.calendriermilesien.org
 "use strict";
 /** Stringified XML base, consisting in 2 blocks: 
  * ldmlBCP47 declares Milesian calendar general item, 
- * ldml declares language specific names
+ * ldml declares language specific names (here empty)
 */
 const pldrstring =
 '<?xml version="1.0" encoding="UTF-8" ?>\
@@ -174,216 +175,10 @@ const pldrstring =
   </calendar>\
 </ldmlBCP47>\
 <!-- Here starts the ldml part - language-specific -->\
-<ldml>\
-	<identity>\
-		<language type="fr"/>\
-		<calendar type="milesian">\
-			<months>\
-			  <monthContext type="format">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">unème</month>\
-					<month type="2" draft="unconfirmed">secondème</month>\
-					<month type="3" draft="unconfirmed">tertème</month>\
-					<month type="4" draft="unconfirmed">quartème</month>\
-					<month type="5" draft="unconfirmed">quintème</month>\
-					<month type="6" draft="unconfirmed">sextème</month>\
-					<month type="7" draft="unconfirmed">septème</month>\
-					<month type="8" draft="unconfirmed">octème</month>\
-					<month type="9" draft="unconfirmed">novème</month>\
-					<month type="10" draft="unconfirmed">décème</month>\
-					<month type="11" draft="unconfirmed">onzème</month>\
-					<month type="12" draft="unconfirmed">douzème</month>\
-				</monthWidth>\
-			  </monthContext>\
-			  <monthContext type="stand-alone">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">unème</month>\
-					<month type="2" draft="unconfirmed">secondème</month>\
-					<month type="3" draft="unconfirmed">tertème</month>\
-					<month type="4" draft="unconfirmed">quartème</month>\
-					<month type="5" draft="unconfirmed">quintème</month>\
-					<month type="6" draft="unconfirmed">sextème</month>\
-					<month type="7" draft="unconfirmed">septème</month>\
-					<month type="8" draft="unconfirmed">octème</month>\
-					<month type="9" draft="unconfirmed">novème</month>\
-					<month type="10" draft="unconfirmed">décème</month>\
-					<month type="11" draft="unconfirmed">onzème</month>\
-					<month type="12" draft="unconfirmed">douzème</month>\
-				</monthWidth>\
-			  </monthContext>\
-			</months>\
-		</calendar>\
-	</identity>\
-	<identity>\
-		<language type="en"/>\
-		<calendar type="milesian">\
-			<months>\
-			  <monthContext type="format">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">Firstem</month>\
-					<month type="2" draft="unconfirmed">Secondem</month>\
-					<month type="3" draft="unconfirmed">Thirdem</month>\
-					<month type="4" draft="unconfirmed">Fourthem</month>\
-					<month type="5" draft="unconfirmed">Fifthem</month>\
-					<month type="6" draft="unconfirmed">Sixthem</month>\
-					<month type="7" draft="unconfirmed">Seventhem</month>\
-					<month type="8" draft="unconfirmed">Eighthem</month>\
-					<month type="9" draft="unconfirmed">Ninthem</month>\
-					<month type="10" draft="unconfirmed">Tenthem</month>\
-					<month type="11" draft="unconfirmed">Eleventhem</month>\
-					<month type="12" draft="unconfirmed">Twelfthem</month>\
-				</monthWidth>\
-			  </monthContext>\
-			  <monthContext type="stand-alone">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">Firstem</month>\
-					<month type="2" draft="unconfirmed">Secondem</month>\
-					<month type="3" draft="unconfirmed">Thirdem</month>\
-					<month type="4" draft="unconfirmed">Fourthem</month>\
-					<month type="5" draft="unconfirmed">Fifthem</month>\
-					<month type="6" draft="unconfirmed">Sixthem</month>\
-					<month type="7" draft="unconfirmed">Seventhem</month>\
-					<month type="8" draft="unconfirmed">Eighthem</month>\
-					<month type="9" draft="unconfirmed">Ninthem</month>\
-					<month type="10" draft="unconfirmed">Tenthem</month>\
-					<month type="11" draft="unconfirmed">Eleventhem</month>\
-					<month type="12" draft="unconfirmed">Twelfthem</month>\
-				</monthWidth>\
-			  </monthContext>\
-			</months>\
-		</calendar>\
-	</identity>\
-	<identity>\
-		<language type="de"/>\
-		<calendar type="milesian">\
-			<months>\
-			  <monthContext type="format">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">Erstme</month>\
-					<month type="2" draft="unconfirmed">Zweitme</month>\
-					<month type="3" draft="unconfirmed">Drittme</month>\
-					<month type="4" draft="unconfirmed">Viertme</month>\
-					<month type="5" draft="unconfirmed">Fünftme</month>\
-					<month type="6" draft="unconfirmed">Sechstme</month>\
-					<month type="7" draft="unconfirmed">Siebentme</month>\
-					<month type="8" draft="unconfirmed">Achtme</month>\
-					<month type="9" draft="unconfirmed">Neuntme</month>\
-					<month type="10" draft="unconfirmed">Zehntme</month>\
-					<month type="11" draft="unconfirmed">Elftme</month>\
-					<month type="12" draft="unconfirmed">Zwölftme</month>\
-				</monthWidth>\
-			  </monthContext>\
-			  <monthContext type="stand-alone">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">Erstme</month>\
-					<month type="2" draft="unconfirmed">Zweitme</month>\
-					<month type="3" draft="unconfirmed">Drittme</month>\
-					<month type="4" draft="unconfirmed">Viertme</month>\
-					<month type="5" draft="unconfirmed">Fünftme</month>\
-					<month type="6" draft="unconfirmed">Sechstme</month>\
-					<month type="7" draft="unconfirmed">Siebentme</month>\
-					<month type="8" draft="unconfirmed">Achtme</month>\
-					<month type="9" draft="unconfirmed">Neuntme</month>\
-					<month type="10" draft="unconfirmed">Zehntme</month>\
-					<month type="11" draft="unconfirmed">Elftme</month>\
-					<month type="12" draft="unconfirmed">Zwölftme</month>\
-				</monthWidth>\
-			  </monthContext>\
-			</months>\
-		</calendar>\
-	</identity>\
-	<identity>\
-		<language type="es"/>\
-		<calendar type="milesian">\
-			<months>\
-			  <monthContext type="format">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">primerem</month>\
-					<month type="2" draft="unconfirmed">segondem</month>\
-					<month type="3" draft="unconfirmed">tercerem</month>\
-					<month type="4" draft="unconfirmed">cuartem</month>\
-					<month type="5" draft="unconfirmed">quintem</month>\
-					<month type="6" draft="unconfirmed">sextem</month>\
-					<month type="7" draft="unconfirmed">séptimem</month>\
-					<month type="8" draft="unconfirmed">octavem</month>\
-					<month type="9" draft="unconfirmed">novenem</month>\
-					<month type="10" draft="unconfirmed">décimem</month>\
-					<month type="11" draft="unconfirmed">undécimem</month>\
-					<month type="12" draft="unconfirmed">duodécimem</month>\
-				</monthWidth>\
-			  </monthContext>\
-			  <monthContext type="stand-alone">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">primerem</month>\
-					<month type="2" draft="unconfirmed">segondem</month>\
-					<month type="3" draft="unconfirmed">tercerem</month>\
-					<month type="4" draft="unconfirmed">cuartem</month>\
-					<month type="5" draft="unconfirmed">quintem</month>\
-					<month type="6" draft="unconfirmed">sextem</month>\
-					<month type="7" draft="unconfirmed">séptimem</month>\
-					<month type="8" draft="unconfirmed">octavem</month>\
-					<month type="9" draft="unconfirmed">novenem</month>\
-					<month type="10" draft="unconfirmed">décimem</month>\
-					<month type="11" draft="unconfirmed">undécimem</month>\
-					<month type="12" draft="unconfirmed">duodécimem</month>\
-				</monthWidth>\
-			  </monthContext>\
-			</months>\
-		</calendar>\
-	</identity>\
-	<identity>\
-		<language type="pt"/>\
-		<calendar type="milesian">\
-			<months>\
-			  <monthContext type="format">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">primeirem</month>\
-					<month type="2" draft="unconfirmed">segundem</month>\
-					<month type="3" draft="unconfirmed">terceirem</month>\
-					<month type="4" draft="unconfirmed">quartem</month>\
-					<month type="5" draft="unconfirmed">quintem</month>\
-					<month type="6" draft="unconfirmed">sextem</month>\
-					<month type="7" draft="unconfirmed">sétimem</month>\
-					<month type="8" draft="unconfirmed">oitavem</month>\
-					<month type="9" draft="unconfirmed">nonem</month>\
-					<month type="10" draft="unconfirmed">décimem</month>\
-					<month type="11" draft="unconfirmed">undécimem</month>\
-					<month type="12" draft="unconfirmed">duodécimem</month>\
-				</monthWidth>\
-			  </monthContext>\
-			  <monthContext type="stand-alone">\
-				<default type="abbreviated"/> <!-- Is it necessary ? -->\
-				<monthWidth type="wide">\
-					<month type="1" draft="unconfirmed">primeirem</month>\
-					<month type="2" draft="unconfirmed">segundem</month>\
-					<month type="3" draft="unconfirmed">terceirem</month>\
-					<month type="4" draft="unconfirmed">quartem</month>\
-					<month type="5" draft="unconfirmed">quintem</month>\
-					<month type="6" draft="unconfirmed">sextem</month>\
-					<month type="7" draft="unconfirmed">sétimem</month>\
-					<month type="8" draft="unconfirmed">oitavem</month>\
-					<month type="9" draft="unconfirmed">nonem</month>\
-					<month type="10" draft="unconfirmed">décimem</month>\
-					<month type="11" draft="unconfirmed">undécimem</month>\
-					<month type="12" draft="unconfirmed">duodécimem</month>\
-				</monthWidth>\
-			  </monthContext>\
-			</months>\
-		</calendar>\
-	</identity>	\
-  </ldml>\
+<ldml></ldml>\
 </pldr>'
 
 /** The pldrstring parsed to a DOM.
 */
-var pldrDOM = new DOMParser().parseFromString(pldrstring, "application/xml");
+function pldrDOM () { return new DOMParser().parseFromString(pldrstring, "application/xml")};
 export { pldrDOM as default }
