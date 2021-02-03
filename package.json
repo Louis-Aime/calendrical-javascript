@@ -1,7 +1,7 @@
 {
   "name": "calendrical-javascript",
   "version": "3.3.0",
-  "description": "Basic routines in javascript for computations on calendars, including \r  * the Cycle Based Calendar Computation Engine\r  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively\r  * pldr, a \"private locale data register\" that extends Unicode's CLDR for display of dates in several calendars.\r The software object anticipate the Temporal initiative of Ecma TC39.",
+  "description": "Basic routines in javascript for computations on calendars, including \r  * the Cycle Based Calendar Computation Engine,\r  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,\r  * fetchdom, a function that launch a fetch of an XML file and makes a DOM object,\r * pldr, a \"private locale data register\" that extends Unicode's CLDR for display of dates in calendars,\r  * a set of non-Unicode calendars reckoning function.\r The software object anticipate the Temporal initiative of Ecma TC39.",
   "main": "calendars.js",
   "directories": {
     "example": "docs"
@@ -18,7 +18,8 @@
     "calendrical",
     "Date",
     "Intl.DateTimeFormat",
-    "Cycle Base Calendrical Computation Engine"
+    "Cycle Base Calendrical Computation Engine",
+	"Calendar with switching from Julian to Gregorian"
   ],
   "author": "Louis-Aimé de Fouquières, Miletus",
   "license": "MIT",
