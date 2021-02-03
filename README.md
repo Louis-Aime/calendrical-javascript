@@ -5,7 +5,10 @@ Basic routines in javascript for computations on calendars, including
  * a basic conversion tool from iso 8601 date figures to any day counter (Julian Day, Microsoft, Unix-Posix...) and the reverse,
  * basic constants to convert to or from day counter to milliseconds counter,
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
+ * a small routine that fetches a XML file and makes a DOM out of it,
  * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars,
+   * light version as a string and a module routine that transforms the string into a DOM,
+   * complete version as a XML file that can be fetched from https://louis-aime.github.io/calendrical-javascript/pldr.xml,
  * classes for custom calendars that are not available from Unicode, including the Julian and the Milesian calendars, and a class for any western calendar that switches from Julian to Gregorian at a user-specified date.
 The package  anticipate a few features of the Temporal initiative of Ecma TC39.
 
@@ -45,9 +48,15 @@ The **IsoCounter** exported class enables conversion from any day counter to iso
 
 The parameters for using these classes are described in details in the source. Examples are given in the file calendars.js.
 
-### pldr.js
+## fetchdom.js
+This small function, not used as a module, launches a request to an XML file and transforms it into a DOM object. The result is a Promise.
+
+### pldr.xml
 The default extended object is a DOM representing a "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars. 
 This is used only for the milesian calendar, but can be extended on the same principle to ohter custom of even Unicode built-in calendars.
+
+### pldr.js
+A string that holds a reduced version of pldr.xml: no language-specific names. This module can be used if pldr.xml is not available or not wished.
 
 ## Extension of Javascript objects
 
