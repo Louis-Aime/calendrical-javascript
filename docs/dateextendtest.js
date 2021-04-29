@@ -12,7 +12,8 @@ Required:
 	Then adaptation to modular architecture was performed.
 	Optimisation remains possible within this file and also with milesianclockdisplay.js.
 */
-/* Version:	M2021-02-13	Fetch pldr from an external XML file, not from a stringified version
+/* Version:	M2021-05-08 remove validity control on dates of certain calendars since ICU 68 fixes those bugs
+	M2021-02-13	Fetch pldr from an external XML file, not from a stringified version
 	M2021-02-12	Asynchronous import of calendrical objects - calendar classes are instantiated here
 	M2021-01-09	Button for custom calendar
 	M2020-12-29 Back to script (no module)
@@ -222,11 +223,11 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 	referenceExtFormat = new ExtDateTimeFormat(extUsedOptions.locale,extUsedOptions);
 */
 	cusAskedOptions = new modules.ExtDateTimeFormat(extendedLocale, Options, register.customCalendar);
-	// Certain Unicode calendars do not give a proper result: here is the control code.
-	let valid = modules.ExtDateTimeFormat.unicodeValidDateinCalendar(register.targetDate, extUsedOptions.timeZone,usedOptions.calendar);
+	// Certain Unicode calendars do not give a proper result: here is the control code. But this was solved with ICU 68
+	// let valid = modules.ExtDateTimeFormat.unicodeValidDateinCalendar(register.targetDate, extUsedOptions.timeZone,usedOptions.calendar);
 	// Display with extended DateTimeFormat
 	document.getElementById("Calendname").innerHTML = usedOptions.calendar;
-	document.getElementById("Xstring").innerHTML = (valid ? "" : "(!) ") + extAskedOptions.format(register.targetDate);
+	document.getElementById("Xstring").innerHTML = extAskedOptions.format(register.targetDate); 	// (valid ? "" : "(!) ") +
 	// Display custom calendar string - error control
 	document.getElementById("Customname").innerHTML = register.customCalendar.id;
 	try {
@@ -238,7 +239,7 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 
 	let	myUnicodeElement = document.getElementById("Ustring");
 	try { 
-		myUnicodeElement.innerHTML = (valid ? "" : "(!) ") + askedOptions.format(register.targetDate); // askedOptions.format(register.targetDate); 
+		myUnicodeElement.innerHTML = askedOptions.format(register.targetDate); // (valid ? "" : "(!) ") +
 		}
 	catch (e) { 
 		alert (e.message + "\n" + e.fileName + " line " + e.lineNumber);
