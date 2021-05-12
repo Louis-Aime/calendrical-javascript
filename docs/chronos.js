@@ -6,7 +6,8 @@ Contents:
  * WeekClock: a class that yields week figures for a specified week structure.
  * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
 */
-/* Version	M2021-01-19	fix Reference Error in IsoCounter.toIsoFields
+/* Version	M2021-05-22	Use built-in operator for div and modulo
+	M2021-01-19	fix Reference Error in IsoCounter.toIsoFields
 	M2021-01-09, new version with no backward compatibility
 		Collect conversion coefficients in a separate Milliseconds object
 		Collect week computations in a separate class, fix a bug for non-regular week system
@@ -61,7 +62,7 @@ const Milliseconds = {	// Basic durations in milliseconds
 	 *	coeff : [ // Array of coefficients used to decompose a time stamp into time cycles like eras, quadrisaeculae, centuries, ... down to the elementary unit.
 	 * 		{cyclelength : #, 	// length of the cycle, in elementary units.
 	 *		ceiling : #, 		// Infinity, or the maximum number of cycles of this size minus one in the upper cycle; 
-	 *							// the last cycle may hold an intercalation remainder up to the newt level,
+	 *							// the last cycle may hold an intercalation remainder up to the next level,
 	 *							// example: this level is year of 365 days, upper level is 1461 days i.e. the last year holds more than 365 days.
 	 *		subCycleShift : #, 	// number (-1, 0 or +1) to add to the ceiling of the cycle of the next level when the ceiling is reached at this level;
 	 *							// to be used for common/embolismic years in a Meton cycle, or for 128-years cycles of 4 or 5 years elementary cycles.
@@ -95,34 +96,27 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	static nonInteger = new TypeError ("non integer value for date field")
 	static nonPositiveDivisor = new RangeError ("non positive divisor in calendrical division")
 	static cycleShifting = new RangeError ("out-of-range phase value in cycle")
-	/** modulo function for calendrical computations
-	 * @param (number) a: dividend, positive or negative
-	 * @param (number) d: divisor, must be strictly positive or error is thrown
-	 * @return (number) modulo of a divided by d, with 0 <= modulo < d
+	static intercalationError = new RangeError ("intercalation error")
+	/** modulo function for calendrical computations. It is recommended to use only integer arguments
+	 * @param (number) a: dividend, integer.
+	 * @param (number) d: divisor, integer. If 0, result shall be NaN
+	 * @return (number) modulo of a divided by d, with 0 <= modulo < d or d < modulo <= 0
 	*/
-	static mod (a, d) {		//same sign as d, not as a. You may check negative value of didivend, e.g. of years
-		if (Array.from(arguments).some(isNaN)) throw Chronos.notANumber;
-		if (d <= 0) throw Chronos.nonPositiveDivisor;
-		return ( a*Math.sign(d) >= 0 ? a % d : (a % d + d) % d)
+	static mod (a, d) {		
+		return ( a*Math.sign(d) >= 0 ? a % d : (a % d + +d) % d)
 	}
 	/** division with modulo for calendrical computations
-	 * @param (number) a: dividend, positive or negative
-	 * @param (number) d: divisor, must be strictly positive or error is thrown
-	 * @return (Array) [quotient, modulo] with 0 <= modulo < d
+	 * @param (number) a: dividend; integer recommended.
+	 * @param (number) d: divisor; integer recommended.
+	 * @return (Array) [quotient, modulo] with 0 <= modulo < d or d < modulo <= 0.
 	*/
-	static divmod (a, d) {
-		if (Array.from(arguments).some(isNaN)) throw Chronos.notANumber;
-		if (d <= 0) throw Chronos.nonPositiveDivisor;
-		let quotient = 0, modulo = a;
-		while (modulo < 0) {
-			--quotient;
-			modulo += d;
+	static divmod (a, d) {	
+		if (d >=0) {
+			let quotient = Math.floor (a/d);
+			return [ quotient, a - d * quotient ]
 		}
-		while (modulo >= d) {
-			++quotient;
-			modulo -= d;
-		}
-		return [ quotient, modulo ]
+		else if (d < 0) { return Chronos.divmod (-a, -d).map (x => -x) }
+		else { return [NaN, NaN] }
 	}
 	/** Cycle start shifting, keeping phase measure. Example : (20, 1) shifted by 2 in a 12-cycle with base 1 yields (19, 13), but (20, 6) yields (20, 6)
 		This operation is used for calendrical computations on Julian-Gregorian calendars (shift year start to March), but also for computations on weeks.
@@ -167,23 +161,17 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	  for (let i = 0; i < this.calendRule.coeff.length; ++i) {	// Perform decomposition by dividing by the successive cycle length
 		if (isNaN(quantity)) 
 			result[this.calendRule.coeff[i].target] = NaN	// Case where time stamp is not a number, e.g. out of bounds.
-		else {
-			let r = 0; 		// r is the computed quotient for this level of decomposition
-			if (this.calendRule.coeff[i].cyclelength == 1) r = quantity // avoid performing a trivial division by 1.
-			else {		// at each level, search at the same time the quotient (r) and the modulus (quantity)
-			  while (quantity < 0) {
-				--r; 
-				quantity += this.calendRule.coeff[i].cyclelength;
-			  }
-			  let ceiling = this.calendRule.coeff[i].ceiling + addCycle;
-			  while ((quantity >= this.calendRule.coeff[i].cyclelength) && (r < ceiling)) {
-				++r; 
-				quantity -= this.calendRule.coeff[i].cyclelength;
-			  }
-			  addCycle = (r == ceiling) ? this.calendRule.coeff[i].subCycleShift : 0; // if at last section of this cycle, add or subtract 1 to the ceiling of next cycle
-			  if (this.calendRule.coeff[i].notify != undefined) result[this.calendRule.coeff[i].notify] = (r == ceiling); // notify special cycle, like leap year etc. 
+		else {	// Here we make the suitable Euclidian division, with ceiling.
+			let ceiling = this.calendRule.coeff[i].ceiling + addCycle,
+				[q, m] = Chronos.divmod (quantity, this.calendRule.coeff[i].cyclelength);
+			if (q > ceiling) {
+				if ( q > ceiling + 1 ) throw Chronos.intercalationError;
+				--q;
 			}
-			result[this.calendRule.coeff[i].target] += r*this.calendRule.coeff[i].multiplier; // add result to suitable part of result array	
+			quantity -= q * this.calendRule.coeff[i].cyclelength;
+			addCycle = (q == ceiling) ? this.calendRule.coeff[i].subCycleShift : 0; // if at last section of this cycle, add or subtract 1 to the ceiling of next cycle
+			if (this.calendRule.coeff[i].notify != undefined) result[this.calendRule.coeff[i].notify] = (q == ceiling); // notify special cycle, like leap year etc. 
+			result[this.calendRule.coeff[i].target] += q*this.calendRule.coeff[i].multiplier; // add result to suitable part of result array
 		}
 	  }	
 	  return result;
@@ -201,21 +189,20 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 		let currentCounter = cells[this.calendRule.coeff[0].target];	// This counter shall hold the successive remainders
 		let addCycle = 0; 	// This flag says whether there is an additional period at end of cycle, e.g. a 5th year in the Franciade or a 13th month
 		for (let i = 0; i < this.calendRule.coeff.length; i++) {
-			let f = 0;				// Number of "target" values (number of years, to begin with)
 			if (currentTarget != this.calendRule.coeff[i].target) {	// If we go to the next level (e.g. year to month), reset variables
 				currentTarget = this.calendRule.coeff[i].target;
 				currentCounter = cells[currentTarget];
 			}
 			let ceiling = this.calendRule.coeff[i].ceiling + addCycle;	// Ceiling of this level may be increased 
 																// i.e. Franciade is 5 years if at end of upper cycle
-			while (currentCounter < 0) {	// Compute f, number of cycles of this level. Cells[currentTarget] may hold a negative figure.
+			let [f,m] = Chronos.divmod (currentCounter,this.calendRule.coeff[i].multiplier);
+			if (f > ceiling) {
+				if ( f > ceiling + 1 || m != 0 ) {
+					throw Chronos.intercalationError;
+					};
 				--f;
-				currentCounter += this.calendRule.coeff[i].multiplier;
 			}
-			while ((currentCounter >= this.calendRule.coeff[i].multiplier) && (f < ceiling)) {
-				++f;
-				currentCounter -= this.calendRule.coeff[i].multiplier;
-			}
+			currentCounter -= f * this.calendRule.coeff[i].multiplier;
 			addCycle = (f == ceiling) ? this.calendRule.coeff[i].subCycleShift : 0;	// If at end of this cycle, the ceiling of the lower cycle may be increased or decreased.
 			quantity += f * this.calendRule.coeff[i].cyclelength;				// contribution to quantity at this level.
 		}
