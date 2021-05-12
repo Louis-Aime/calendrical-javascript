@@ -404,7 +404,8 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 	decade = new WeekClock (
 		{ 
 			originWeekday: 1, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Primidi (11 Nivôse 178)
-			daysInYear: (year) => (this.inLeapYear( year ) ? 366 : 365),		// leap year rule for this calendar
+			daysInYear: (year) => (this.inLeapYear({ year : year, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 }) ? 366 : 365),
+								// leap year rule for this calendar
 			startOfWeek : 1,		// week is decade, start with 1 (Primidi)
 			characWeekNumber : 1,	// we have a decade 1 and the characteristic day for this first decade is 1 Vendémiaire.
 			dayBase : 1,			// use 1..10 display for decade days
