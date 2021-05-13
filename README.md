@@ -97,6 +97,7 @@ The complete description of the parameters is available in Chronos.js. Calendars
  * nonInteger : error thrown when a non-integer value is passed where an integer value is expected.
  * nonPositiveDivisor : error thrown by mod or divmod when the divisor is not strictly positive.
  * cycleShifting : error thrown by the shiftCycle static function if the phase parameter is out of range.
+ * intercalationError : error thrown by getObject or getNumber when an Euclidian division with ceiling finds unsuitable results. 
 #### static functions
  * mod (a: number, b: number): number. The calendar modulo. b is strictly positive. Result is the positive remainder of the integer division a / b. This is not equal to a % b! Example: mod (-2,3) is 1.
  * divmod (a : number, b : number): array of numbers, \[0\] is integer quotient, \[1\] is positive remainder. Exmple: divmod (-2, 3) is \[-1, 1\].
