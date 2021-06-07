@@ -6,7 +6,13 @@ Contents:
  * WeekClock: a class that yields week figures for a specified week structure.
  * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
 */
-/* Version	M2021-05-22	Use built-in operator for div and modulo
+/* General note
+	All parameters should be integer numbers. In order to increase efficiency, almost no check is done. 
+	Any NaN parameter will yield NaN values
+	Non-integer parameter will yield erroneous non-integer values
+*/
+/* Version	M2021-05-13	Errors are defined in-line, not as generic objects; Suppress numeric type error check.
+	M2021-05-22	Use built-in operator for div and modulo
 	M2021-01-19	fix Reference Error in IsoCounter.toIsoFields
 	M2021-01-09, new version with no backward compatibility
 		Collect conversion coefficients in a separate Milliseconds object
@@ -90,13 +96,6 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	constructor (calendRule) {
 		this.calendRule = calendRule;
 	}
-	/** Errors that show a misuse of these computations
-	*/
-	static notANumber = new TypeError ("non numeric value")
-	static nonInteger = new TypeError ("non integer value for date field")
-	static nonPositiveDivisor = new RangeError ("non positive divisor in calendrical division")
-	static cycleShifting = new RangeError ("out-of-range phase value in cycle")
-	static intercalationError = new RangeError ("intercalation error")
 	/** modulo function for calendrical computations. It is recommended to use only integer arguments
 	 * @param (number) a: dividend, integer.
 	 * @param (number) d: divisor, integer. If 0, result shall be NaN
@@ -128,8 +127,9 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	 * @return (Array) [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
 	*/
 	static shiftCycle (cycle, phase, period, shift, cycleBase=0) {
-		if (Array.from(arguments).some(isNaN)) throw Chronos.notANumber;
-		if (phase < cycleBase || phase >= cycleBase + period) throw Chronos.cycleShifting;
+		// if (Array.from(arguments).some(isNaN)) throw new TypeError ("Non numeric value among arguments: " + Array.from(arguments).toString()); 
+		if (phase < cycleBase || phase >= cycleBase + period) throw new RangeError 
+			("Phase out of range: " + cycleBase + " <= " + phase + " < " + (cycleBase + period)); //Chronos.cycleShifting;
 		return Chronos.divmod (cycle * period + phase - cycleBase - shift, period).map
 				((value, index) => (index == 1 ? value + cycleBase + shift : value) )
 	}
@@ -152,7 +152,6 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	 * @returns {Object} the calendar elements in the structure that calendRule prescribes.
 	*/
 	getObject (askedNumber) {
-	  if (isNaN (askedNumber)) throw Chronos.notANumber;
 	  let quantity = askedNumber - this.calendRule.timeepoch; // set at initial value the quantity to decompose into cycles.
 	  var result = new Object(); // Construct initial compound result 
 	  for (let i = 0; i < this.calendRule.canvas.length; i++) 	// Define property of result object (a date or date-time)
@@ -165,7 +164,8 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 			let ceiling = this.calendRule.coeff[i].ceiling + addCycle,
 				[q, m] = Chronos.divmod (quantity, this.calendRule.coeff[i].cyclelength);
 			if (q > ceiling) {
-				if ( q > ceiling + 1 ) throw Chronos.intercalationError;
+				if ( q > ceiling + 1 ) throw new RangeError 
+					("Unsuitable quotient in ceiled division: " + quantity + " by " + this.calendRule.coeff[i].cyclelength + " ceiled with " + ceiling);
 				--q;
 			}
 			quantity -= q * this.calendRule.coeff[i].cyclelength;
@@ -198,7 +198,8 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 			let [f,m] = Chronos.divmod (currentCounter,this.calendRule.coeff[i].multiplier);
 			if (f > ceiling) {
 				if ( f > ceiling + 1 || m != 0 ) {
-					throw Chronos.intercalationError;
+					throw new RangeError 
+					("Unsuitable quotient in ceiled division: " + currentCounter + " by " + this.calendRule.coeff[i].multiplier + " ceiled with " + ceiling);
 					};
 				--f;
 			}
@@ -314,7 +315,7 @@ class IsoCounter {
 			timeepoch : 0, // 0 on 0000-03-01.
 			coeff : isoCoeff, canvas : isoCanvas
 			})
-		let shift = this.toCounter ( {isoYear: originYear, isoMonth: originMonth, isoDay: originDay} ); // non numeric parameters shall throw an error
+		let shift = this.toCounter ( {isoYear: originYear, isoMonth: originMonth, isoDay: originDay} ); 
 		// Then establish new clockwork taking the opposite value for epoch counter
 		this.clockwork = new Chronos ({
 			timeepoch : -shift, // re-instatiated to the value that corresponds to the asked date
@@ -336,7 +337,6 @@ class IsoCounter {
 	 * @return (Object): fields isoYear, isoMonth and isoDay specify the date in ISO8601 calendar.
 	*/
 	toIsoFields = function ( counter ) {
-		if (isNaN (counter) ) throw notANumber;
 		let myFields = this.clockwork.getObject (Math.floor (counter));
 		[myFields.isoYear, myFields.isoMonth] = Chronos.shiftCycle (myFields.isoYear, myFields.isoMonth, 12, -2, 3); // replace last parameter if monthBase 0 is required
 		return myFields
