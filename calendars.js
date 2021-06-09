@@ -9,7 +9,8 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Paasing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-06-13	Errors are defined on throw, not as specific objects; most type check are suppressed
+/* Versions:	M2021-06-19 wipe dead code away (Error objects...)
+	M2021-06-13	Errors are defined on throw, not as specific objects; most type check are suppressed
 	M2021-01-12 Use modules
 	M2021-01-09 
 		eras and decade for the French Rev. calendar
@@ -206,7 +207,6 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 	*/
 	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
 	partsFormat = null	// no special instruction
-	static invalidEra = new RangeError("invalid era value for calendar and date")
 	stringFormat = "fields"	// formatting options differ from base calendars
 	canvas = "gregory"
 	shiftYearStart (dateFields, shift, base) { // Shift start of fullYear to March, or back to January, for calendrical calculations
@@ -271,13 +271,6 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		if (this.switchingDate.valueOf() < Date.parse ("1582-10-15T00:00:00Z")) 
 			throw new RangeError ("Switching date to Gregorian shall be not earlier than 1582-10-15: " + this.switchinDate.toISOString());
 	}
-	/** Errors
-	*/
-	// static dateUnderflow = new RangeError ("date element underflow")
-	static dateOverflow = new RangeError ("date element overflow for specified calendar")
-	static yearUnderflow = new RangeError ("invalid negative year value, check or specify era")
-	static invalidEra = new RangeError("invalid era value for calendar and date")
-	static gregorianTransition = new RangeError ("Gregorian transition is on or after 1582-10-15")
 	/** Base properties and methods
 	 
 	*/
@@ -320,7 +313,6 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		switch (fields.era) {
 			case this.julianCalendar.eras[1] :		// "A.D." weak indication, just year shall not be < 1, but similar to no indication at all
 				if (fields.year < 1) throw new RangeError ("If era is specified, year shall be stricly positive: " + fields.year);
-				// WesternCalendar.yearUnderflow;		// test this, then go to no-era case
 			case undefined: // here we have to guess. Oberve that year may be negative (astronomer's notation)
 				testDate = new Date (ExtDate.fullUTC(fields.year, fields.month, fields.day, fields.hours, fields.minutes, fields.seconds, fields.milliseconds));
 				if (testDate.valueOf() < this.switchingDate.valueOf())	// deemed Julian
@@ -328,18 +320,14 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 				else return testDate.valueOf();
 			case this.eras[0]: case this.eras[1]:	// Julian calendar, year field must be >=1
 				if (fields.year < 1) throw new RangeError ("If era is specified, year shall be stricly positive: " + fields.year);
-				// WesternCalendar.yearUnderflow;
 				fields.era = this.julianCalendar.eras[this.eras.indexOf(fields.era)] // set julianCalendar era code instead of this.
 				return this.julianCalendar.counterFromFields(fields);
 			case this.eras[2]:				// Specified as New Style (Gregorian), but cannot be before 1582-10-15
 				if (fields.year < 1) throw new RangeError ("Era specified as Gregorian, year shall be stricly positive: " + fields.year);
-				//WesternCalendar.yearUnderflow;
 				testDate = new Date (ExtDate.fullUTC(fields.year, fields.month, fields.day, fields.hours, fields.minutes, fields.seconds, fields.milliseconds));
 				if (testDate.valueOf() < this.firstSwitchDate) throw new RangeError ("Gregorian era cannot match such date: " + testDate.toISOString());
-				// WesternCalendar.invalidEra;
 				return testDate.valueOf();
 			default : throw new RangeError ("Invalid era: " + fields.era);
-			// WesternCalendar.invalidEra;
 		}
 		
 	}
