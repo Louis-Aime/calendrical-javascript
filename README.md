@@ -107,7 +107,7 @@ The complete description of the parameters is available in Chronos.js. Calendars
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * weekdayRule is a compound object that summerizes the rules regarding weeks. Regular 7-days weeks are handled, as well as systems with epagomenal days: one or two epagomenal days each at different places in the year, or several epagomenal days at the end of the year.
 #### methods
-  * geWeekFigures (dayIndex, characDayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
+  * getWeekFigures (dayIndex, characDayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
 
 ### IsoCounter : class
 
@@ -169,16 +169,10 @@ A new field is handled in the options object:
    * "auto" (default value): display era part if and only if 1. year is displayed, 2. era of now is not equal to era of formatted date.
    * "never": do not display era, whatever the date and the *era* option may be.
    * "always": display era following *era* option; if this option is undefined, it is deemed "short".
-#### static errors
- * invalidOption: invalid value for option in this context.
- * unimplementedOption: function, data case or option value not implemented; it may come from an insufficient description of a custom calendar.
 #### static function
- * unicodeValidDateinCalendar: boolean (
-   * aDate: Date/extDate, a date to be formatted,
-   * myTZ: string, the name of a time zone
-   * myCalendar: string, the name of a built-in calendar)
-until ICU version 68, certain dates were not properly interpreted; this function returns *false* in those cases. 
-This function shall be deprecated as soon as the corrected version of ICU is deployed.
+ * unicodeValidDateinCalendar: *this function is deleted*. 
+until ICU version 68, certain dates were not properly interpreted; this function would return *false* in those cases. 
+This function is deprecated since the version 68 of ICU is available (even though not all browsers have integrated ICU 68).
 #### methods
  * resolvedOptions(): same as for Intl.DateTimeFormat, eraDisplay is added.
  * displayEra (date): boolean (private function).
