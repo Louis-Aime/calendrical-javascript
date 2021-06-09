@@ -80,7 +80,7 @@ The **WesternCalendar** exported class defines the calendar structure of most Eu
 The author specifies the switching date at instatiation.
 
 ### FrenchRevCalendar
-The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1992 to 1805.
+The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1792 to 1805.
 
 ## Usage
 
@@ -142,7 +142,7 @@ However, in the last case,
  * getRealTZmsOffset (TZ:string): number;
    * if TZ is undefined or "", return the real offset from UTC to system local time *in milliseconds*. This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries: as there were no time zones, the real offset is computed to the second, but the traditional method may round to minutes.   
    * else, TZ is considered the name of a time zone; the time offset in millisecond for this time zone at this date is returned. 
- * toResolvedLocaleDate (TZ: string): ExtDate object. TZ is the name of a time zone. The method returns a Date object whose UTC field values correspond to the present date at the time zone. If TZ is not identified, the system local date is returned.
+ * toResolvedLocaleDate (TZ: string): ExtDate object. TZ is the name of a time zone. The method returns a Date object whose UTC field values correspond to this date at the specified time zone. If TZ is not identified, the system time zone is assumed.
 In the next functions, the TZ parameter my be equal to "UTC", or to anything else including undefined. The other parameters or results are evaluated at the system local time zone, or at UTC time if and only if TZ == "UTC". 
 The time stamp is the number of milliseconds since Unix epoch (1 Jan. 1970 00:00 h UTC)
  * getFields (TZ): object. The fields of the date, in the associated custom calendar. The corresponding time stamp is returned.
