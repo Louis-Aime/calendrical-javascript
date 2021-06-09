@@ -80,7 +80,7 @@ The **WesternCalendar** exported class defines the calendar structure of most Eu
 The author specifies the switching date at instatiation.
 
 ### FrenchRevCalendar
-The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1992 to 1805.
+The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1792 to 1805.
 
 ## Usage
 
@@ -92,12 +92,6 @@ The **FrenchRevCalendar** exported class defines the calendar used under the Fre
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * calendRule is a compound object that describes how to transform a counter into a compound object with date fields, and the reverse. The calendar should follow the integral postfix intercalation rule. The Roman (julian-gregorian) calendar follows this rule if the beginning of the year is shifted to 1 March.
 
-#### static errors
- * notANumber : error thrown when a non-numeric value is passed for a numeric field.
- * nonInteger : error thrown when a non-integer value is passed where an integer value is expected.
- * nonPositiveDivisor : error thrown by mod or divmod when the divisor is not strictly positive.
- * cycleShifting : error thrown by the shiftCycle static function if the phase parameter is out of range.
- * intercalationError : error thrown by getObject or getNumber when an Euclidian division with ceiling finds unsuitable results. 
 #### static functions
  * mod (a: number, b: number): number. The calendar modulo. b is strictly positive. Result is the positive remainder of the integer division a / b. This is not equal to a % b! Example: mod (-2,3) is 1.
  * divmod (a : number, b : number): array of numbers, \[0\] is integer quotient, \[1\] is positive remainder. Exmple: divmod (-2, 3) is \[-1, 1\].
@@ -108,7 +102,7 @@ The complete description of the parameters is available in Chronos.js. Calendars
  * getObject (askedNumber): object with date fields obtained from the number with the Cycle Based Calendar Computation Engine. The number may be the Posix time stamp or any other counter that designates an instant, as specified in calendRule.
  * getNumber (askedObject): number. The reverse operation with respect to getObject.
 
-### WeekCLock : class
+### WeekClock : class
 #### Constructor (weekdayRule : object)
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * weekdayRule is a compound object that summerizes the rules regarding weeks. Regular 7-days weeks are handled, as well as systems with epagomenal days: one or two epagomenal days each at different places in the year, or several epagomenal days at the end of the year.
@@ -140,10 +134,6 @@ However, in the last case,
    * the date is always evaluated as a local date with respect to the system time zone.
 #### static objects
  * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value.
-#### static errors
- * invalidDateFields: thrown if the value of a date field is not a number.
- * invalidOption: thrown if an option field bears an invalid value.
- * unimplementedOption: thrown if the value of an option cannot be handled in the context of the calendar or of other data.
 #### static functions
  * fullUTC (fullYear, month, day, hour, minute, second, millisecond): number, all parameters are numbers. Set ExtDate object to the date specified by the parameters, deemed UTC (not local). This is very much like Date.UTC, except:
    * the year element is a full year, no 2-digit year is admitted;
@@ -152,7 +142,7 @@ However, in the last case,
  * getRealTZmsOffset (TZ:string): number;
    * if TZ is undefined or "", return the real offset from UTC to system local time *in milliseconds*. This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries: as there were no time zones, the real offset is computed to the second, but the traditional method may round to minutes.   
    * else, TZ is considered the name of a time zone; the time offset in millisecond for this time zone at this date is returned. 
- * toResolvedLocaleDate (TZ: string): ExtDate object. TZ is the name of a time zone. The method returns a Date object whose UTC field values correspond to the present date at the time zone. If TZ is not identified, the system local date is returned.
+ * toResolvedLocaleDate (TZ: string): ExtDate object. TZ is the name of a time zone. The method returns a Date object whose UTC field values correspond to this date at the specified time zone. If TZ is not identified, the system time zone is assumed.
 In the next functions, the TZ parameter my be equal to "UTC", or to anything else including undefined. The other parameters or results are evaluated at the system local time zone, or at UTC time if and only if TZ == "UTC". 
 The time stamp is the number of milliseconds since Unix epoch (1 Jan. 1970 00:00 h UTC)
  * getFields (TZ): object. The fields of the date, in the associated custom calendar. The corresponding time stamp is returned.
