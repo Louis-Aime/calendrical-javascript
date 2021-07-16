@@ -1,17 +1,22 @@
 /* chronos.js: Basic functions for calendrical computations
 Character set is UTF-8
 Contents: 
- * milliseconds: a const object, with counts in ms of basic time units from second to day.
- * Chronos: a class that implements the Cycle-Based Calendrical Computations Engine to convert a timestamp to or from a date.
+ * Milliseconds: a const object, with counts in ms of basic time units from second to day.
+ * Cbcce (ex Chronos): a class that implements the Cycle-Based Calendrical Computations Engine to convert a timestamp to or from a date.
  * WeekClock: a class that yields week figures for a specified week structure.
  * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
 */
 /* General note
 	All parameters should be integer numbers. In order to increase efficiency, almost no check is done. 
-	Any NaN parameter will yield NaN values
-	Non-integer parameter will yield erroneous non-integer values
+	Any NaN parameter will yield NaN values.
+	Non-integer parameter will yield erroneous non-integer values.
+	Default parameters assume that computations are done using 1 for the first month of any calendar.
 */
-/* Version	M2021-05-13	Errors are defined in-line, not as generic objects; Suppress numeric type error check.
+/* Version	M2021-07-23	
+		Compute a date stamp from week fields
+		Class Chronos changed to Cbcce
+		Add control of missing or invalid fields in Cbcce
+	M2021-05-13	Errors are defined in-line, not as generic objects; Suppress numeric type error check.
 	M2021-05-22	Use built-in operator for div and modulo
 	M2021-01-19	fix Reference Error in IsoCounter.toIsoFields
 	M2021-01-09, new version with no backward compatibility
@@ -55,13 +60,13 @@ Inquiries: www.calendriermilesien.org
 "use strict";
 /** Basic units in milliseconds 
 */
-const Milliseconds = {	// Basic durations in milliseconds
+export const Milliseconds = {	// Basic durations in milliseconds
 	DAY_UNIT : 86400000,
 	HOUR_UNIT : 3600000,
 	MINUTE_UNIT : 60000,
 	SECOND_UNIT : 1000
 }
-/** Instantiate Chronos for calendar specific computations. Class parameter is a single object that represent the calendar's cycle structure.
+/** Instantiate Cbcce for calendar specific computations. Class parameter is a single object that represent the calendar's cycle structure.
  * @param (Object)	calendRule:  the cycle structure and intercalation rules of the calendar. Example hereunder:
 	 * Example = {
 	 *	timeepoch : #, // origin date or time stamp in elementary units (days, milliseconds...) to be used for the decomposition, with respect to instant 0
@@ -92,7 +97,7 @@ const Milliseconds = {	// Basic durations in milliseconds
  *	2. 	The same names shall be used for the "coeff" and the "canvas" properties, otherwise functions shall give erroneous results.
  *	3.	canvas.month.init is defined, it is the number of the first month in the year (0 with Date, 1 with Temporal)
 */
-class Chronos 	{	// Essential calendrical computations tools, including the Cycle Based Calendrical Computation Engine (CBCCE)
+export class Cbcce 	{	// Essential calendrical computations tools, including the Cycle Based Calendrical Computation Engine (CBCCE)
 	constructor (calendRule) {
 		this.calendRule = calendRule;
 	}
@@ -114,7 +119,7 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 			let quotient = Math.floor (a/d);
 			return [ quotient, a - d * quotient ]
 		}
-		else if (d < 0) { return Chronos.divmod (-a, -d).map (x => -x) }
+		else if (d < 0) { return Cbcce.divmod (-a, -d).map (x => -x) }
 		else { return [NaN, NaN] }
 	}
 	/** Cycle start shifting, keeping phase measure. Example : (20, 1) shifted by 2 in a 12-cycle with base 1 yields (19, 13), but (20, 6) yields (20, 6)
@@ -129,8 +134,8 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	static shiftCycle (cycle, phase, period, shift, cycleBase=0) {
 		// if (Array.from(arguments).some(isNaN)) throw new TypeError ("Non numeric value among arguments: " + Array.from(arguments).toString()); 
 		if (phase < cycleBase || phase >= cycleBase + period) throw new RangeError 
-			("Phase out of range: " + cycleBase + " <= " + phase + " < " + (cycleBase + period)); //Chronos.cycleShifting;
-		return Chronos.divmod (cycle * period + phase - cycleBase - shift, period).map
+			("Phase out of range: " + cycleBase + " <= " + phase + " < " + (cycleBase + period)); //Cbcce.cycleShifting;
+		return Cbcce.divmod (cycle * period + phase - cycleBase - shift, period).map
 				((value, index) => (index == 1 ? value + cycleBase + shift : value) )
 	}
 	/** Whether a year is a leap year in the Julian calendar, with the year origin Anno Domini as defined by Dionysius Exiguus in the 6th century. 
@@ -138,14 +143,14 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	 * @return (boolean) true if year is a leap year i.e. there is a 29 February in this year.
 	 */
 	static isJulianLeapYear (year) {
-		return Chronos.mod (year, 4) == 0
+		return Cbcce.mod (year, 4) == 0
 	}
 	/** Whether a year is a leap year in the Gregorian calendar, with the year origin Anno Domini as defined by Dionysius Exiguus in the 6th century. 
 	 * @param (number) a signed integer number representing the year. 0 means 1 B.C. Leap years, are either not divisible by 100 but by 4, or divisible by 400.
 	 * @return (boolean) true if year is a leap year i.e. there is a 29 February in this year.
 	 */
 	static isGregorianLeapYear (year) {
-		return Chronos.mod (year, 4) == 0 && (Chronos.mod(year, 100) != 0 || Chronos.mod(year, 400) ==0)
+		return Cbcce.mod (year, 4) == 0 && (Cbcce.mod(year, 100) != 0 || Cbcce.mod(year, 400) ==0)
 	}
 	/** Build a compound object from a time stamp holding the elements as required by a given cycle hierarchy model.
 	 * @param {number} askedNumber: a time stamp representing the date to convert.
@@ -162,7 +167,7 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 			result[this.calendRule.coeff[i].target] = NaN	// Case where time stamp is not a number, e.g. out of bounds.
 		else {	// Here we make the suitable Euclidian division, with ceiling.
 			let ceiling = this.calendRule.coeff[i].ceiling + addCycle,
-				[q, m] = Chronos.divmod (quantity, this.calendRule.coeff[i].cyclelength);
+				[q, m] = Cbcce.divmod (quantity, this.calendRule.coeff[i].cyclelength);
 			if (q > ceiling) {
 				if ( q > ceiling + 1 ) throw new RangeError 
 					("Unsuitable quotient in ceiled division: " + quantity + " by " + this.calendRule.coeff[i].cyclelength + " ceiled with " + ceiling);
@@ -183,8 +188,10 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 	*/
 	getNumber (askedObject) { // from an object askedObject structured as calendRule.canvas, compute the chronological number
 		var cells = {...askedObject}, quantity = this.calendRule.timeepoch; // initialise Unix quantity to computation epoch
-		for (let i = 0; i < this.calendRule.canvas.length; i++)  // cells value shifted as to have all 0 if at epoch
+		for (let i = 0; i < this.calendRule.canvas.length; i++) { // cells value shifted as to have all 0 if at epoch
 			cells[this.calendRule.canvas[i].name] -= this.calendRule.canvas[i].init;
+			if (isNaN (cells[this.calendRule.canvas[i].name])) throw new TypeError ('Missing or invalid expected field ' + this.calendRule.canvas[i].name);
+		}
 		let currentTarget = this.calendRule.coeff[0].target; 	// Set to uppermost unit used for date (year, most often)
 		let currentCounter = cells[this.calendRule.coeff[0].target];	// This counter shall hold the successive remainders
 		let addCycle = 0; 	// This flag says whether there is an additional period at end of cycle, e.g. a 5th year in the Franciade or a 13th month
@@ -195,7 +202,7 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 			}
 			let ceiling = this.calendRule.coeff[i].ceiling + addCycle;	// Ceiling of this level may be increased 
 																// i.e. Franciade is 5 years if at end of upper cycle
-			let [f,m] = Chronos.divmod (currentCounter,this.calendRule.coeff[i].multiplier);
+			let [f,m] = Cbcce.divmod (currentCounter,this.calendRule.coeff[i].multiplier);
 			if (f > ceiling) {
 				if ( f > ceiling + 1 || m != 0 ) {
 					throw new RangeError 
@@ -209,21 +216,25 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
 		}
 		return quantity ;
 	}
-} // end of Chronos class
+} // end of Cbcce class
 /**Week clock: get week figures using different reckoning sytems for weeks
  * @param (Object)	weekdayRule: set of parameters for the computation of week elements
 	 * (number, required) originWeekday: weekday number of day index 0. Value is renormalised to 0..weekLength-1.
-	 * (function, required) daysInYear: function (year), number of days in year (using relative counting system). With solar calendars, result is 365 or 366.
-	 * (number) startOfWeek: number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. Value is renormalised to 0..weekLength-1.
+	 * (function, required) daysInYear: function (year), number of days in year. year is specified as "fullyear" (unambiguous). 
+		With solar calendars, result is 365 or 366.
+	 * (function, required) characDayIndex: function (year): the day index of one day of characWeekNumber of year.
+		if weekReset is true, this day shall be the first day of the week charcWeekNumber. If not, all weeks are of same length.
+	 * (number) startOfWeek: number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. 
+		Value is renormalised to 0..weekLength-1.
 	 * (number) characWeekNumber: number of the week of the characDayIndex. Default is 1.
-	 * (number) dayBase: number of the first day in any week. May differ from startOfWeek. used for displaying result. Default is 1.
+	 * (number) dayBase: number of the first day in any week. May differ from startOfWeek. Used for displaying result. Default is 1.
 	 * (number) weekBase: number of the first week in any year. May differ from characWeekNumber. Default is 1.
-	 * (number) weekLength: number of days in week. Usage: test alernate weeks. Default is 7.
+	 * (number) weekLength: minimum number of days in one week. Default is 7.
 	 * (boolean) weekReset: whether weekday is forced to a constant value at beginning of year. Default is false.
 	 * (Array) uncappedWeeks: an array of the numbers of the week that have one or more day above weekLength. Possible cases:
-		 undefined (and set to null): all weeks have always same duration.
+		 undefined (and set to null): all weeks have always the same duration, weekLength.
 		 .length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength
-		 .length > 1: each week indentified is followed by one (unique) epagomenal day, and this week has weekLength + 1 days.
+		 .length > 1: each week indentified is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days.
 		 e.g. for French revolutionary calendar: [36], and the days are indexed indexed 10 to 15 (index of Décadi is 9);
 		 whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
 		 These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.
@@ -231,14 +242,15 @@ class Chronos 	{	// Essential calendrical computations tools, including the Cycl
  * 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.
  * 2. weekLength shall be > 0
 */
-class WeekClock {
+export class WeekClock {
 	constructor (weekdayRule) {
 		this.originWeekday = weekdayRule.originWeekday;
 		this.daysInYear = weekdayRule.daysInYear;
+		this.characDayIndex = weekdayRule.characDayIndex; 
 		this.weekLength = weekdayRule.weekLength != undefined ? weekdayRule.weekLength : 7 ;
-		this.startOfWeek = weekdayRule.startOfWeek != undefined ? Chronos.mod (weekdayRule.startOfWeek, this.weekLength) : 1 ;
+		this.startOfWeek = weekdayRule.startOfWeek != undefined ? Cbcce.mod (weekdayRule.startOfWeek, this.weekLength) : 1 ;
 		this.characWeekNumber = weekdayRule.characWeekNumber != undefined ? weekdayRule.characWeekNumber : 1 ;
-		this.dayBase = weekdayRule.dayBase != undefined ? Chronos.mod (weekdayRule.dayBase, this.weekLength) : 1 ;
+		this.dayBase = weekdayRule.dayBase != undefined ? Cbcce.mod (weekdayRule.dayBase, this.weekLength) : 1 ;
 		this.weekBase = weekdayRule.weekBase != undefined ? weekdayRule.weekBase : 1; 
 		this.weekReset = weekdayRule.weekReset != undefined ? weekdayRule.weekReset : false;
 		this.uncappedWeeks = weekdayRule.uncappedWeeks != undefined ? weekdayRule.uncappedWeeks : null;
@@ -253,37 +265,60 @@ class WeekClock {
 		2 : year offset: -1 if week belongs to last week year, 0 if in same year, 1 if in next year.
 		3 : weeks in year: number of weeks for the week year the date belongs to. This is not always the number of the last week (check this.weekBase)!
 	*/
-	getWeekFigures (dayIndex, characDayIndex, year) {
-		let weekNumberShift = this.weekBase - 1, 	// used to compute last week's number
-			[weeksInYear, weekShiftNextYear] = Chronos.divmod (this.daysInYear(year), this.weekLength),	// Integer division of calendar year in weeks. 
+	getWeekFigures (dayIndex, year) {	// (dayIndex, characDayIndex, year)
+		let cDayIndex = this.characDayIndex (year),
+			weekNumberShift = this.weekBase - 1, 	// used to compute last week's number
+			[weeksInYear, weekShiftNextYear] = Cbcce.divmod (this.daysInYear(year), this.weekLength),	// Integer division of calendar year in weeks. 
 			// this figure characterises the week year, in particular versus number of weeks.
-			weekYearPhase = this.weekReset ? 0 : Chronos.mod (characDayIndex + this.originWeekday - this.startOfWeek, this.weekLength); 	
+			weekYearPhase = (this.weekReset ? 0 : Cbcce.mod (cDayIndex + this.originWeekday - this.startOfWeek, this.weekLength)); 	
 		// Compute basic coordinates: week cycle number (base 0) from referenceDay, day number 0..this.weekLength-1 in week beginning at 0 then shift to this.startOfWeek.
-		var result = Chronos.divmod ( dayIndex - characDayIndex + this.startOfWeek + weekYearPhase, this.weekLength ); // Here, first week is 0 and first day of week is 0.
+		var result = Cbcce.divmod ( dayIndex - cDayIndex + this.startOfWeek + weekYearPhase, this.weekLength ); // Here, first week is 0 and first day of week is 0.
 		if (this.uncappedWeeks != null && this.uncappedWeeks.length > 1) 	// one or several weeks with one epagomenal days within year. One epagomenal day per singular week.
 			 this.uncappedWeeks.forEach (item => {if (result[0] > item) {
-				result[1]--; result = Chronos.divmod (result[0] * this.weekLength + result[1], this.weekLength) }})	// shift week counts by one day for each singular week.
+				result[1]--; result = Cbcce.divmod (result[0] * this.weekLength + result[1], this.weekLength) }})	// shift week counts by one day for each singular week.
 		result[0] += this.characWeekNumber;		// set week number with respect to number of week of the reference day
-		result = Chronos.shiftCycle ( result[0], result [1], this.weekLength, this.startOfWeek );	// shift week cycle, first day is this.startOfWeek and last day is this.startOfWeek + this.weekLength-1
-		if (this.dayBase != this.startOfWeek) result[1] = Chronos.mod (result[1]-this.dayBase, this.weekLength) + this.dayBase;		// day number forced to range this.dayBase .. this.dayBase + this.weekLength-1;
+		result = Cbcce.shiftCycle ( result[0], result [1], this.weekLength, this.startOfWeek );	// shift week cycle, first day is this.startOfWeek and last day is this.startOfWeek + this.weekLength-1
+		if (this.dayBase != this.startOfWeek) result[1] = Cbcce.mod (result[1]-this.dayBase, this.weekLength) + this.dayBase;		// day number forced to range this.dayBase .. this.dayBase + this.weekLength-1;
 		if (this.uncappedWeeks != null && this.uncappedWeeks.length == 1)
 			if (result[0] > this.uncappedWeeks[0]) {result[0]-- ; result[1] += this.weekLength } // epagomenal days at end of year have indexes above ordinary weekLength
 		// Solve overflow
-		let WeeksInDateYear = weeksInYear + ( !this.weekReset && weekYearPhase >= Chronos.mod (-weekShiftNextYear, this.weekLength) ? 1 : 0); // Number of weeks for present week year
+		let WeeksInDateYear = weeksInYear + ( !this.weekReset && weekYearPhase >= Cbcce.mod (-weekShiftNextYear, this.weekLength) ? 1 : 0); // Number of weeks for present week year
 		if (result[0] < this.weekBase) { // the week belongs to the preceding weekyear
-			[weeksInYear, weekShiftNextYear] = Chronos.divmod (this.daysInYear(year-1), this.weekLength);	// recompute week year parameters for preceding year
+			[weeksInYear, weekShiftNextYear] = Cbcce.divmod (this.daysInYear(year-1), this.weekLength);	// recompute week year parameters for preceding year
 			result.push(-1,		// reference year for the week number is the year before the date's year
-				Chronos.mod (weekYearPhase - weekShiftNextYear, this.weekLength) >= Chronos.mod (-weekShiftNextYear, this.weekLength)	// weekYearPhase of preceding year computed after this year's
+				Cbcce.mod (weekYearPhase - weekShiftNextYear, this.weekLength) >= Cbcce.mod (-weekShiftNextYear, this.weekLength)	// weekYearPhase of preceding year computed after this year's
 					? weeksInYear + 1 : weeksInYear );	// Number of weeks in the preceding year
 			result[0] = result[3] + weekNumberShift;	// Set to last week of preceding year
 		} else if (result[0] > WeeksInDateYear + weekNumberShift) {	// The week belongs to the following year
-			let [ weeksInYearPlus, weekShiftNextYearPlus ] = Chronos.divmod (this.daysInYear(year+1), this.weekLength);	// Integer division of next calendar year in weeks
+			let [ weeksInYearPlus, weekShiftNextYearPlus ] = Cbcce.divmod (this.daysInYear(year+1), this.weekLength);	// Integer division of next calendar year in weeks
 			result.push (1, 	// reference year for the week number is the year after the date's year
-				Chronos.mod (weekYearPhase + weekShiftNextYear, this.weekLength) >= Chronos.mod (-weekShiftNextYearPlus, this.weekLength) 	// weekYearPhase cycle of next year computed from this year's
+				Cbcce.mod (weekYearPhase + weekShiftNextYear, this.weekLength) >= Cbcce.mod (-weekShiftNextYearPlus, this.weekLength) 	// weekYearPhase cycle of next year computed from this year's
 					?  weeksInYearPlus + 1 : weeksInYearPlus);		// Number of weeks in the next wwek year
 			result[0] = this.weekBase;				// set to first week
 		} else result.push (0, WeeksInDateYear); 	// most cases.
-		return result
+		return result;
+	}
+	/**	Compute day index from week figures in the defined week structure
+	 * @param (number) year : the year (full year, a relative integer) of the week figures. There may be 1 year difference with the year of the calendar's date.
+	 * @param (number) weekNumber : the number of the week, that follows the rules.
+	 * @param (number) dayOfWeek : the number day of the week, following the weekdayRule parameter set.
+	 * @return (number) dayIndex : day stamp, in day unit (not in milliseconds or other), of the day that corresponds to the week figures.
+	*/
+	getNumberFromWeek (weekYear, weekNumber = this.weekBase, dayOfWeek = this.dayBase, check = false) {
+		if (weekNumber < this.weekBase) throw new RangeError ('Week number too low: ' + weekNumber);
+		if (dayOfWeek - this.dayBase < 0) throw new RangeError ('Day of week to low: ' + dayOfWeek);
+		let	cDayIndex = this.characDayIndex (weekYear);
+		cDayIndex -= (this.weekReset ? 0 : Cbcce.mod ( cDayIndex + this.originWeekday - this.dayBase, this.weekLength )) ;
+		let	result = cDayIndex + (weekNumber - this.weekBase) * this.weekLength + (dayOfWeek - this.dayBase) ;
+		if (this.uncappedWeeks != null)  this.uncappedWeeks.forEach ((value) => ( result += (weekNumber > value ? 1 :0) )) ;
+		// Control by doing the reverse computation
+		let test = this.getWeekFigures (cDayIndex, weekYear);
+		if (check) {
+			if (test [3] < weekNumber) throw new RangeError ('Week number too high: ' + weekNumber);
+			if (test [0] != weekNumber || test [1] != dayOfWeek) throw new RangeError
+				('Recomputed week figures do not match asked ones: '+ weekYear + ', ' + weekNumber + ', ' + dayOfWeek);
+		}
+		return result;
 	}
 }
 /** Convert number of days since epoch to or from a date expressed after ISO 8601.
@@ -291,13 +326,12 @@ class WeekClock {
 * @param (number) the epoch month in ISO, a number in range 1..12, default: 1.
 * @param (number) the epoch day of the month in ISO, a number in range 1..31, default: 1. If this day does not exist in this month, date is balanced to next month.
 */
-class IsoCounter { 
+export class IsoCounter { 
 	constructor (originYear=1970, originMonth=1, originDay=1) {
-		// this.monthBase = monthBase;	// value of the first month, 0 for "Date" style, 1 for "Temporal" style
 		const 
 			isoCoeff = [ 
-			  {cyclelength : 146097, ceiling : Infinity, subCycleShift : 0, multiplier : 400, target : "isoYear"},
-			  {cyclelength : 36524, ceiling :  3, subCycleShift : 0, multiplier : 100, target : "isoYear"},
+			  {cyclelength : 146097, ceiling : Infinity, subCycleShift : 0, multiplier : 400, target : "isoYear"}, // 400 Gregorian years
+			  {cyclelength : 36524, ceiling :  3, subCycleShift : 0, multiplier : 100, target : "isoYear"}, // 1 Gregorian short century
 			  {cyclelength : 1461, ceiling : Infinity, subCycleShift : 0, multiplier : 4, target : "isoYear"}, // 4 Julian years
 			  {cyclelength : 365, ceiling : 3, subCycleShift : 0, multiplier : 1, target : "isoYear"}, // One 365-days year
 			  {cyclelength : 153, ceiling : Infinity, subCycleShift : 0, multiplier : 5, target : "isoMonth"}, // Five-months cycle
@@ -311,13 +345,13 @@ class IsoCounter {
 			  {name : "isoDay", init : 1}
 			];
 		// Compute counter of specified date as if it were since 0000-03-01
-		this.clockwork = new Chronos ({
+		this.clockwork = new Cbcce ({
 			timeepoch : 0, // 0 on 0000-03-01.
 			coeff : isoCoeff, canvas : isoCanvas
 			})
 		let shift = this.toCounter ( {isoYear: originYear, isoMonth: originMonth, isoDay: originDay} ); 
 		// Then establish new clockwork taking the opposite value for epoch counter
-		this.clockwork = new Chronos ({
+		this.clockwork = new Cbcce ({
 			timeepoch : -shift, // re-instatiated to the value that corresponds to the asked date
 			coeff : isoCoeff, canvas : isoCanvas
 			})
@@ -329,7 +363,8 @@ class IsoCounter {
 	*/
 	toCounter = function ( isoFields ) {
 		let myFields = {...isoFields};
-		[myFields.isoYear, myFields.isoMonth] = Chronos.shiftCycle (isoFields.isoYear, isoFields.isoMonth, 12, 2, 1); // replace last parameter if monthBase 0 is required
+		// for missing fields: getNumber shall throw 
+		[myFields.isoYear, myFields.isoMonth] = Cbcce.shiftCycle (isoFields.isoYear, isoFields.isoMonth, 12, 2, 1); // replace last parameter if monthBase 0 is required
 		return this.clockwork.getNumber (myFields)
 	}
 	/** Compute ISO8601 date figures from a number of days since epoch.
@@ -338,8 +373,7 @@ class IsoCounter {
 	*/
 	toIsoFields = function ( counter ) {
 		let myFields = this.clockwork.getObject (Math.floor (counter));
-		[myFields.isoYear, myFields.isoMonth] = Chronos.shiftCycle (myFields.isoYear, myFields.isoMonth, 12, -2, 3); // replace last parameter if monthBase 0 is required
+		[myFields.isoYear, myFields.isoMonth] = Cbcce.shiftCycle (myFields.isoYear, myFields.isoMonth, 12, -2, 3); // replace last parameter if monthBase 0 is required
 		return myFields
 	}
 }
-export {Milliseconds, Chronos, WeekClock, IsoCounter}
