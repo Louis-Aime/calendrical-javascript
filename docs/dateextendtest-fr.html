@@ -2,8 +2,10 @@
 <html lang="fr">
 <head>
 	<meta charset="UTF-8">
-	<title>Extension Date et DateTimeFormat</title>
-<!-- Version	M2021-02-12 Asynchronous import
+	<title>Calendriers utilisateurs et affichage étendu des dates</title>
+<!-- Version	M2021-07-24 Control week figures
+	M2021-07-22 Import only one script file
+	M2021-02-12 Asynchronous import
 	M2021-01-09 Calendar button, back to modules, specify panel height
 	M2021-01-07 new chronos
 	M2020-12-28 back to scripts
@@ -15,14 +17,13 @@
 -->
 	
 	<meta name="creator" content="Louis-Aimé de Fouquières">
-	<meta name="description" content="Test nouveaux packages de dates ">
-	<meta name="keywords" content="Unicode calendrier, Unicode calendars">
+	<meta name="description" content="Test routines calendaires et d'affichage de dates ">
+	<meta name="keywords" content="Unicode, calendriers, javascript">
 	<meta name="viewport" content="width=device-width">	
 
 <!-- page environment -->
 	<link href="dialsandpanels.css" rel="stylesheet"/>
 	<script type="application/javascript" src="dateextendtest.js"></script>
-	<script type="application/javascript" src="fetchdom.js"></script>
 
 <style>
 	.panel {height: 460px;}
@@ -31,9 +32,9 @@
 </head>
 
 <body class="centered">  <!-- "setDateToNow()" with event handler in ES 6 modules environment -->
-<section class="centered"><h1 class="panelhead">Extension Date et DateTimeFormat</h1></section>
+<section class="centered"><h1 class="panelhead">Calendriers utilisateurs et affichage étendu des dates</h1></section>
 <div>
-	<section class="panel"><h2 class="panelhead">Date, heure, fuseau, navigation</h2>
+	<section class="panel"><h2 class="panelhead">Date, heure, navigation</h2>
 		<section class="centered"><!-- setting date -->
 			<table class="centered">
 			  <tr>
@@ -52,10 +53,11 @@
 				<td><button class="textline">Ok</button></td>
 				</form>
 			  </tr>
-			  <form name="custom">
 			  <tr>
+				<form name="custom">
 				<td><select name="calend" size="1" class="centered">
 					<option value="milesian" selected>milésien</option>
+					<option value="gregorian">grégorien</option>
 					<option value="julian">julien</option>
 					<option value="vatican">Vatican</option>
 					<option value="french">France</option>
@@ -63,14 +65,24 @@
 					<option value="english">Royaume-Uni</option>
 					<option value="frenchrev">Révolutionnaire</option>
 					</select></td>
-				<td><input name="year" type="number" class="centered digit4"> </td>
+				<td><input name="year" type="number" class="centered digit4"></td>
 				<td><input name="monthname" type="number" min="1" max="13" class="centered digit2"></td>
 				<td><input name="day" type="number" min="1" max="31" class="centered digit2"> </td>
 				<td><button class="textline">Ok</button></td>
+				</form>
 			  </tr>
 			  <tr>
-				<td colspan="2">Jour de semaine</td>
-				<td colspan="2"><input name="dayofweek" type="text" class="centered" size="12" disabled="disabled" /></td>
+				<form name="week">
+				<th>Semaines</th><td><input name="weekyear" type="number" class="centered digit4"></td>
+				<td><input name="weeknumber" type="number" min="0" max="56" class="centered digit2"></td>
+				<td><input name="weekday" type="number" min="0" max="30" class="centered digit2"> </td>
+				<td><button class="textline">Ok</button></td>
+			  </tr>
+			  <tr>
+				<td>Jour</td>
+				<td><input name="dayofweek" type="text" class="centered" size="12" disabled="disabled" /></td>
+				<td colspan="2">Semaines</td>
+				<td><input name="weeksinyear" type="number" min="0" max="56" class="centered digit2" disabled="disabled"></td>
 			  </tr>
 			</form>
 			</table>
@@ -131,13 +143,9 @@
 			</table>
 			<table class="centered">
 					<tr>
-						<th>Décalage réel&nbsp;: </th> 
+						<th>Ecart réel&nbsp;: </th> 
 						<td id="realTZOffset"></td>
-					</tr>
-			</table>
-			<table class="centered">
-					<tr>
-						<th>Décalage système&nbsp;: </th>
+						<th>Ecart système&nbsp;: </th>
 						<td id="sysTZoffset"></td><td>min</td>
 					</tr>
 			</table>
@@ -487,15 +495,15 @@
 </div>
 <section><h2 class="panelhead">Affichages calculés</h2></section>
 <div class="centered autoscroll">
-	<section class="outdisplay"><h3 class="panelhead">DateTimeFormat</h3>
+	<section class="outdisplay"><h3 class="panelhead">Calendrier unicode</h3>
 		<table class="centered">
 			<tr><th>Calendrier&nbsp;:</th><td id="Calendname"></td></tr>
 		</table>
-	<h4 class="panelhead">Intl standard</h4>
+	<h4 class="panelhead">Affichage standard</h4>
 		<table class="centered">
 			<tr><td id="Ustring"></td></tr>
 		</table>
-	<h4 class="panelhead">Intl étendu</h4>
+	<h4 class="panelhead">Affichage étendu</h4>
 		<table class="centered">
 			<tr><td id="Xstring"></td></tr>
 		</table>
@@ -504,12 +512,6 @@
 		<table class="centered">
 			<tr><th>Calendrier&nbsp;:</th><td id="Customname"></td></tr>
 		</table>
-		<h4 class="panelhead">ExtDateTimeFormat</h4>
-		<table class="centered">
-			<tr><td id="Cstring"></td></tr>
-		</table>
-	</section>
-	<section class="outdisplay"><h3 class="panelhead">Champs supplémentaires</h3>
 		<table class="centered"><form name="yeartype">
 			<tr><th colspan="2">Année algébrique et type</th></tr>
 			<tr><td id="fullyear"></td><td>
@@ -519,12 +521,9 @@
 				</select></td>
 			</tr>
 		</form></table>
+		<h4 class="panelhead">Affichage étendu</h4>
 		<table class="centered">
-			<tr><th colspan="3">Calendrier en semaines</th></tr>
-			<tr><th>Année</th><th>Semaine</th><th>Jour</th></tr>
-			<tr><td id="weekyear"></td><td id="weeknum"></td><td id="dayownum"></td></tr>
-			<tr><th>Jour&nbsp;</th><td colspan="2" id="dayname"></td></tr>
-			<tr><th colspan="2">Semaines dans l'année&nbsp;: </th><td id="weeksinyear"></td></tr>
+			<tr><td id="Cstring"></td></tr>
 		</table>
 	</section>
 </div>
