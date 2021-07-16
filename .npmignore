@@ -1,6 +1,6 @@
 # files in docs are not part of package
 index.md
 _config.yml
-dateextendedtest-fr.html
-dateextendedtest-en.html
+dateextendtest-fr.html
+dateextendtest-en.html
 dateextendtest.js
