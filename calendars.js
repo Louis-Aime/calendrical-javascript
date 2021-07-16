@@ -9,10 +9,10 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Paasing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-07-23
+/* Versions:	M2021-07-25
 		Adapt to newest chronos.js
 		If date fields are missing, fill with default values before computing (do not throw).
-		Add a function to compute counter from week fields
+		Add a function to compute counter from week fields - and debug
 		Suppress isoWeek, set up a complete Gregorian calendar
 	M2021-07-22 This module uses ExtDate, not ExtDateTimeFormat
 	M2021-06-19 wipe dead code away (Error objects...)
@@ -142,7 +142,7 @@ export class MilesianCalendar {
 			hours : fields.hours, minutes : fields.minutes, seconds : fields.seconds, milliseconds : fields.milliseconds}
 	}
 	counterFromWeekFields (fields) { // Posix timestamp at UTC, from weekYear, weekNumber, dayOfWeek and time in Milesian
-		let myFields = { year : 0, weekNumber : 0, dayOfWeek : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		let myFields = { weekYear : 0, weekNumber : 0, weekday : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
 		myFields = Object.assign (myFields, fields);
 		return this.milesianWeek.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
 			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
@@ -213,7 +213,7 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
 	}
 	counterFromWeekFields (fields) {
-		let myFields = { weekYear : 0, weekNumber : 1, dayOfWeek : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		let myFields = { weekYear : 0, weekNumber : 1, weekday : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
 		myFields = Object.assign (myFields, fields);
 		return this.gregorianWeek.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
 			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
@@ -321,7 +321,7 @@ export class JulianCalendar  {
 		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
 	}
 	counterFromWeekFields (fields) { // Posix timestamp at UTC, from year, weekNumber, dayOfWeek and time
-		let myFields = { weekYear : 0, weekNumber : 0, weekday : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		let myFields = { weekYear : 0, weekNumber : 1, weekday : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
 		myFields = Object.assign (myFields, fields);
 		return this.julianWeek.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
 			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
@@ -509,7 +509,7 @@ export class FrenchRevCalendar {
 		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
 	}
 	counterFromWeekFields (fields) { // Posix timestamp at UTC, from year, weekNumber, dayOfWeek and time
-		let myFields = { weekYear : 0, weekNumber : 0, weekday : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		let myFields = { weekYear : 0, weekNumber : 1, weekday : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
 		myFields = Object.assign (myFields, fields);
 		return this.decade.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
 			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
