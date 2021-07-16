@@ -1,4 +1,4 @@
-/* A set of calendars using Chronos, JulianDayIso and ExtDate.
+/* A set of non-Unicode calendars using chronos.js and extdate.js .
 	Character set is UTF-8
 	Customise calendar with an extended Date object and an extended Intl.DateTimeFormat object.
 Contents: 
@@ -9,7 +9,13 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Paasing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-06-19 wipe dead code away (Error objects...)
+/* Versions:	M2021-07-23
+		Adapt to newest chronos.js
+		If date fields are missing, fill with default values before computing (do not throw).
+		Add a function to compute counter from week fields
+		Suppress isoWeek, set up a complete Gregorian calendar
+	M2021-07-22 This module uses ExtDate, not ExtDateTimeFormat
+	M2021-06-19 wipe dead code away (Error objects...)
 	M2021-06-13	Errors are defined on throw, not as specific objects; most type check are suppressed
 	M2021-01-12 Use modules
 	M2021-01-09 
@@ -26,8 +32,8 @@ Contents:
 	M2020-11-10 use Chronos week computations
 */ 
 /* Required
-	Package Chronos -> the general calendar computation engine.
-	ExtDate
+	Package chronos.js for basic calendrical computations
+	extdate.js, extends the legacy Date object.
 */
 /* Copyright Miletus 2016-2021 - Louis A. de FOUQUIERES
 Permission is hereby granted, free of charge, to any person obtaining
@@ -51,28 +57,10 @@ or the use or other dealings in the software.
 Inquiries: www.calendriermilesien.org
 */
 "use strict";
-import {Milliseconds, Chronos, WeekClock} from "./chronos.js";
-import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
+import {Milliseconds, Cbcce, WeekClock} from "./chronos.js";
+import ExtDate from "./extdate.js";
 
-/* export */ class isoWeek {	// only to compute ISO week figures with a date in Posix timestamp (UTC)
-	constructor () {}
-	static isoWeekClock = new WeekClock ({	// Display ISO week figures
-			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
-			daysInYear : (year) => (Chronos.isGregorianLeapYear ( year ) ? 366 : 365),
-			startOfWeek : 1
-			// the rest of by default
-		}) 	// set for gregorian week elements.
-	static weekFieldsFromCounter (myDate,TZ) {
-		// let myDate = new Date (timeStamp),
-		let
-			dayFields = new ExtDate ("iso8601", myDate.valueOf()).getFields (TZ),
-			dateStamp = ExtDate.fullUTC (dayFields.year, dayFields.month, dayFields.day) / Milliseconds.DAY_UNIT,
-			refStamp = ExtDate.fullUTC (dayFields.year, 1, 4) / Milliseconds.DAY_UNIT,
-			myFigures = isoWeek.isoWeekClock.getWeekFigures (dateStamp, refStamp, dayFields.year);
-		return {weekYearOffset : myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
-	}
-}
-/* export */ class MilesianCalendar { 
+export class MilesianCalendar { 
 	/** Define a specific Milesian calendar
 	 * @param (string) name : the name used with .toCalString method of ExtDate
 	 * @param (string) id: a built-in calendar for ExtDateTimeFormat. Must be in the list of existing built-in.
@@ -91,7 +79,7 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		year : {mode : "pldr"},
 		month : {mode : "pldr"}
 	}
-	milesianClockwork = new Chronos ( 
+	milesianClockwork = new Cbcce ( 
 		{ 					//calendRule object, used with Posix epoch
 		timeepoch : -62168083200000, // Unix timestamp of 1 1m 000 00h00 UTC in ms
 		coeff : [ 
@@ -120,7 +108,8 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 	milesianWeek = new WeekClock (
 		{
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
-			daysInYear: (year) => (Chronos.isGregorianLeapYear( year + 1 ) ? 366 : 365),		// leap year rule for Milesian calendar
+			daysInYear: (year) => (Cbcce.isGregorianLeapYear( year + 1 ) ? 366 : 365),		// leap year rule for Milesian calendar
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 7})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 0,		// week start with 0
 			characWeekNumber : 0,	// we have a week 0 and the characteristic day for this week is 7 1m.
 			dayBase : 0,			// use 0..6 display for weekday
@@ -136,19 +125,28 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		fields.fullYear = fields.year;
 		return fields
 	}
-	counterFromFields (fields) { // Posix timestamp at UTC, from year, month, day in Milesian
-		return this.milesianClockwork.getNumber( fields )
+	counterFromFields (fields) { // Posix timestamp at UTC, from year, month, day and possibly time in Milesian
+		let myFields = { year : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
+		return this.milesianClockwork.getNumber( myFields )
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (UTC)
 		// let timeStamp = this.counterFromFields (fields, TZ);
 		return new construct (this, this.counterFromFields(fields))
 	}
 	weekFieldsFromCounter (timeStamp) { 			// week coordinates : number of week, weekday, last/this/next year, weeks in weekyear
-		let characDayFields = this.fieldsFromCounter (timeStamp);
-		characDayFields.month = 1; characDayFields.day = 7;
-		let myFigures = this.milesianWeek.getWeekFigures
-			(Math.floor(timeStamp/Milliseconds.DAY_UNIT), Math.floor(this.counterFromFields(characDayFields)/Milliseconds.DAY_UNIT), characDayFields.year);
-		return {weekYearOffset : myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+		//let characDayFields = this.fieldsFromCounter (timeStamp); characDayFields.month = 1; characDayFields.day = 7; 
+		let fields = this.milesianClockwork.getObject (timeStamp),
+			myFigures = this.milesianWeek.getWeekFigures(Math.floor(timeStamp/Milliseconds.DAY_UNIT), fields.year);
+		return {weekYearOffset : myFigures[2], weekYear : fields.year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3],
+			hours : fields.hours, minutes : fields.minutes, seconds : fields.seconds, milliseconds : fields.milliseconds}
+	}
+	counterFromWeekFields (fields) { // Posix timestamp at UTC, from weekYear, weekNumber, dayOfWeek and time in Milesian
+		let myFields = { year : 0, weekNumber : 0, dayOfWeek : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
+		return this.milesianWeek.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
+			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
+			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
 	}
 	/* Simple properties and method as inspired by Temporal
 	*/
@@ -157,18 +155,87 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		return fields.year
 	}
 	inLeapYear (fields) { 	// is the Milesian year of this date a Milesian leap year.
-		return Chronos.isGregorianLeapYear ( this.fullYear(fields) + 1 )
+		return Cbcce.isGregorianLeapYear ( this.fullYear(fields) + 1 )
 	}
 }
-/* export */ class JulianCalendar  {
+
+export class GregorianCalendar {	// this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.
+	constructor (id) {
+		this.id = id;
+	}
+	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
+	canvas = "gregory"
+	// no clockwork, use standard Date routines
+	gregorianWeek = new WeekClock (
+		{
+			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
+			daysInYear : (year) => (Cbcce.isGregorianLeapYear ( year ) ? 366 : 365),
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({fullYear : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
+			startOfWeek : 1
+			// the rest of by default
+		}
+	) 	// set for gregorian week elements.
+	fieldsFromCounter (timeStamp) {
+		let myDate = new ExtDate ("iso8601", timeStamp),
+			myFields = {
+				fullYear : myDate.getUTCFullYear(),
+				month : myDate.getUTCMonth() + 1,
+				day : myDate.getUTCDate(),
+				hours : myDate.getUTCHours(),
+				minutes : myDate.getUTCMinutes(),
+				seconds : myDate.getUTCSeconds(),
+				milliseconds : myDate.getUTCMilliseconds
+			};
+			[ myFields.era, myFields.year ] = myFields.fullYear <= 0 ? [this.eras[0], 1 - myFields.fullYear] : [this.eras[1], myFields.fullYear];
+		return myFields;
+	}
+	counterFromFields (fields) {
+		var myFields = {...fields};
+		// solve year and era fields
+		if (myFields.era == undefined) {myFields.fullYear = myFields.fullYear == undefined ? myFields.year : myFields.fullYear}
+		else { 
+			if (isNaN (myFields.year) || myFields.year <= 0) throw new RangeError ("Invalid year value: " + myFields.year);
+			myFields.fullYear = myFields.era == eras[0] ? 1 - myFields.year : myFields.year;
+		}
+		let basicFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (basicFields, myFields);
+		let myDate = new ExtDate 
+			("iso8601", ExtDate.fullUTC(myFields.fullYear, myFields.month, myFields.day, myFields.hours, myFields.minutes, myFields.seconds, myFields.milliseconds));
+		return myDate.valueOf()
+	}
+	buildDateFromFields (fields, construct = ExtDate) {
+		return new construct (this, ExtDate.fullUTC(fields.year, fields.month, fields.day, fields.hours, fields.minutes, fields.seconds, fields.milliseconds))
+	}
+	weekFieldsFromCounter (timeStamp) {
+		let myDate = new ExtDate ("iso8601", timeStamp),
+			year = myDate.getUTCFullYear(),
+			myFigures = this.gregorianWeek.getWeekFigures (Math.floor(myDate.valueOf()/Milliseconds.DAY_UNIT), year);
+		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+	}
+	counterFromWeekFields (fields) {
+		let myFields = { weekYear : 0, weekNumber : 1, dayOfWeek : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
+		return this.gregorianWeek.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
+			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
+			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
+	}
+	fullYear (fields) {
+		if (fields.era == undefined) return fields.year
+		else return fields.era == this.eras[0] ? 1 - fields.year : fields.year
+	}
+	inLeapYear (fields) {
+		return Cbcce.isGregorianLeapYear ( this.fullYear(fields) )
+	}
+}
+
+export class JulianCalendar  {
 	constructor (id, pldr) { // specific name, possible pldr for kabyle or so
 		this.id = id;
 		this.pldr = pldr;
 	}
 	/* Julian conversion mechanism, using the "shifted" julian calendar : year is full Year, a relative number; year begin in March, months counted from 3 to 14
 	*/
-	canvas = "gregory"
-	julianClockwork = new Chronos ({ 
+	julianClockwork = new Cbcce ({ 
 		timeepoch : -62162208000000, // 1 March of year 0, Julian calendar, relative to Posix epoch
 		coeff : [
 			{cyclelength : 126230400000, ceiling : Infinity, subCycleShift : 0, multiplier : 4, target : "fullYear"}, // Olympiade
@@ -195,7 +262,8 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 	julianWeek = new WeekClock (
 		{	// ISO8601 rule applied to Julian calendar
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
-			daysInYear: (year) => (Chronos.isJulianLeapYear( year ) ? 366 : 365),		// leap year rule for this calendar
+			daysInYear: (year) => (Cbcce.isJulianLeapYear( year ) ? 366 : 365),		// leap year rule for this calendar
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 1,		// week start with 1 (Monday)
 			characWeekNumber : 1,	// we have a week 1 and the characteristic day for this week is 4 January.
 			dayBase : 1,			// use 1..7 display for weekday
@@ -206,12 +274,12 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 	/* Basic erros, data and conversion methods
 	*/
 	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
+	canvas = "gregory"
 	partsFormat = null	// no special instruction
 	stringFormat = "fields"	// formatting options differ from base calendars
-	canvas = "gregory"
 	shiftYearStart (dateFields, shift, base) { // Shift start of fullYear to March, or back to January, for calendrical calculations
 		let shiftedFields = {...dateFields};
-		[ shiftedFields.fullYear, shiftedFields.month ] = Chronos.shiftCycle (dateFields.fullYear, dateFields.month, 12, shift, base ); //+ dateEnvironment.monthBase);
+		[ shiftedFields.fullYear, shiftedFields.month ] = Cbcce.shiftCycle (dateFields.fullYear, dateFields.month, 12, shift, base ); //+ dateEnvironment.monthBase);
 		return shiftedFields
 	}
 	fields (theFields) {	// List of fields. add "era" if "year" is present and "era" is not.
@@ -231,7 +299,8 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		return myFields
 	}
 	counterFromFields(fields) {			// from the set of date fields, give time stamp. If no era specified, negative year is authorised
-		let myFields = {...fields};
+		let myFields = { year : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
 		myFields.fullYear = this.fullYear (fields);
 		switch (fields.era) {
 			case undefined: break;// year without era is fullYear
@@ -247,11 +316,16 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		return new construct (this, timeStamp)
 	}
 	weekFieldsFromCounter (timeStamp) {	// week fields, from a timestamp deemed UTC
-		let characDayFields = this.fieldsFromCounter (timeStamp);
-		characDayFields.month = 1; characDayFields.day = 4;	// 4 of January always in week 1
-		let myFigures = this.julianWeek.getWeekFigures
-			(Math.floor(timeStamp/Milliseconds.DAY_UNIT), Math.floor(this.counterFromFields(characDayFields)/Milliseconds.DAY_UNIT), characDayFields.year);
-		return {weekYearOffset : myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+		let	year = this.fieldsFromCounter (timeStamp).year,
+			myFigures = this.julianWeek.getWeekFigures (Math.floor(timeStamp/Milliseconds.DAY_UNIT), year);
+		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+	}
+	counterFromWeekFields (fields) { // Posix timestamp at UTC, from year, weekNumber, dayOfWeek and time
+		let myFields = { weekYear : 0, weekNumber : 0, weekday : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
+		return this.julianWeek.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
+			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
+			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
 	}
 	/* properties and other methods
 	*/
@@ -260,37 +334,39 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		else return fields.era == this.eras[0] ? 1 - fields.year : fields.year
 	}
 	inLeapYear (fields) { // 
-		return Chronos.isJulianLeapYear(this.fullYear(fields))
+		return Cbcce.isJulianLeapYear(this.fullYear(fields))
 	}
 } // end of calendar class
-/* export */ class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
+
+export class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
 	constructor (id, switchingDate) {
 		this.id = id;
 		this.switchingDate = new Date(switchingDate);	// first date where Gregorien calendar is used. switchingDate may be an ISO string
 		this.switchingDate.setUTCHours (0,0,0,0);		// set to Oh UTC at switching date
 		if (this.switchingDate.valueOf() < Date.parse ("1582-10-15T00:00:00Z")) 
-			throw new RangeError ("Switching date to Gregorian shall be not earlier than 1582-10-15: " + this.switchinDate.toISOString());
+			throw new RangeError ("Switching date to Gregorian shall be not earlier than 1582-10-15: " + this.switchingDate.toISOString());
 	}
 	/** Base properties and methods
 	 
 	*/
+	eras = ["BC", "AS", "NS"]	// define before partsFormat in order to refer to it.
 	canvas = "gregory"
-	firstSwitchDate = new Date ("1582-10-15T00:00:00Z") // First date of A.S. or N.S. era
-	julianCalendar = new JulianCalendar (this.name,this.id); 
-	gregorianWeek = new WeekClock (
-		{
-			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
-			daysInYear : (year) => (Chronos.isGregorianLeapYear ( year ) ? 366 : 365),
-			startOfWeek : 1
-			// the rest of by default
-		}
-		); 	// set for gregorian week elements.
 	stringFormat = "fields"	// formatting options differ from base calendars
-	eras = ["BC", "AS", "NS"]
 	partsFormat = {
 		era : { mode : "list", codes : this.eras, source : this.eras }
 	}
-
+	firstSwitchDate = new Date ("1582-10-15T00:00:00Z") // First date of A.S. or N.S. era
+	julianCalendar = new JulianCalendar (this.id) 
+	gregorianCalendar = new GregorianCalendar (this.id)
+	/* gregorianWeek = new WeekClock (
+		{
+			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
+			daysInYear : (year) => (Cbcce.isGregorianLeapYear ( year ) ? 366 : 365),
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
+			startOfWeek : 1
+			// the rest of by default
+		}
+		) 	// set for gregorian week elements. */
 	fieldsFromCounter (number) {
 		if (number < this.switchingDate.valueOf())	{	// Julian calendar
 			var myFields = this.julianCalendar.fieldsFromCounter(number);
@@ -306,7 +382,6 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		}
 		return myFields
 	}
-
 	counterFromFields(askedFields) { // given fields may be out of scope
 		var testDate, fields = {...askedFields};
 		ExtDate.numericFields.forEach( (item) => { if (fields[item.name] == undefined)  fields[item.name] = item.value } )
@@ -331,29 +406,31 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		}
 		
 	}
-
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (deemed UTC)
 		let number = this.setCounterFromFields (fields);
 		return new construct (this, number)
 	}
-
 	weekFieldsFromCounter (timeStamp) {
 		if (timeStamp < this.switchingDate.valueOf()) 
 			return this.julianCalendar.weekFieldsFromCounter (timeStamp)
-			else return isoWeek.weekFieldsFromCounter (timeStamp)
+			else return this.gregorianCalendar.weekFieldsFromCounter (timeStamp);
 	}
-
+	counterFromWeekFields (fields) {
+		let result = this.gregorianCalendar.counterFromWeekFields (fields);
+		if (result < this.switchingDate.valueOf()) result = this.julianCalendar.counterFromWeekFields (fields);
+		return result;
+	}
 	fullYear (fields) {
 		if (fields.era == undefined) return fields.year
 		else return fields.era == this.eras[0] ? 1 - fields.year : fields.year
 	}
-
 	inLeapYear (fields) { 
 		if (this.counterFromFields(fields) < this.switchingDate.valueOf()) return this.julianCalendar.inLeapYear(fields)
-		else return Chronos.isGregorianLeapYear (this.fullYear (fields))
+		else return Cbcce.isGregorianLeapYear (this.fullYear (fields))
 	}
 } // end of calendar class
-/* export */ class FrenchRevCalendar {
+
+export class FrenchRevCalendar {
 	constructor (id, pldr) {
 		this.id = id;
 		this.pldr = pldr;
@@ -373,7 +450,7 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		year : {mode : "field" },
 		era : {mode : "list", codes : this.eras, source : this.eraNames} 
 	}
-	frenchClockWork = new Chronos ({ // To be used with a Unix timestamp in ms. Decompose into years, months, day, hours, minutes, seconds, ms
+	frenchClockWork = new Cbcce ({ // To be used with a Unix timestamp in ms. Decompose into years, months, day, hours, minutes, seconds, ms
 		timeepoch : -6004454400000, // Unix timestamp of 3 10m 1779 00h00 UTC in ms, the origin for the algorithm
 		coeff : [ 
 		  {cyclelength : 4039286400000, ceiling : Infinity, subCycleShift : 0, multiplier : 128, target : "year"}, // 128 (julian) years minus 1 day.
@@ -406,6 +483,7 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 			originWeekday: 1, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Primidi (11 Nivôse 178)
 			daysInYear: (year) => (this.inLeapYear({ year : year, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 }) ? 366 : 365),
 								// leap year rule for this calendar
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 1})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 1,		// week is decade, start with 1 (Primidi)
 			characWeekNumber : 1,	// we have a decade 1 and the characteristic day for this first decade is 1 Vendémiaire.
 			dayBase : 1,			// use 1..10 display for decade days
@@ -416,7 +494,9 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		}
 	)
 	counterFromFields (fields) {
-		return this.frenchClockWork.getNumber (fields)
+		let myFields = { year : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
+		return this.frenchClockWork.getNumber (myFields)
 	}
 	fieldsFromCounter (timeStamp) {
 		let fields = this.frenchClockWork.getObject (timeStamp);
@@ -424,11 +504,16 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		return fields
 	}
 	weekFieldsFromCounter (timeStamp) {	// week fields, from a timestamp deemed UTC
-		let characDayFields = this.fieldsFromCounter (timeStamp);
-		characDayFields.month = 1; characDayFields.day = 1;	// 1 of Vendémiaire
-		let myFigures = this.decade.getWeekFigures
-			(Math.floor(timeStamp/Milliseconds.DAY_UNIT), Math.floor(this.counterFromFields(characDayFields)/Milliseconds.DAY_UNIT), characDayFields.year);
-		return {weekYearOffset : myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+		let year = this.frenchClockWork.getObject (timeStamp).year,
+			myFigures = this.decade.getWeekFigures (Math.floor(timeStamp/Milliseconds.DAY_UNIT), year);
+		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+	}
+	counterFromWeekFields (fields) { // Posix timestamp at UTC, from year, weekNumber, dayOfWeek and time
+		let myFields = { weekYear : 0, weekNumber : 0, weekday : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
+		return this.decade.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
+			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
+			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
 	}
 	fullYear (fields) {	// year expressed in full, that is as a relative number (no era). Here, it is the same.
 		return fields.year
@@ -442,7 +527,4 @@ import {ExtDate, ExtDateTimeFormat} from "./dateextended.js";
 		let counter = this.counterFromFields (fields);
 		return counter >= -5594227200000 && counter < -5175360000000
 	}
-
 }
-
-export {isoWeek, MilesianCalendar, JulianCalendar, WesternCalendar, FrenchRevCalendar};
