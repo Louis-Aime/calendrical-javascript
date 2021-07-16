@@ -12,7 +12,10 @@ Required:
 	Then adaptation to modular architecture was performed.
 	Optimisation remains possible within this file and also with milesianclockdisplay.js.
 */
-/* Version:	V2021-07-24	Control week figures, add one calendar
+/* Version:	V2021-07-25	
+		Control week figures, 
+		Add one calendar (Gregorian with week management)
+		Simplify management of system time zone / UTC time zone
 	M2021-07-22 separate extdate.js and extdatetimeformat.js, aggregate pldrString wiht other modules
 	M2021-07-18	
 		Use IIFE
@@ -66,11 +69,10 @@ var
 	calendars;	// the list of calendars
 
 var register = {		// this register is also used by the small modules written in HTML page
-		targetDate : {}, 	// new ExtDate(milesian),
-		shiftDate : {}, 	// new ExtDate (milesian), // unable to compute with unfinished object. register.targetDate.getTime() register.targetDate.getRealTZmsOffset()),
+		targetDate : {}, 	// The current custom date
+		isoDate : {}, 	// This is only used for the iso8601 with the legacy methods
 		customCalendar : {}, 	// milesian,
-		TZSettings : {mode : "TZ", msoffset : 0},	// initialisation to be superseded
-		TZDisplay : "" 
+		TZSettings : {mode : "", msoffset : 0},	// initialisation to be superseded 
 	};
 
 (async function () {
@@ -89,7 +91,7 @@ var register = {		// this register is also used by the small modules written in 
 	cal.frenchRev = new modules.FrenchRevCalendar ("frenchrev");
 	calendars = [cal.milesian, cal.gregorian, cal.julian, cal.vatican, cal.french, cal.german, cal.english, cal.frenchRev];
 	register.targetDate = new modules.ExtDate(cal.milesian);
-	register.shiftDate = new modules.ExtDate ( cal.milesian, register.targetDate.getTime() - register.targetDate.getRealTZmsOffset() );
+	register.isoDate = new modules.ExtDate ( 'iso8601', register.targetDate.valueOf());
 	register.customCalendar = cal.milesian;
 	setDateToNow ();	// initiate after all modules are loaded
 })(); 
@@ -244,8 +246,8 @@ function putStringOnOptions() { // get Locale, calendar indication and Options g
 		myUnicodeElement.innerHTML = "(!)"; 
 		}
 	// Add supplemental computations
-		document.getElementById("fullyear").innerHTML = register.targetDate.fullYear(register.TZDisplay);
-		document.yeartype.leapyear.value = register.targetDate.inLeapYear(register.TZDisplay);
+		document.getElementById("fullyear").innerHTML = register.targetDate.fullYear(register.TZSettings.mode);
+		document.yeartype.leapyear.value = register.targetDate.inLeapYear(register.TZSettings.mode);
 }
 
 function setDisplay () { // Considering that register.targetDate time has been set to the desired date, this routines updates all form fields.
@@ -261,48 +263,46 @@ function setDisplay () { // Considering that register.targetDate time has been s
 	switch (register.TZSettings.mode) {
 		case "UTC" : 
 			register.TZSettings.msoffset = 0; // Set offset to 0, but leave time zone offset on display
-		case "TZ" : 
+		case "" : 
 			document.querySelector("#realTZOffset").innerHTML = (systemSign == 1 ? "+ ":"- ") + absoluteTZmin + " min " + absoluteTZsec + " s";
 	}
 	// Initiate a representation of local date
-	register.shiftDate = new modules.ExtDate (register.customCalendar,register.targetDate.getTime() - register.TZSettings.msoffset);	// The UTC representation of register.targetDate date is the local date of TZ
+	register.isoDate = new modules.ExtDate ('iso8601',register.targetDate.valueOf());	// The UTC representation of register.targetDate date is the local date of TZ
 	// Initiate custom calendar form with present local date
-	let fields = register.shiftDate.getFields("UTC");
+	let fields = register.targetDate.getFields(register.TZSettings.mode);
 	document.custom.calend.value = register.customCalendar.id	;	
 	document.custom.year.value = register.customCalendar.fullYear(fields); // display fullYear, not just year. fields.year is displayed with era in date string.
 	document.custom.monthname.value = fields.month; // Display month value in 1..12 range.
 	document.custom.day.value = fields.day;
 
-	document.week.weekyear.value = register.targetDate.weekYear(register.TZDisplay); //getElementById("weekyear").innerHTML
-	document.week.weeknumber.value = register.targetDate.weekNumber(register.TZDisplay);	//getElementById("weeknum").innerHTML
-	document.week.weekday.value = register.targetDate.weekday(register.TZDisplay);	//getElementById("dayownum").innerHTML
-	document.week.weeksinyear.value = register.targetDate.weeksInYear(register.TZDisplay);	// getElementById("weeksinyear").innerHTML
-	try {
-		document.week.dayofweek.value = 	// getElementById("dayname").innerHTML
+	document.week.weekyear.value = register.targetDate.weekYear(register.TZSettings.mode); //getElementById("weekyear").innerHTML
+	document.week.weeknumber.value = register.targetDate.weekNumber(register.TZSettings.mode);	//getElementById("weeknum").innerHTML
+	document.week.weekday.value = register.targetDate.weekday(register.TZSettings.mode);	//getElementById("dayownum").innerHTML
+	document.week.weeksinyear.value = register.targetDate.weeksInYear(register.TZSettings.mode);	// getElementById("weeksinyear").innerHTML
+
+	document.week.dayofweek.value = 	// getElementById("dayname").innerHTML
 			new modules.ExtDateTimeFormat 
 			( document.Locale.Elocale.value == "" ? undefined : document.Locale.Elocale.value,
 				{weekday : "long", 
-				timeZone : register.TZDisplay == "" ? undefined : register.TZDisplay },
+				timeZone : register.TZSettings.mode == "" ? undefined : register.TZSettings.mode },
 				register.customCalendar)
 				.format(register.targetDate);
-	}
-	catch (e) {
-		document.week.dayofweek.value = e.message;
-	}
-	// Initiate Gregorian form with present local date
-    document.gregorian.year.value = register.shiftDate.getUTCFullYear(); // uses the local variable - not UTC
-    document.gregorian.monthname.value = register.shiftDate.getUTCMonth() + 1; // Display month value in 1..12 range.
-    document.gregorian.day.value = register.shiftDate.getUTCDate();
+				
+	// Initiate Gregorian form with present local date using isoDate
+	let isoFields = register.isoDate.getFields (register.TZSettings.mode);
+    document.gregorian.year.value = register.isoDate.fullYear (register.TZSettings.mode); // uses the local variable - not UTC
+    document.gregorian.monthname.value = register.isoDate.month (register.TZSettings.mode); // Display month value in 1..12 range.
+    document.gregorian.day.value = register.isoDate.day (register.TZSettings.mode);
 
 	// Update local time fields - using	Date properties
-	document.time.hours.value = register.shiftDate.getUTCHours();
-	document.time.mins.value = register.shiftDate.getUTCMinutes();
-	document.time.secs.value = register.shiftDate.getUTCSeconds();
-	document.time.ms.value = register.shiftDate.getUTCMilliseconds();
+	document.time.hours.value = register.isoDate.hours(register.TZSettings.mode);
+	document.time.mins.value = register.isoDate.minutes(register.TZSettings.mode);
+	document.time.secs.value = register.isoDate.seconds(register.TZSettings.mode);
+	document.time.ms.value = register.isoDate.milliseconds(register.TZSettings.mode);
 
 	// Display UTC date & time in custom calendar, ISO, and Posix number
 	myElement = document.getElementById("dateString");
-	myElement.innerHTML = register.targetDate.toCalString(register.TZDisplay);
+	myElement.innerHTML = register.targetDate.toCalString(register.TZSettings.mode);
 	myElement = document.getElementById("ISOdatetime");
 	myElement.innerHTML = register.targetDate.toISOString();
 	myElement = document.getElementById("Posixnumber");
@@ -320,7 +320,7 @@ function calcGregorian() {
 	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);  // change custom calendar
 	let testDate = new Date (register.targetDate.valueOf());
 	switch (register.TZSettings.mode) {
-		case "TZ": 
+		case "": 
 			testDate.setFullYear(year, month-1, day); 	// Set date object from calendar date indication, without changing time-in-the-day.
 			break;
 		case "UTC" : testDate.setUTCFullYear(year, month-1, day);
@@ -343,7 +343,7 @@ function calcCustom() {
 	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);	// global variable
 	// let testDate = new modules.ExtDate (register.customCalendar, year, month, day);
 	switch (register.TZSettings.mode) {
-		case "TZ":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
+		case "":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
 			testDate = new modules.ExtDate (register.customCalendar, year, month, day, register.targetDate.getHours(), register.targetDate.getMinutes(), register.targetDate.getSeconds(), register.targetDate.getMilliseconds())
 			break;
 		case "UTC" : // // Set date object from custom calendar date indication, and with UTC time of day of currently displayed date.
@@ -366,11 +366,10 @@ function calcWeek() {
 			weekNumber : Math.round (document.week.weeknumber.value),
 			weekday : Math.round (document.week.weekday.value)
 		},
-		testDate = new modules.ExtDate(register.customCalendar, register.targetDate.valueOf()),
-		TimeZone = register.TZSettings.mode == "TZ" ? "" : "UTC";
+		testDate = new modules.ExtDate(register.customCalendar, register.targetDate.valueOf());
 	register.customCalendar = calendars.find (item => item.id == document.custom.calend.value);	// global variable
 	switch (register.TZSettings.mode) {
-		case "TZ":  // Set date object from custom calendar week date indication, and with time of day of currently displayed date.
+		case "":  // Set date object from custom calendar week date indication, and with time of day of currently displayed date.
 			myFields.hours = register.targetDate.getHours();
 			myFields.minutes = register.targetDate.getMinutes();
 			myFields.seconds = register.targetDate.getSeconds();
@@ -384,7 +383,7 @@ function calcWeek() {
 			break;
 	}
 	try {
-		testDate.setFromWeekFields( myFields, TimeZone )
+		testDate.setFromWeekFields( myFields, register.TZSettings.mode )
 	}
 	catch (e) {
 		alert (e)
@@ -435,7 +434,7 @@ function calcTime() { // Here the hours are deemed local hours
 	 else {
 	  let testDate = new modules.ExtDate (register.customCalendar,register.targetDate.valueOf());
 	  switch (register.TZSettings.mode) {
-		case "TZ" : testDate.setHours(hours, mins, secs, ms); break;
+		case "" : testDate.setHours(hours, mins, secs, ms); break;
 		case "UTC" : testDate.setUTCHours(hours, mins, secs, ms); break;
 /*		case "Fixed" : 
 			testDate = new Date(modules.ExtDate.fullUTC (document.gregorian.year.value, document.gregorian.monthname.value, document.gregorian.day.value));
@@ -474,7 +473,7 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 function getMode() {
 	// Initiate Time zone mode for the "local" time from main display
 	register.TZSettings.mode = document.TZmode.TZcontrol.value;
-	register.TZDisplay = register.TZSettings.mode == "UTC" ? "UTC" : "";
+	// register.TZDisplay = register.TZSettings.mode == "UTC" ? "UTC" : "";
 	/** register.TZSettings.msoffset is JS time zone offset in milliseconds (UTC - local time)
 	 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
 	*/
