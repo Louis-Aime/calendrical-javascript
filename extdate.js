@@ -7,11 +7,12 @@ Contents
 	ExtDate: extension of Date object that uses custom calendars (but not built-in calendars)
 	One new method for Date for generalised time zone offset management
 */
-/*	Version	M2021-07-22 : 
+/*	Version	M2021-07-25 : 
 		Separate ExtDate and Intl.ExtDateTimeFormat
 		Complete set of fields and complete parameter for getISOFields
 		Fields year and earYear handled the same way as Temporal
 		Set date-time from a date specified in week figures
+		Generalised time getters and setter
 	M2021-07-18 fill fields passed at construction with default values
 	M2021-06-13	
 		Error not as objects, but close to the corresponding code.
@@ -255,13 +256,13 @@ export default class ExtDate extends Date {
 	getFields(TZ) {
 		// compute offset to use
 		var offset = this.getRealTZmsOffset(TZ), 
-			shiftDate;
+			shiftDate, result;
 		// compute Fields from a shifted value. Month is in the range 1..12
 		if (typeof this.calendar == "string") { 
 			switch (this.calendar) {	// calendar is a string: a built-in calendar, presently only "gregory" or "iso8601"
 				case "iso8601": case "gregory" : 
 					shiftDate = new Date (this.valueOf() - offset);
-					let result = {
+					result = {
 							fullYear : shiftDate.getUTCFullYear(),
 							month : shiftDate.getUTCMonth()+1,
 							day : shiftDate.getUTCDate(),
@@ -271,8 +272,10 @@ export default class ExtDate extends Date {
 							milliseconds : shiftDate.getUTCMilliseconds()
 						};
 					if (this.calendar == "gregory") [result.era, result.year] = result.fullYear <= 0 ? ["ERA0",1-result.fullYear] : ["ERA1", result.fullYear];
-				default : throw new RangeError ("Only iso8601 and gregory built-in calendars enable getFields method.");
+					break;
+				default : throw new RangeError ("Only iso8601 and gregory built-in calendars enable getFields method: " + this.calendar);
 				}
+			result.year = result.fullYear;
 			return result;
 		}
 		else 
@@ -310,11 +313,13 @@ export default class ExtDate extends Date {
 	 * @return (number) a new timeStamp
 	*/
 	setFromFields( myFields, TZ ) { 
+		if (typeof this.calendar == "string") throw new TypeError ('setFromFields does not work with built-in calendars: ' + this.calendar);
 		var askedFields = {...myFields};
 	// 1. analyse fields and establish the suitable year.
 		if (fields.era != undefined) {	// year was specified with era => replace year with fullYear
 			fields.year = this.calendar.fullYear (fields);
 			delete fields.era;
+		}
 	// 2. Merge present fields with asked fields
 		var fields = this.getFields(TZ);
 		fields = Object.assign (fields, askedFields);
@@ -328,12 +333,7 @@ export default class ExtDate extends Date {
 		let dateFields = {}; ExtDate.numericFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
 		this.setTime(this.calendar.counterFromFields (dateFields));
 		// finally set time to this date from TZ, using .setHours or .setUTCHours
-		switch (TZ) {
-			case undefined: case "": return this.setHours (fields.hours, fields.minutes, fields.seconds, fields.milliseconds);
-			case "UTC": return this.setUTCHours (fields.hours, fields.minutes, fields.seconds, fields.milliseconds);
-			default : throw new RangeError ("Setting to a given time is only possible in system time zone (blank) or 'UTC': " + TZ);
-			}
-		}
+		return this.setFullTime (TZ , fields.hours, fields.minutes, fields.seconds, fields.milliseconds)
 	}
 	/** setter method, from the fields representing the date in the target WEEK calendar, comput date timestamp
 	 * @param (Object) week fields that change from presently held date, i.e. undefined week fields are extracted from present date with same TZ. 
@@ -341,7 +341,7 @@ export default class ExtDate extends Date {
 	 * @return (number) same return as Date.setTime
 	*/
 	setFromWeekFields( myFields, TZ ) { 
-		if (typeof this.calendar == "string") throw new TypeError ('No computation on week figures with built-in calendars');
+		if (typeof this.calendar == "string") throw new TypeError ('setFromWeekFields does not work with built-in calendars: ' + this.calendar);
 	// Here the only used fields are week-specific. No era is handled
 	// Find present time fields and week fields, merge with asked fields.
 		var fields = this.getFields (TZ);	// interesting fields are time fields.
@@ -352,12 +352,8 @@ export default class ExtDate extends Date {
 				(ExtDate.numericWeekFields.map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in week date: "));
 		let dateFields = {}; ExtDate.numericWeekFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
 		this.setTime(this.calendar.counterFromWeekFields (dateFields));
-		// finally set time to this date from TZ, using .setHours or .setUTCHours
-		switch (TZ) {
-			case undefined: case "": return this.setHours (fields.hours, fields.minutes, fields.seconds, fields.milliseconds);
-			case "UTC": return this.setUTCHours (fields.hours, fields.minutes, fields.seconds, fields.milliseconds);
-			default : throw new RangeError ("Setting to a given time is only possible in system time zone (blank) or 'UTC': " + TZ);
-		}
+		// finally set time to this date from TZ, using setFullTime
+		return this.setFullTime (TZ, fields.hours, fields.minutes, fields.seconds, fields.milliseconds);
 	}
 	/** is this date in a leap year of the calendar ? 
 	*/
@@ -384,6 +380,10 @@ export default class ExtDate extends Date {
 					: fn2.format(compound.hours)+":"+fn2.format(compound.minutes)+":"+fn2.format(compound.seconds)+"."+fn3.format(compound.milliseconds) + "Z")
 	}
 	fullYear (TZ) {		// year as an unambiguous signed integer
+		if (typeof this.calendar == "string") switch (TZ) {
+			case "": return this.getFullYear();
+			case "UTC": return this.getUTCFullYear();
+		}
 		let fields = this.getFields(TZ);
 		return this.calendar.fullYear (fields)
 	}
@@ -418,5 +418,33 @@ export default class ExtDate extends Date {
 	weekYear (TZ) {		// unambiguous number of the year the numbered week belongs to
 		let fields = this.getWeekFields(TZ);
 		return fields.weekYear
+	}
+	hours (TZ) {
+		let fields = this.getFields(TZ);
+		return fields.hours
+	}
+	minutes (TZ) {
+		let fields = this.getFields (TZ);
+		return fields.minutes
+	}
+	seconds (TZ) {
+		let fields = this.getFields (TZ);
+		return fields.seconds
+	}
+	milliseconds (TZ) {
+		let fields = this.getFields (TZ);
+		return fields.milliseconds
+	}
+	setFullTime (TZ, hours, minutes, seconds, milliseconds) {
+		if (TZ == undefined) TZ = "";
+		if (hours == undefined || isNaN (hours)) throw new TypeError ('setFullTime: at least "hours" parameter should be specified: ' + hours);
+		if (minutes == undefined) minutes = (TZ == "" ? this.getMinutes() : this.getUTCMinutes());
+		if (seconds == undefined) seconds = (TZ == "" ? this.getSeconds() : this.getUTCSeconds());
+		if (milliseconds == undefined) milliseconds = (TZ == "" ? this.getMilliseconds() : this.getUTCMilliseconds());
+		switch (TZ) {
+			case "" : return this.setHours (hours, minutes, seconds, milliseconds);
+			case "UTC" : return this.setUTCHours (hours, minutes, seconds, milliseconds);
+			default : throw new RangeError ('Only "UTC" or blank value is possible for TZ parameter: ' + TZ);
+		}
 	}
 }
