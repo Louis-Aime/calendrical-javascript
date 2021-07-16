@@ -502,7 +502,7 @@ window.onload = function () {
 		event.preventDefault();
 		calcGregorian()
 	})
-	document.getElementById("customCalend").addEventListener("click", function (event) {
+	document.custom.calend.addEventListener("blur", function (event) {
 		event.preventDefault();
 		setCalend()
 	})
