@@ -1,5 +1,4 @@
 # files in docs are not part of package
-docs/
 index.md
 _config.yml
 dateextendedtest-fr.html
