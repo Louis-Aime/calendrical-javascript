@@ -1,15 +1,15 @@
 /* pldr.js  Private Locale Data Register as a DOM
 Charset UTF-8. This file contains non-ANSI characters.
 Contents:
-	pldr: stringified version of an XML document organising non built-in calendar data for the Unicode tools 
-	pldrDOM: a DOM object parsed from pldr.
+	pldrstring: stringified version of an XML document organising non built-in calendar data for the Unicode tools.
+		this fallback version holds only non language-specific values. The XML file is more complete.
+	getPldrDOM: an exported function that yields a DOM object parsed from pldrstring.
 Notes:
-	1. If this file is used for Web site, consider changing "const" to "var" in order to avoid constant redeclaration error,
-	2. pldrDOM must be declared after pldr.
-	3. With certain CMS, this file could not be exposed as a module. pldrDOM has to be made visible from a web page.
+	If this file is used for a Web site and not as a module, consider changing "const pldrstring" to "var" in order to avoid several redeclaration error.
 */
-/*Version	M2021-02-13: A fallback function if the complete pldr is not available
-	M2020-12-08 use export
+/*Version	M2021-07-22	update names, fix typo errors
+	M2021-02-13: A fallback function if the complete pldr is not available
+	M2020-12-08: use export
 	M2020-11-18:	No "numeric" monthWidth in stand-alone monthContext, formatToParts shall build 1 or 2 digit numbers
 	M2020-10-28: adapted and names changed for the new packaged version of calendar routines
 	M2020-01-12: strict mode
@@ -18,7 +18,7 @@ Notes:
 	M2018-06-04
 		Build an original narrow type
 		type format monthWidth numeric differs from type stand-alone.
-	M2017: Build month names in Latin (default), fr, en, de, es, pt
+	M2017: Build month names in Latin (default), fr, en, de, es, pt (see XML file)
 
 */
 /* Copyright Miletus 2016-2020 - Louis A. de Fouquières
@@ -33,7 +33,7 @@ const pldrstring =
 '<?xml version="1.0" encoding="UTF-8" ?>\
 <!-- Milesian month names definition - non language-specific section  -->\
 <!-- <!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->\
-<pldr> <!-- Private locale data registry - for makeup -->\
+<pldr> <!-- Private locale data registry - for moke-up -->\
 <ldmlBCP47>\
 <calendar type="milesian"> <!-- name will have to be registred -->\
 	<months>\
@@ -180,5 +180,4 @@ const pldrstring =
 
 /** The pldrstring parsed to a DOM.
 */
-function pldrDOM () { return new DOMParser().parseFromString(pldrstring, "application/xml")};
-export { pldrDOM as default }
+export default function getPldrDOM () { return new DOMParser().parseFromString(pldrstring, "application/xml")};
