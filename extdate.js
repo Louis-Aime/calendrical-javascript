@@ -325,8 +325,8 @@ export default class ExtDate extends Date {
 		ExtDate.numericFields.forEach ( (item) => { if (fields[item.name] == undefined) 
 			fields[item.name] = startingFields[item.name] } );
 		// Construct an object with the date indication only, at 0 h UTC
-		let dateFields = {}; ExtDate.numericWeekFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
-		this.setTime(this.calendar.counterFromWeekFields (dateFields));
+		let dateFields = {}; ExtDate.numericFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
+		this.setTime(this.calendar.counterFromFields (dateFields));
 		// finally set time to this date from TZ, using .setHours or .setUTCHours
 		switch (TZ) {
 			case undefined: case "": return this.setHours (fields.hours, fields.minutes, fields.seconds, fields.milliseconds);
