@@ -1,7 +1,7 @@
 # calendrical-javascript
 Basic routines in javascript for computations on calendars, including 
  * the Cycle Based Calendar Computation Engine,
- * a week computation engine that works with ISO 8601 weeks and other types of weeks,
+ * a week computation engine that emcompasses any architecture of weeks and week numbering, including ISO 8601,
  * a basic conversion tool from iso 8601 date figures to any day counter (Julian Day, Microsoft, Unix-Posix...) and the reverse,
  * basic constants to convert to or from day counter to milliseconds counter,
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
@@ -12,16 +12,13 @@ Basic routines in javascript for computations on calendars, including
  * classes for custom calendars that are not available from Unicode, including the Julian and the Milesian calendars, and a class for any western calendar that switches from Julian to Gregorian at a user-specified date.
 The package  anticipate a few features of the Temporal initiative of Ecma TC39.
 
-In the /docs folder, a demo application may be charged. It is also available from GitHub Pages .
+The datextendedtest* files are for test and demonstrating purposes. This demo is also available from GitHub Pages .
 
 ## Module architecture
-This module uses ES6 module syntax (export / import). chronos.js, dateextended.js and pldr.js only export objects. 
-calendars.js import all objects of chronos and dateextended files, and exports several classes. 
+This module uses ES6 module syntax (export / import).
 aggregate.js re-exports all entry points.
 
 Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js. 
-
-The application in /docs demonstrate how to import the modules in a standard script (not a module) using `import ()` from aggregate.js.
 
 ## GitHub Page site for test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -32,7 +29,7 @@ Routines that help developing calendrical computations for new calendars.
 ### chronos.js
 Exported const **Milliseconds**: key numeric constants for converting milliseconds (used in present Javascript environment) into days, hours, minutes, seconds and the reverse. 
 
-The **Chronos** exported class offers common routines and tools for calendrical computations: 
+The **Cbcce** (Cycle Based Calendrical Computation Engine exported class offers common routines and tools for calendrical computations: 
  * Basic div and mod computations for calendrical purposes.
  * Basic computation of leap years for Julian and Gregorian calendars.
  * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendars defined by an algorithm, including
@@ -49,7 +46,7 @@ The **IsoCounter** exported class enables conversion from any day counter to iso
 The parameters for using these classes are described in details in the source. Examples are given in the file calendars.js.
 
 ## fetchdom.js
-This small function, not used as a module, launches a request to an XML file and transforms it into a DOM object. The result is a Promise.
+This small exported function launches a request to an XML file and transforms it into a DOM object. The result is a Promise.
 
 ### pldr.xml
 The default extended object is a DOM representing a "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars. 
@@ -60,17 +57,22 @@ A string that holds a reduced version of pldr.xml: no language-specific names. T
 
 ## Extension of Javascript objects
 
-### dateextended.js
+### extdate.js
 This module enhances calendrical functions in JavaScript
-* **ExtDate** class extends the Date object. You can use date elements with calendars that you define yourself.
+* **ExtDate** class extends the Date object. You can use date elements with calendars that you define yourself. However Temporal will offer better opportunities.
+
+### extdatetimeformat.js
 * **ExtDateTimeFormat** extends the Intl.DateTimeFormat object. You can customize the way dates are displayed with new options and custom calendars.
 
 ## calendars.js
-With Chronos for the calendrical computations, and ExtDate for embedding in ordinary code, you can define custom calendars in a few lines. 
+With Chronos.Cbcce for the calendrical computations, and ExtDate for embedding in ordinary code, you can define custom calendars in a few lines. 
 This file proposes examples of calendars that are missing in Unicode's tools.
 
 ### MilesianCalendar
 The **MilesianCalendar** exported class specifies the Milesian calendar as defined at www.calendriermilesien.org.
+
+### GregorianCalendar
+This exported class defines the same calendar as *gregory*, but you can display week data conforming to iso8601, and you can specify a date giving the week coordinates.
 
 ### JulianCalendar
 The **JulianCalendar** exported class defines the Julian calendar.
@@ -87,7 +89,7 @@ The **FrenchRevCalendar** exported class defines the calendar used under the Fre
 ### Milliseconds : static object
  * DAY_UNIT, HOUR_UNIT, MINUTE_UNIT, SECOND_UNIT : number of milliseconds in these units.
 
-### Chronos : class
+### Cbcce : class
 #### Constructor (calendRule : object)
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * calendRule is a compound object that describes how to transform a counter into a compound object with date fields, and the reverse. The calendar should follow the integral postfix intercalation rule. The Roman (julian-gregorian) calendar follows this rule if the beginning of the year is shifted to 1 March.
@@ -107,7 +109,8 @@ The complete description of the parameters is available in Chronos.js. Calendars
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * weekdayRule is a compound object that summerizes the rules regarding weeks. Regular 7-days weeks are handled, as well as systems with epagomenal days: one or two epagomenal days each at different places in the year, or several epagomenal days at the end of the year.
 #### methods
-  * getWeekFigures (dayIndex, characDayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
+  * getWeekFigures (dayIndex, year): \[week number, week day number, year offset, weeks in year\]. *dayIndex* is the stamp of a day. It represents the day whose figures are computed. It is the number of a day, not a timestamp, e.g. divide the Posix timestamp by *Chronos.DAY_UNIT*. *characDayIndex* represents the day that always belongs to a week (generally # 1 week), in the *year*. Result is an array of numbers: \[week number, week day number, year offset, number of weeks in this week year\]. Year offset is -1, 0 or 1; this figure should be added to *year* in order to get the *week-year* the date belongs to, which can be 1 before or after the date's year. The parameters for those computations build up the weekdayRule object.
+  * getNumberFromWeek (weekYear, weekNumber, weekday) builds the number of the day from the week indications.
 
 ### IsoCounter : class
 
@@ -134,6 +137,7 @@ However, in the last case,
    * the date is always evaluated as a local date with respect to the system time zone.
 #### static objects
  * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value.
+ * numericWeekFields: a similar array for informations on weeks.
 #### static functions
  * fullUTC (fullYear, month, day, hour, minute, second, millisecond): number, all parameters are numbers. Set ExtDate object to the date specified by the parameters, deemed UTC (not local). This is very much like Date.UTC, except:
    * the year element is a full year, no 2-digit year is admitted;
@@ -148,6 +152,7 @@ The time stamp is the number of milliseconds since Unix epoch (1 Jan. 1970 00:00
  * getFields (TZ): object. The fields of the date, in the associated custom calendar. The corresponding time stamp is returned.
  * getISOFields (TZ): object. The fields of the date in the ISO 8601 calandar.
  * setFromFields (TZ): number. Set the ExtDate object to the date expressed by the fields in the associated calendar. The corresponding time stamp is returned.
+ * setFromWeekFields (TZ): number. Set the ExtDate object to the date expressed as week date in the associated calendar.
  * inLeapYear (TZ): whether the year of the date in the associated calendar is a leap year.
  * toCalString (TZ): a string that expresses the date in the corresponding calendar. The string begins with [<calendarname>].
  * fullYear (TZ): the full year, an unambiguous signed integer that expresses the year with respect to the first "year 0" for this calendar.
@@ -182,12 +187,13 @@ This function is deprecated since the version 68 of ICU is available (even thoug
 
 ## Simple demonstrating and testing application
 The mini-site https://louis-aime.github.io/calendrical-javascript/ enables you to test most facilities of this package. 
-The source of this site is not provided with the package, but is available at the GitHub repository in /docs.
+The source of this site is not part of the package, but is available at the GitHub repository.
 
 ### Calendars used in the demonstration site.
 
 The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
- * **milesian**: the milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required 
+ * **milesian**: the milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required.
+ * **gregorian**: the ordinary gregorian calendar, but here you can make week computations.
  * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, which look very much like the Gregorian calendar's.  
  * **vatican, french, german, english** : they instantiate the *WesternCalendar*, with diffenent switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
  * **frenchRev**: the calendar defined by the French Convention in 1793.
