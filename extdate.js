@@ -342,19 +342,14 @@ export default class ExtDate extends Date {
 	*/
 	setFromWeekFields( myFields, TZ ) { 
 		if (typeof this.calendar == "string") throw new TypeError ('No computation on week figures with built-in calendars');
-	// Here the only accepted fields are week-specific.
-	// first: set date as UTC 0 h, then setHours. For built-in, limited to UTC or system time zone.
-		var fields = Object.assign (this.getWeekFields(TZ), myFields);
-		// Control date fields and complete fields with current value at same time zone
-		// No era handled here. Only check all numeric fields.
+	// Here the only used fields are week-specific. No era is handled
+	// Find present time fields and week fields, merge with asked fields.
+		var fields = this.getFields (TZ);	// interesting fields are time fields.
+		fields = Object.assign (fields, this.getWeekFields (TZ));	// add date expressed in week coordinates.
+		fields = Object.assign (fields, myFields);	// here complete definition of time and date in week, under TZ
 		if (ExtDate.numericWeekFields.some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
 			throw new TypeError 
-				(ExtDate.numericWeekFields.map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Non integer element in week date: "));
-		/* ExtDate.numericWeekFields.forEach ( (item) => { if (fields[item.name] == undefined) 
-			fields[item.name] = startingFields[item.name] } );
-		*/
-		// Construct an object with the week date indication only, at 0 h UTC
-		// let dateFields = {}; ExtDate.numericFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
+				(ExtDate.numericWeekFields.map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in week date: "));
 		let dateFields = {}; ExtDate.numericWeekFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
 		this.setTime(this.calendar.counterFromWeekFields (dateFields));
 		// finally set time to this date from TZ, using .setHours or .setUTCHours
