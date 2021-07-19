@@ -12,7 +12,8 @@ Required:
 	Then adaptation to modular architecture was performed.
 	Optimisation remains possible within this file and also with milesianclockdisplay.js.
 */
-/* Version:	V2021-07-25	
+/* Version:	V2021-07-28: fullYear is no more a function.
+	V2021-07-25	
 		Control week figures, 
 		Add one calendar (Gregorian with week management)
 		Simplify management of system time zone / UTC time zone
@@ -269,11 +270,11 @@ function setDisplay () { // Considering that register.targetDate time has been s
 	// Initiate a representation of local date
 	register.isoDate = new modules.ExtDate ('iso8601',register.targetDate.valueOf());	// The UTC representation of register.targetDate date is the local date of TZ
 	// Initiate custom calendar form with present local date
-	let fields = register.targetDate.getFields(register.TZSettings.mode);
+	// let fields = register.targetDate.getFields(register.TZSettings.mode);
 	document.custom.calend.value = register.customCalendar.id	;	
-	document.custom.year.value = register.customCalendar.fullYear(fields); // display fullYear, not just year. fields.year is displayed with era in date string.
-	document.custom.monthname.value = fields.month; // Display month value in 1..12 range.
-	document.custom.day.value = fields.day;
+	document.custom.year.value = register.targetDate.fullYear(register.TZSettings.mode); // display fullYear, not just year. fields.year is displayed with era in date string.
+	document.custom.monthname.value = register.targetDate.month(register.TZSettings.mode); // Display month value in 1..12 range.
+	document.custom.day.value = register.targetDate.day(register.TZSettings.mode);
 
 	document.week.weekyear.value = register.targetDate.weekYear(register.TZSettings.mode); //getElementById("weekyear").innerHTML
 	document.week.weeknumber.value = register.targetDate.weekNumber(register.TZSettings.mode);	//getElementById("weeknum").innerHTML
@@ -289,7 +290,7 @@ function setDisplay () { // Considering that register.targetDate time has been s
 				.format(register.targetDate);
 				
 	// Initiate Gregorian form with present local date using isoDate
-	let isoFields = register.isoDate.getFields (register.TZSettings.mode);
+	// let isoFields = register.isoDate.getFields (register.TZSettings.mode);
     document.gregorian.year.value = register.isoDate.fullYear (register.TZSettings.mode); // uses the local variable - not UTC
     document.gregorian.monthname.value = register.isoDate.month (register.TZSettings.mode); // Display month value in 1..12 range.
     document.gregorian.day.value = register.isoDate.day (register.TZSettings.mode);

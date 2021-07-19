@@ -9,7 +9,10 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Paasing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-07-25
+/* Versions:	M2021-07-28
+		Add solveAskedFields (fields) as required function
+		Suppress fullYear as a function, maintain as a field.
+	M2021-07-25
 		Adapt to newest chronos.js
 		If date fields are missing, fill with default values before computing (do not throw).
 		Add a function to compute counter from week fields - and debug
@@ -117,6 +120,15 @@ export class MilesianCalendar {
 			weekLength : 7			// the Milesian week is the 7-days well-known week
 		}
 		)
+	/*	Field control
+	*/
+	solveAskedFields (askedFields) {
+		var fields = {...askedFields};
+		if (fields.year != undefined && fields.fullYear != undefined)
+			{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
+		else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear };
+		return fields
+	}
 	/* Basic conversion methods	
 	*/
 	fieldsFromCounter (timeStamp) { // year, month, day, from Posix timestamp, UTC
@@ -127,7 +139,7 @@ export class MilesianCalendar {
 	}
 	counterFromFields (fields) { // Posix timestamp at UTC, from year, month, day and possibly time in Milesian
 		let myFields = { year : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
-		myFields = Object.assign (myFields, fields);
+		myFields = Object.assign (myFields, this.solveAskedFields(fields));
 		return this.milesianClockwork.getNumber( myFields )
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (UTC)
@@ -151,14 +163,10 @@ export class MilesianCalendar {
 	/* Simple properties and method as inspired by Temporal
 	*/
 	eras = null				// list of code values for eras. No era in Milesian calendar.
-	fullYear (fields) {	// year expressed in full, that is as a relative number (no era). Here, it is the same.
-		return fields.year
-	}
 	inLeapYear (fields) { 	// is the Milesian year of this date a Milesian leap year.
-		return Cbcce.isGregorianLeapYear ( this.fullYear(fields) + 1 )
+		return Cbcce.isGregorianLeapYear ( fields.year + 1 )
 	}
 }
-
 export class GregorianCalendar {	// this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.
 	constructor (id) {
 		this.id = id;
@@ -175,6 +183,23 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 			// the rest of by default
 		}
 	) 	// set for gregorian week elements.
+	solveAskedFields (askedFields) {
+		var fields = {...askedFields};
+		if (fields.era != undefined) {
+			// compute value from deemed existing fields, throw if NaN
+			if (fields.year <= 0) throw new RangeError ('If era is defined, year shall be > 0: ' + fields.year);
+			let fullYear = fields.era == eras [0] ? 1 - fields.year : fields.year;
+			if (fields.fullYear == undefined) { fields.fullYear = fullYear }
+				else if (fields.fullYear != fullYear) 
+					throw new RangeError ('Existing fullYear field inconsistent with era and year:' + fields.era + ', ' + fields.year + ', ' + fields.fullYear);
+			}
+		else {
+			if (fields.year != undefined && fields.fullYear != undefined)
+				{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
+			else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear }
+		}
+		return fields;
+	}
 	fieldsFromCounter (timeStamp) {
 		let myDate = new ExtDate ("iso8601", timeStamp),
 			myFields = {
@@ -184,21 +209,14 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 				hours : myDate.getUTCHours(),
 				minutes : myDate.getUTCMinutes(),
 				seconds : myDate.getUTCSeconds(),
-				milliseconds : myDate.getUTCMilliseconds
+				milliseconds : myDate.getUTCMilliseconds()
 			};
 			[ myFields.era, myFields.year ] = myFields.fullYear <= 0 ? [this.eras[0], 1 - myFields.fullYear] : [this.eras[1], myFields.fullYear];
 		return myFields;
 	}
 	counterFromFields (fields) {
-		var myFields = {...fields};
-		// solve year and era fields
-		if (myFields.era == undefined) {myFields.fullYear = myFields.fullYear == undefined ? myFields.year : myFields.fullYear}
-		else { 
-			if (isNaN (myFields.year) || myFields.year <= 0) throw new RangeError ("Invalid year value: " + myFields.year);
-			myFields.fullYear = myFields.era == eras[0] ? 1 - myFields.year : myFields.year;
-		}
-		let basicFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
-		myFields = Object.assign (basicFields, myFields);
+		var myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, this.solveAskedFields(fields));
 		let myDate = new ExtDate 
 			("iso8601", ExtDate.fullUTC(myFields.fullYear, myFields.month, myFields.day, myFields.hours, myFields.minutes, myFields.seconds, myFields.milliseconds));
 		return myDate.valueOf()
@@ -219,12 +237,8 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
 			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
 	}
-	fullYear (fields) {
-		if (fields.era == undefined) return fields.year
-		else return fields.era == this.eras[0] ? 1 - fields.year : fields.year
-	}
 	inLeapYear (fields) {
-		return Cbcce.isGregorianLeapYear ( this.fullYear(fields) )
+		return Cbcce.isGregorianLeapYear ( fields.fullYear )
 	}
 }
 
@@ -287,21 +301,37 @@ export class JulianCalendar  {
 		if (myFields.indexOf ("year") >= 0 && myFields.indexOf("era") == -1) myFields.unshift("era");
 		return myFields;
 	}
+	solveAskedFields (askedFields) {
+		var fields = {...askedFields};
+		if (fields.era != undefined) {
+			// compute value from deemed existing fields, throw if NaN
+			if (fields.year <= 0) throw new RangeError ('If era is defined, year shall be > 0: ' + fields.year);
+			let fullYear = fields.era == this.eras [0] ? 1 - fields.year : fields.year;
+			if (fields.fullYear == undefined) { fields.fullYear = fullYear }
+				else if (fields.fullYear != fullYear) 
+					throw new RangeError ('Existing fullYear field inconsistent with era and year:' + fields.era + ', ' + fields.year + ', ' + fields.fullYear);
+			}
+		else {
+			if (fields.year != undefined && fields.fullYear != undefined)
+				{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
+			else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear }
+		}
+		return fields;
+	}
 	fieldsFromCounter (timeStamp) {		// from a date, give the compound object of the calendar, unshifted to date in January
 		let myFields = this.shiftYearStart(this.julianClockwork.getObject(timeStamp),-2,3);
 		if (myFields.fullYear < 1) {
 			myFields.year = 1 - myFields.fullYear;
 			myFields.era = this.eras[0];
 		} else {
-			myFields.era = this.eras[1];
 			myFields.year = myFields.fullYear;
+			myFields.era = this.eras[1];
 		}
 		return myFields
 	}
 	counterFromFields(fields) {			// from the set of date fields, give time stamp. If no era specified, negative year is authorised
-		let myFields = { year : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
-		myFields = Object.assign (myFields, fields);
-		myFields.fullYear = this.fullYear (fields);
+		var myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, this.solveAskedFields(fields));
 		switch (fields.era) {
 			case undefined: break;// year without era is fullYear
 			case this.eras[0]: case this.eras[1]: 
@@ -329,12 +359,8 @@ export class JulianCalendar  {
 	}
 	/* properties and other methods
 	*/
-	fullYear (fields) {				// switch to full year (possibly negative)
-		if (fields.era == undefined) return fields.year
-		else return fields.era == this.eras[0] ? 1 - fields.year : fields.year
-	}
 	inLeapYear (fields) { // 
-		return Cbcce.isJulianLeapYear(this.fullYear(fields))
+		return Cbcce.isJulianLeapYear(fields.fullYear)
 	}
 } // end of calendar class
 
@@ -367,6 +393,23 @@ export class WesternCalendar { // Framework for calendars of European countries,
 			// the rest of by default
 		}
 		) 	// set for gregorian week elements. */
+	solveAskedFields (askedFields) {
+		var fields = {...askedFields};
+		if (fields.era != undefined) {
+			// compute value from deemed existing fields, throw if NaN
+			if (fields.year <= 0) throw new RangeError ('If era is defined, year shall be > 0: ' + fields.year);
+			let fullYear = fields.era == this.eras [0] ? 1 - fields.year : fields.year;
+			if (fields.fullYear == undefined) { fields.fullYear = fullYear }
+				else if (fields.fullYear != fullYear) 
+					throw new RangeError ('Existing fullYear field inconsistent with era and year:' + fields.era + ', ' + fields.year + ', ' + fields.fullYear);
+			}
+		else {	// era is undefined -> leave it that way
+			if (fields.year != undefined && fields.fullYear != undefined)
+				{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
+			else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear }
+		}
+		return fields;
+	}
 	fieldsFromCounter (number) {
 		if (number < this.switchingDate.valueOf())	{	// Julian calendar
 			var myFields = this.julianCalendar.fieldsFromCounter(number);
@@ -374,17 +417,14 @@ export class WesternCalendar { // Framework for calendars of European countries,
 		}
 		else {
 			let myDate = new Date (number);
-			var myFields = // (we'd like a Gregorian custom calendar !!)
-				Object ({era : this.eras[2], year : myDate.getUTCFullYear(),
-				month : myDate.getUTCMonth()+1, day : myDate.getUTCDate(),
-				hours : myDate.getUTCHours(), minutes : myDate.getUTCMinutes(),
-				seconds : myDate.getUTCSeconds(), milliseconds : myDate.getUTCMilliseconds()});
+			var myFields = this.gregorianCalendar.fieldsFromCounter(number);
+			myFields.era = this.eras[2];
 		}
 		return myFields
 	}
 	counterFromFields(askedFields) { // given fields may be out of scope
-		var testDate, fields = {...askedFields};
-		ExtDate.numericFields.forEach( (item) => { if (fields[item.name] == undefined)  fields[item.name] = item.value } )
+		var testDate, fields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		fields = Object.assign (fields, this.solveAskedFields(askedFields));
 		switch (fields.era) {
 			case this.julianCalendar.eras[1] :		// "A.D." weak indication, just year shall not be < 1, but similar to no indication at all
 				if (fields.year < 1) throw new RangeError ("If era is specified, year shall be stricly positive: " + fields.year);
@@ -420,13 +460,9 @@ export class WesternCalendar { // Framework for calendars of European countries,
 		if (result < this.switchingDate.valueOf()) result = this.julianCalendar.counterFromWeekFields (fields);
 		return result;
 	}
-	fullYear (fields) {
-		if (fields.era == undefined) return fields.year
-		else return fields.era == this.eras[0] ? 1 - fields.year : fields.year
-	}
 	inLeapYear (fields) { 
 		if (this.counterFromFields(fields) < this.switchingDate.valueOf()) return this.julianCalendar.inLeapYear(fields)
-		else return Cbcce.isGregorianLeapYear (this.fullYear (fields))
+		else return this.gregorianCalendar.inLeapYear (fields)
 	}
 } // end of calendar class
 
@@ -493,9 +529,16 @@ export class FrenchRevCalendar {
 			uncappedWeeks : [36]	// sans-culottides days are assigned to last decade.
 		}
 	)
+	solveAskedFields (askedFields) {
+		var fields = {...askedFields};
+		if (fields.year != undefined && fields.fullYear != undefined)
+			{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
+		else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear };
+		return fields
+	}
 	counterFromFields (fields) {
 		let myFields = { year : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
-		myFields = Object.assign (myFields, fields);
+		myFields = Object.assign (myFields, this.solveAskedFields(fields));
 		return this.frenchClockWork.getNumber (myFields)
 	}
 	fieldsFromCounter (timeStamp) {
@@ -514,9 +557,6 @@ export class FrenchRevCalendar {
 		return this.decade.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
 			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
 			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
-	}
-	fullYear (fields) {	// year expressed in full, that is as a relative number (no era). Here, it is the same.
-		return fields.year
 	}
 	inLeapYear (fields) {
 		let myFields = {...fields};

@@ -7,7 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-07-24 separate ExtDateTimeFormat (purge version history)
+/*	Version	M2021-07-28	Use fullYear as a field of ExtDate, not as a function
+	M2021-07-24 separate ExtDateTimeFormat (purge version history)
 	M2021-07-18 (last change before splitting - nothing here)
 	M2021-06-13	
 		Error not as objects, but close to the corresponding code.
@@ -79,8 +80,8 @@ class CustomCalendar {
 	** Methods (see extdate)**
 	// Possible fields elements from ExtDate
 	era (date) : the era code
-	year : always the signed fullyear.
-	eraYear (date) : the year number, to be combined with era (may differ from year).
+	year : the year associated to era, to be displayed (eraYear of Temporal)
+	fullYear : the uniquely-definied year 
 	month (date) :  month number, first month is 1
 	day (date) : day number in month, first day is 1
 	// Calendar dependant characteristics, used in Temporal
@@ -345,7 +346,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			options.timeZone = "UTC";
 			let myCanvasFields = {...myDateFields};
 			let shiftDate = new Date (myAbsoluteDate.valueOf());
-			shiftDate.setUTCFullYear(this.calendar.fullYear(myDateFields), myCanvasFields.month-1, 1); // desired year and month, day set to 1.
+			shiftDate.setUTCFullYear(myDateFields.fullYear, myCanvasFields.month-1, 1); // desired year and month, day set to 1.
 			let myDOWPart = new Intl.DateTimeFormat(options.locale, {calendar : options.calendar, weekday : options.weekday, timeZone : "UTC" }).format(myAbsoluteDate);
 			myParts = new Intl.DateTimeFormat(options.locale, options).formatToParts(shiftDate); // desired month, day = 1.
 			// Now put week day, day, and time zone name for these calendars

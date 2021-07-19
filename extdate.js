@@ -7,7 +7,8 @@ Contents
 	ExtDate: extension of Date object that uses custom calendars (but not built-in calendars)
 	One new method for Date for generalised time zone offset management
 */
-/*	Version	M2021-07-25 : 
+/*	Version	M2021-07-28 introduce solveAskedFields
+	M2021-07-25 : 
 		Separate ExtDate and Intl.ExtDateTimeFormat
 		Complete set of fields and complete parameter for getISOFields
 		Fields year and earYear handled the same way as Temporal
@@ -75,12 +76,16 @@ class CustomCalendar {
 			codes : in case of "list" for a non-numeric field, the array of codes to search for
 		(note: maybe we could just put "source" and test typeof source, to be seen later)
 	** Methods **
-	*fieldsFromCounter (number) 	// from a date stamp deemed UTC, give date and hour fields. Year is full year, month is 1-based (TZ not handled at this level). 
+	*fieldsFromCounter (number) 	// from a date stamp deemed UTC, give date and hour fields. Date fields shall be as follows: 
+		The fields in the numericFields list: fullYear, month, day. 
+		year, as it should be displayed
+		era, to be displayed. If era is not in fields, year is fullYear
+		month is 1-based 
 		return {fields} // if (fields.era = undefined), year (if existing) is fullYear. Otherwhise a fullYear() method is provided. You may always get fullYear. 
 	*counterFromFields (fields) {	// from a compound object that expresses the date in calendar (with month in base 1), create the Posix Value for the date (UTC)
 		return (number)	// specify fields as in calendar. If era is specified, year is relative to era. If not, it is a fullYear.
 	}
-	*buildDateFromFields (fields, construct = ExtDate) { let a constructor build the date.
+	*buildDateFromFields (fields, construct = ExtDate) { let a constructor build the date. This is not used here (and was abandonned in Temporal...)
 		return (ExtDate or extended object)
 	}
 	*weekFieldsFromCounter (timeStamp) {	// week fields, from a timestamp deemed UTC
@@ -96,7 +101,11 @@ class CustomCalendar {
 		required entry fields are weekYear, weekNumber, weekday
 		return (timeStamp)
 	}
-	*fullYear (fields) : the signed integer number that unambigously represents the year in the calendar. If in regressive era, the year is translated into a negative or null number.
+	*solveAskedFields (fields) {
+		from a set of fields, solve any ambiguity between year, era, fullYear, month, monthCode, before merging.
+		return (fields)
+	}
+	fullYear (fields) : the signed integer number that unambigously represents the year in the calendar. If in regressive era, the year is translated into a negative or null number.
 	era (date) : the era code
 	year : the year displayed with the era (if existing), or the unambiguous year .
 	*inLeapYear (fields) is this date a leap year
@@ -185,18 +194,16 @@ export default class ExtDate extends Date {
 	}
 	/** Basic data
 	*/
-	static numericFields = [ {name : "year", value : 0}, {name : "month", value : 1}, {name : "day", value : 1},
-		// year is deemed full year, no era implied
+	static numericFields = [ {name : "fullYear", value : 0}, {name : "month", value : 1}, {name : "day", value : 1},
 		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] 
 		// names of numeric date elements
 	static numericWeekFields = [ {name : "weekYear", value : 0}, {name : "weekNumber", value : 1}, {name : "weekday", value : 1},	
-		// year is deemed full year, no era implied
 		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] 
 		// names of numeric week figures elements
 	/** Basic utility fonction: get UTC date from ISO fields in UTC, including full year i.e. 79 means year 79 AD, when Pompeii was buried under volcano ashes.
 	*/
 	static fullUTC (fullYear=0, month=1, day=1, hours=0, minutes=0, seconds=0, milliseconds=0) {
-		arguments[1]--;		// From base 1 month to monthIndex
+		arguments[1]--;		// From base 1 month to month of legacy Date
 		let myDate = new Date(Date.UTC(...arguments));	// Date.UTC requires at least one argument, which is always the UTC year, shifted to 1900-1999 if specified 0..99
 		if (fullYear <100 && fullYear >=0) myDate.setUTCFullYear(fullYear);
 		return myDate.valueOf()
@@ -271,11 +278,11 @@ export default class ExtDate extends Date {
 							seconds : shiftDate.getUTCSeconds(),
 							milliseconds : shiftDate.getUTCMilliseconds()
 						};
-					if (this.calendar == "gregory") [result.era, result.year] = result.fullYear <= 0 ? ["ERA0",1-result.fullYear] : ["ERA1", result.fullYear];
+					if (this.calendar == "gregory") [result.era, result.year] = result.fullYear <= 0 ? ["ERA0",1-result.fullYear] : ["ERA1", result.fullYear]
+					else result.year = result.fullYear;
 					break;
 				default : throw new RangeError ("Only iso8601 and gregory built-in calendars enable getFields method: " + this.calendar);
 				}
-			result.year = result.fullYear;
 			return result;
 		}
 		else 
@@ -314,21 +321,17 @@ export default class ExtDate extends Date {
 	*/
 	setFromFields( myFields, TZ ) { 
 		if (typeof this.calendar == "string") throw new TypeError ('setFromFields does not work with built-in calendars: ' + this.calendar);
-		var askedFields = {...myFields};
-	// 1. analyse fields and establish the suitable year.
-		if (fields.era != undefined) {	// year was specified with era => replace year with fullYear
-			fields.year = this.calendar.fullYear (fields);
-			delete fields.era;
-		}
-	// 2. Merge present fields with asked fields
-		var fields = this.getFields(TZ);
+		var askedFields = this.calendar.solveAskedFields (myFields),	// askedFields is not ambiguous. 
+			fields = this.getFields(TZ);
 		fields = Object.assign (fields, askedFields);
+/*		This part seems unnecessary since fields already exist.
 	// 3. Now field should be complete
 		if (ExtDate.numericFields.some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
 			throw new TypeError 
 				(ExtDate.numericFields.map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in date fields: "));
 		ExtDate.numericFields.forEach ( (item) => { if (fields[item.name] == undefined) 
 			fields[item.name] = startingFields[item.name] } );
+*/
 		// Construct an object with the date indication only, at 0 h UTC
 		let dateFields = {}; ExtDate.numericFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
 		this.setTime(this.calendar.counterFromFields (dateFields));
@@ -342,18 +345,18 @@ export default class ExtDate extends Date {
 	*/
 	setFromWeekFields( myFields, TZ ) { 
 		if (typeof this.calendar == "string") throw new TypeError ('setFromWeekFields does not work with built-in calendars: ' + this.calendar);
-	// Here the only used fields are week-specific. No era is handled
-	// Find present time fields and week fields, merge with asked fields.
-		var fields = this.getFields (TZ);	// interesting fields are time fields.
-		fields = Object.assign (fields, this.getWeekFields (TZ));	// add date expressed in week coordinates.
-		fields = Object.assign (fields, myFields);	// here complete definition of time and date in week, under TZ
+		var timeFields = this.getFields (TZ),	// interesting fields are time fields.
+			weekFields = this.getWeekFields (TZ);
+		weekFields = Object.assign (weekFields, myFields);	// add date expressed in week coordinates.
+/*	This part seems unnecessary since fields already exist.
 		if (ExtDate.numericWeekFields.some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
 			throw new TypeError 
 				(ExtDate.numericWeekFields.map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in week date: "));
-		let dateFields = {}; ExtDate.numericWeekFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
+*/
+		let dateFields = {}; ExtDate.numericWeekFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = weekFields[item.name]} );
 		this.setTime(this.calendar.counterFromWeekFields (dateFields));
 		// finally set time to this date from TZ, using setFullTime
-		return this.setFullTime (TZ, fields.hours, fields.minutes, fields.seconds, fields.milliseconds);
+		return this.setFullTime (TZ, timeFields.hours, timeFields.minutes, timeFields.seconds, timeFields.milliseconds);
 	}
 	/** is this date in a leap year of the calendar ? 
 	*/
@@ -380,12 +383,8 @@ export default class ExtDate extends Date {
 					: fn2.format(compound.hours)+":"+fn2.format(compound.minutes)+":"+fn2.format(compound.seconds)+"."+fn3.format(compound.milliseconds) + "Z")
 	}
 	fullYear (TZ) {		// year as an unambiguous signed integer
-		if (typeof this.calendar == "string") switch (TZ) {
-			case "": return this.getFullYear();
-			case "UTC": return this.getUTCFullYear();
-		}
 		let fields = this.getFields(TZ);
-		return this.calendar.fullYear (fields)
+		return fields.fullYear;
 	}
 	era (TZ) {			// era code
 		let fields = this.getFields(TZ);
