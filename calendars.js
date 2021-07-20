@@ -9,9 +9,10 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Paasing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-07-28
+/* Versions:	M2021-07-29
 		Add solveAskedFields (fields) as required function
-		Suppress fullYear as a function, maintain as a field.
+		Suppress fullYear as a function, maintain as a field
+		Replace year by fullYear field in suitable calendars
 	M2021-07-25
 		Adapt to newest chronos.js
 		If date fields are missing, fill with default values before computing (do not throw).
@@ -222,13 +223,13 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 		return myDate.valueOf()
 	}
 	buildDateFromFields (fields, construct = ExtDate) {
-		return new construct (this, ExtDate.fullUTC(fields.year, fields.month, fields.day, fields.hours, fields.minutes, fields.seconds, fields.milliseconds))
+		return new construct (this, ExtDate.fullUTC(fields.fullYear, fields.month, fields.day, fields.hours, fields.minutes, fields.seconds, fields.milliseconds))
 	}
 	weekFieldsFromCounter (timeStamp) {
 		let myDate = new ExtDate ("iso8601", timeStamp),
-			year = myDate.getUTCFullYear(),
-			myFigures = this.gregorianWeek.getWeekFigures (Math.floor(myDate.valueOf()/Milliseconds.DAY_UNIT), year);
-		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+			fullYear = myDate.getUTCFullYear(),
+			myFigures = this.gregorianWeek.getWeekFigures (Math.floor(myDate.valueOf()/Milliseconds.DAY_UNIT), fullYear);
+		return {weekYearOffset : myFigures[2], weekYear : fullYear + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
 	}
 	counterFromWeekFields (fields) {
 		let myFields = { weekYear : 0, weekNumber : 1, weekday : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
@@ -277,7 +278,7 @@ export class JulianCalendar  {
 		{	// ISO8601 rule applied to Julian calendar
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
 			daysInYear: (year) => (Cbcce.isJulianLeapYear( year ) ? 366 : 365),		// leap year rule for this calendar
-			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({fullYear : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 1,		// week start with 1 (Monday)
 			characWeekNumber : 1,	// we have a week 1 and the characteristic day for this week is 4 January.
 			dayBase : 1,			// use 1..7 display for weekday
@@ -346,7 +347,7 @@ export class JulianCalendar  {
 		return new construct (this, timeStamp)
 	}
 	weekFieldsFromCounter (timeStamp) {	// week fields, from a timestamp deemed UTC
-		let	year = this.fieldsFromCounter (timeStamp).year,
+		let	year = this.fieldsFromCounter (timeStamp).fullYear,
 			myFigures = this.julianWeek.getWeekFigures (Math.floor(timeStamp/Milliseconds.DAY_UNIT), year);
 		return {weekYearOffset : myFigures[2], weekYear : year + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
 	}
@@ -384,15 +385,6 @@ export class WesternCalendar { // Framework for calendars of European countries,
 	firstSwitchDate = new Date ("1582-10-15T00:00:00Z") // First date of A.S. or N.S. era
 	julianCalendar = new JulianCalendar (this.id) 
 	gregorianCalendar = new GregorianCalendar (this.id)
-	/* gregorianWeek = new WeekClock (
-		{
-			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
-			daysInYear : (year) => (Cbcce.isGregorianLeapYear ( year ) ? 366 : 365),
-			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
-			startOfWeek : 1
-			// the rest of by default
-		}
-		) 	// set for gregorian week elements. */
 	solveAskedFields (askedFields) {
 		var fields = {...askedFields};
 		if (fields.era != undefined) {
