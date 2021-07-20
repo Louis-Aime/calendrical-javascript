@@ -155,14 +155,13 @@ The time stamp is the number of milliseconds since Unix epoch (1 Jan. 1970 00:00
  * setFromWeekFields (TZ): number. Set the ExtDate object to the date expressed as week date in the associated calendar.
  * inLeapYear (TZ): whether the year of the date in the associated calendar is a leap year.
  * toCalString (TZ): a string that expresses the date in the corresponding calendar. The string begins with [<calendarname>].
- * fullYear (TZ): the full year, an unambiguous signed integer that expresses the year with respect to the first "year 0" for this calendar.
- * era(TZ), year(TZ), month(TZ), day (TZ): the respective field in the associated calendar.
+ * era(TZ), year(TZ), fullYear (TZ), month(TZ), day (TZ): the respective field in the associated calendar. fullYear is an unambiguous signed integer that expresses the year with respect to the first "year 0" for this calendar.
  * The time elements can be obtained by the standard Date methode getHours(), getUTCHours(), etc.
  * weekday (TZ): a number that expresses the day of week of this date, for the week associated with the calendar, e.g. for the French revolutionnary calendar, the number is in the range 1..16, i.e. 1..10 for Unedi to Decadi, 11 to 16 for the six sansculottides days. With the 7-days week, the number is in the range 1 (Monday) to 7 (Sunday).
  * weekNumber (TZ): the number of the week following the calendar's rule
- * weeksInYear (TZ): the number of weeks in this year  following the calendar's rule.
- * fullWeekYear (TZ): unambiguous signed number of the year the numbered week for this date belongs to.
- 
+ * weeksInYear (TZ): the number fullYear (TZ),of weeks in this year  following the calendar's rule.
+ * weekYear (TZ): unambiguous signed number of the year the numbered week for this date belongs to.
+  
 ### ExtDateTimeFormat: class
 Extends the Intl.DateTimeFormat object for custom calendars, and offers new functionalities. All method of the Intl.DateTimeFormat object are available, however formatToParts, format, and resolvedOptions are enhanced.
 #### constructor (locale, options, calendar)
@@ -174,10 +173,6 @@ A new field is handled in the options object:
    * "auto" (default value): display era part if and only if 1. year is displayed, 2. era of now is not equal to era of formatted date.
    * "never": do not display era, whatever the date and the *era* option may be.
    * "always": display era following *era* option; if this option is undefined, it is deemed "short".
-#### static function
- * unicodeValidDateinCalendar: *this function is deleted*. 
-until ICU version 68, certain dates were not properly interpreted; this function would return *false* in those cases. 
-This function is deprecated since the version 68 of ICU is available (even though not all browsers have integrated ICU 68).
 #### methods
  * resolvedOptions(): same as for Intl.DateTimeFormat, eraDisplay is added.
  * displayEra (date): boolean (private function).
