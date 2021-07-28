@@ -7,7 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-07-28	Use fullYear as a field of ExtDate, not as a function
+/*	Version	M2021-08-07	Any type of calendar, not only custom, can be specified as the last parameter.
+	M2021-07-28	Use fullYear as a field of ExtDate, not as a function
 	M2021-07-24 separate ExtDateTimeFormat (purge version history)
 	M2021-07-18 (last change before splitting - nothing here)
 	M2021-06-13	
@@ -108,14 +109,17 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	 * @param (string) locale : as for Intl.DateTimeFormat
 	 * @param (Object) options : as for Intl.DateTimeFormat + this field
 		eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ?
-	 * @param (Object) a custom calendar. By default, the calendar resolved with locale and options will be used. If specified, and if a Private Locale Data Register is given,
-		this will be used for calendar's entity names. If not, the calendar.canvas field refers to the built-in calendar to use.
+	 * @param (Object) a calendar. 
+			If this parameter is not specified, the calendar resolved with locale and options will be used.
+			If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options.
+			If specified as a custom calendar and if a Private Locale Data Register is given, this will be used for calendar's entity names. 
+			If no pldr is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.
 	*/
 	constructor (locale, options, calendar) { // options should not be set to null, not accepted by Unicode
+		if (typeof calendar == "string") options.calendar = calendar;
 		super (locale, options);
-		// Resolve othis.calendarwn options
-		this.calendar = calendar;
-		if (this.calendar != undefined && typeof this.calendar != "object") throw new TypeError ("Invalid calendar parameter, custom calendar must be an object");
+		// Resolve this.calendar options
+		if (typeof calendar == "object") this.calendar = calendar;
 		this.options = {...options};	// copy originally asked options.
 		this.locale = locale;
 		// Resolve case where no field is asked for display : if none of weekday, year, month, day, hour, minute, second is asked, set a standard suite
@@ -144,7 +148,6 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		this.options.hour12 = this.DTFOptions.hour12;
 		this.options.hourCycle = this.DTFOptions.hourCycle;
 
-		
 		// Control and resolve specific options
 		if (this.options.eraDisplay == undefined) this.options.eraDisplay = "auto";
 		switch (this.options.eraDisplay) {
