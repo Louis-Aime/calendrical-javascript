@@ -167,7 +167,8 @@ Extends the Intl.DateTimeFormat object for custom calendars, and offers new func
 #### constructor (locale, options, calendar)
  * locale: as for Intl.DateTimeFormat, a string that expresses the language, the region and other characteristics (see JS documentation);
  * options: as for Intl.DateTimeFormat, an object whose fields control the way a date should be formatted;
- * calendar: an object representing a custom calendar. If this parameter is passed but is not an object, an error is thrown.
+ * calendar: an object representing a custom calendar or a built-in calendar. If this parameter is not an object, it supersedes the .calendar field of options.
+
 A new field is handled in the options object:
  * eraDisplay, in which condition should the era part be displayed:
    * "auto" (default value): display era part if and only if 1. year is displayed, 2. era of now is not equal to era of formatted date.
