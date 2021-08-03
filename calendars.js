@@ -9,7 +9,8 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Paasing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-07-29
+/* Versions:	M2021-08-13	GregorianCalendar is the real ISO 8601 calendar, without era and with algebraic years.
+	M2021-07-29
 		Add solveAskedFields (fields) as required function
 		Suppress fullYear as a function, maintain as a field
 		Replace year by fullYear field in suitable calendars
@@ -172,8 +173,12 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 	constructor (id) {
 		this.id = id;
 	}
-	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
+	eras = null			// no era with the "real" proleptic Gregorian calendar.
 	canvas = "gregory"
+	stringFormat = "built-in"	// formatting options start from canvas calendars values
+	partsFormat = {	// no special instruction 
+		year : { mode : "field" }
+	}
 	// no clockwork, use standard Date routines
 	gregorianWeek = new WeekClock (
 		{
@@ -184,6 +189,14 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 			// the rest of by default
 		}
 	) 	// set for gregorian week elements.
+	solveAskedFields (askedFields) {
+		var fields = {...askedFields};
+		if (fields.year != undefined && fields.fullYear != undefined)
+			{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
+		else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear };
+		return fields
+	}
+/*
 	solveAskedFields (askedFields) {
 		var fields = {...askedFields};
 		if (fields.era != undefined) {
@@ -201,6 +214,7 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 		}
 		return fields;
 	}
+*/
 	fieldsFromCounter (timeStamp) {
 		let myDate = new ExtDate ("iso8601", timeStamp),
 			myFields = {
@@ -212,17 +226,19 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 				seconds : myDate.getUTCSeconds(),
 				milliseconds : myDate.getUTCMilliseconds()
 			};
-			[ myFields.era, myFields.year ] = myFields.fullYear <= 0 ? [this.eras[0], 1 - myFields.fullYear] : [this.eras[1], myFields.fullYear];
+			myFields.year = myFields.fullYear; 
 		return myFields;
 	}
 	counterFromFields (fields) {
-		var myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		let myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
 		myFields = Object.assign (myFields, this.solveAskedFields(fields));
 		let myDate = new ExtDate 
 			("iso8601", ExtDate.fullUTC(myFields.fullYear, myFields.month, myFields.day, myFields.hours, myFields.minutes, myFields.seconds, myFields.milliseconds));
 		return myDate.valueOf()
 	}
 	buildDateFromFields (fields, construct = ExtDate) {
+		let myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, this.solveAskedFields(fields));
 		return new construct (this, ExtDate.fullUTC(fields.fullYear, fields.month, fields.day, fields.hours, fields.minutes, fields.seconds, fields.milliseconds))
 	}
 	weekFieldsFromCounter (timeStamp) {
