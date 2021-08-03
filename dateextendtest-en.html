@@ -3,8 +3,10 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Custom calendars and extended date display</title>
-<!-- Version	M2021-07-24 Control week figures
+<!-- Version	M2021-08-13 Control switching date to Gregorian
+	M2021-07-24 Control week figures
 	M2021-07-22 Import only one script file
+	M2021-02-12 Asynchronous import
 	M2021-01-09 Calendar button, back to modules, specify panel height
 	M2021-01-07 new chronos
 	M2020-12-28 back to scripts
@@ -16,7 +18,7 @@
 -->
 	
 	<meta name="creator" content="Louis-Aimé de Fouquières">
-	<meta name="description" content="Test calendrical and date display tools ">
+	<meta name="description" content="Custom calendars and extended date display">
 	<meta name="keywords" content="Unicode, calendars, javascript">
 	<meta name="viewport" content="width=device-width">	
 
@@ -30,7 +32,7 @@
 
 </head>
 
-<body class="centered">  <!-- "setDateToNow()" with event handler in ES 6 modules environment -->
+<body class="centered">
 <section class="centered"><h1 class="panelhead">Custom calendars and extended date display</h1></section>
 <div>
 	<section class="panel"><h2 class="panelhead">Date, time, mode</h2>
@@ -43,25 +45,13 @@
 				<th>Day</th>
 				<th> </th>
 			  </tr>
-			  <tr>
-				<form name="gregorian">
-				<td>iso8601</td>
-				<td><input name="year" type="number" class="centered digit4"> </td>
-				<td><input name="monthname" type="number" min="1" max="12" class="centered digit2"></td>
-				<td><input name="day" type="number" min="1" max="31" class="centered digit2"> </td>
-				<td><button class="textline">Ok</button></td>
-				</form>
-			  </tr>
 			  <form name="custom">
 			  <tr>
 				<td><select name="calend" size="1" class="centered">
-					<option value="milesian" selected>Milesian</option>
-					<option value="gregorian">Gregorian</option>
+					<option value="iso_8601" selected>Gregorian</option>
+					<option value="milesian" >Milesian</option>
 					<option value="julian">Julian</option>
-					<option value="vatican">Vatican</option>
-					<option value="french">France</option>
-					<option value="german">Germany</option>
-					<option value="english">United-Kingdom</option>
+					<option value="historic">historical</option>
 					<option value="frenchrev">French republic</option>
 					</select></td>
 				<td><input name="year" type="number" class="centered digit4"> </td>
@@ -100,12 +90,41 @@
 		 </table>
 		</form>
 		</section>
-		<section class="centered"><!-- setting time by elements -->
+		<section><h4 class="panelhead">Historical calendar: switching to Gregorian</h4>
+			<table class="centered">
+			 <form name="gregorianswitch">
+			   <tr>
+ 				<th>Year</th>
+				<th>Month</th>
+				<th>Day.</th>
+				<th> </th>
+			  </tr>
+			  <tr>
+				<td><input name="year" type="number" value="1582" min="1582" max="275760" class="centered digit4"></td>
+				<td>
+				<select name="month" size="1" class="centered">
+				<option value="1">January</option>
+				<option value="2">February</option>
+				<option value="3">March</option>
+				<option value="4">April</option>
+				<option value="5">May</option>
+				<option value="6">June</option>
+				<option value="7">July</option>
+				<option value="8">August</option>
+				<option value="9">September</option>
+				<option value="10" selected>October</option>
+				<option value="11">November</option>
+				<option value="12">December</option>
+				</select> </td>
+				<td><input name="day" type="number" value="15" min="1" max="31" class="centered digit2"></td>
+				<td><button class="textline">Ok</button></td>
+			  </tr>
+			</form>
+		</table>
+		</section>
+		<section class="centered"><h3 class="panelhead">Time and time zone mode (local / UTC)</h3>
 		  <form name="time" autocomplete="off">
 			<table class="centered">
-			  <tr> 
-				 <th colspan="5">Time in zone or in mode</th>
-			   </tr>
 			   <tr>
 				 <td><input name="hours" type="number" min="0" max="23" class="centered digit2">h</td>
 				 <td><input name="mins" type="number" min="0" max="59" class="centered digit2">min</td>
@@ -160,23 +179,6 @@
 				<th>UTC</th>
 			  </tr>
 			 </table>
-		</section>
-		<section class="centered"><!-- display normalised strings  -->
-			<table class="centered">
-				<tr><th colspan="2">Standard strings</th></tr>
-				<tr>
-					<th>ISO 8601&nbsp;:</th>
-					<td id="ISOdatetime"></td>
-				</tr>
-				<tr>
-					<th>calendar&nbsp;:</th>
-					<td id="dateString"></td>
-				</tr>
-				<tr>
-					<th>Timestamp&nbsp;:</th>
-					<td id="Posixnumber"></td>
-				</tr>
-			</table>
 		</section>
 	</section>
 	<section class="panel centered autoscroll"><h2 class="panelhead">General options</h2>
@@ -525,6 +527,24 @@
 			<tr><td id="Cstring"></td></tr>
 		</table>
 	</section>
+	<section class="outdisplay"><h3 class="panelhead">Date strings</h3>
+		<table class="centered">
+			<tr><th colspan="2">Standard strings</th></tr>
+			<tr>
+				<th>ISO 8601&nbsp;:</th>
+				<td id="ISOdatetime"></td>
+			</tr>
+			<tr>
+				<th>calendar&nbsp;:</th>
+				<td id="dateString"></td>
+			</tr>
+			<tr>
+				<th>Timestamp&nbsp;:</th>
+				<td id="Posixnumber"></td>
+			</tr>
+		</table>
+	</section>
+
 </div>
 <footer class="centered">
  <p>References&nbsp;: 

@@ -3,7 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Calendriers utilisateurs et affichage étendu des dates</title>
-<!-- Version	M2021-07-24 Control week figures
+<!-- Version	M2021-08-13 Control switching date to Gregorian
+	M2021-07-24 Control week figures
 	M2021-07-22 Import only one script file
 	M2021-02-12 Asynchronous import
 	M2021-01-09 Calendar button, back to modules, specify panel height
@@ -17,7 +18,7 @@
 -->
 	
 	<meta name="creator" content="Louis-Aimé de Fouquières">
-	<meta name="description" content="Test routines calendaires et d'affichage de dates ">
+	<meta name="description" content="Calendriers utilisateurs et affichage étendu des dates">
 	<meta name="keywords" content="Unicode, calendriers, javascript">
 	<meta name="viewport" content="width=device-width">	
 
@@ -31,10 +32,10 @@
 
 </head>
 
-<body class="centered">  <!-- "setDateToNow()" with event handler in ES 6 modules environment -->
+<body class="centered">
 <section class="centered"><h1 class="panelhead">Calendriers utilisateurs et affichage étendu des dates</h1></section>
 <div>
-	<section class="panel"><h2 class="panelhead">Date, heure, navigation</h2>
+	<section class="panel"><h2 class="panelhead">Calendrier, date, heure</h2>
 		<section class="centered"><!-- setting date -->
 			<table class="centered">
 			  <tr>
@@ -45,25 +46,13 @@
 				<th> </th>
 			  </tr>
 			  <tr>
-				<form name="gregorian"> <!-- action set to void(), no method indicated (used to be "post") -->
-				<td>iso8601</td>
-				<td><input name="year" type="number" class="centered digit4"> </td>
-				<td><input name="monthname" type="number" min="1" max="12" class="centered digit2"></td>
-				<td><input name="day" type="number" min="1" max="31" class="centered digit2"> </td>
-				<td><button class="textline">Ok</button></td>
-				</form>
-			  </tr>
-			  <tr>
 				<form name="custom">
 				<td><select name="calend" size="1" class="centered">
-					<option value="milesian" selected>milésien</option>
-					<option value="gregorian">grégorien</option>
+					<option value="iso_8601" selected>iso 8601</option>
+					<option value="milesian">milésien</option>
 					<option value="julian">julien</option>
-					<option value="vatican">Vatican</option>
-					<option value="french">France</option>
-					<option value="german">Allemagne</option>
-					<option value="english">Royaume-Uni</option>
-					<option value="frenchrev">Révolutionnaire</option>
+					<option value="historic">historique</option>
+					<option value="frenchrev">révolutionnaire</option>
 					</select></td>
 				<td><input name="year" type="number" class="centered digit4"></td>
 				<td><input name="monthname" type="number" min="1" max="13" class="centered digit2"></td>
@@ -102,12 +91,41 @@
 		 </table>
 		</form>
 		</section>
-		<section class="centered"><!-- setting time by elements -->
+		<section><h4 class="panelhead">Calendrier historique&nbsp;: passage au grégorien</h4>
+			<table class="centered">
+			 <form name="gregorianswitch">
+			   <tr>
+ 				<th>Année</th>
+				<th>Mois</th>
+				<th>Quant.</th>
+				<th> </th>
+			  </tr>
+			  <tr>
+				<td><input name="year" type="number" value="1582" min="1582" max="275760" class="centered digit4"></td>
+				<td>
+				<select name="month" size="1" class="centered">
+				<option value="1">janvier</option>
+				<option value="2">février</option>
+				<option value="3">mars</option>
+				<option value="4">avril</option>
+				<option value="5">mai</option>
+				<option value="6">juin</option>
+				<option value="7">juillet</option>
+				<option value="8">août</option>
+				<option value="9">septembre</option>
+				<option value="10" selected>octobre</option>
+				<option value="11">novembre</option>
+				<option value="12">décembre</option>
+				</select> </td>
+				<td><input name="day" type="number" value="15" min="1" max="31" class="centered digit2"></td>
+				<td><button class="textline">Ok</button></td>
+			  </tr>
+			</form>
+		</table>
+		</section>
+		<section class="centered"><h3 class="panelhead">Heure et mode local ou UTC</h3>
 		  <form name="time" autocomplete="off">
 			<table class="centered">
-			  <tr> 
-				 <th colspan="5">Heure du fuseau ou du mode</th>
-			   </tr>
 			   <tr>
 				 <td><input name="hours" type="number" min="0" max="23" class="centered digit2">h</td>
 				 <td><input name="mins" type="number" min="0" max="59" class="centered digit2">min</td>
@@ -130,24 +148,23 @@
 			</table>
 		  </form>
 		</section>
-		<section class="centered autoscroll"><!-- time zone option -->
-		  <form name="TZmode" autocomplete="off">
+		<section class="centered"><!-- time zone option -->
+		  <form name="TZmode">
 			<table class="centered">
 					<tr><th>Mode&nbsp;: </th>
 						<td>
 							<select name="TZcontrol" size="1" class="centered">
 							<option value="UTC">UTC</option>
 							<option value="" selected>Fuseau système</option>
-		<!--				<option value="Fixed">Décalage fixe</option> -->
 							</select></td>
 						<td><button class="textline">Ok</button></td>
 					</tr>
 			</table>
 			<table class="centered">
 					<tr>
-						<th>Ecart réel&nbsp;: </th> 
+						<th>Écart réel&nbsp;: </th> 
 						<td id="realTZOffset"></td>
-						<th>Ecart système&nbsp;: </th>
+						<th>Écart système&nbsp;: </th>
 						<td id="sysTZoffset"></td><td>min</td>
 					</tr>
 			</table>
@@ -162,23 +179,6 @@
 				<th>UTC</th>
 			  </tr>
 			 </table>
-		</section>
-		<section class="centered"><!-- display normalised strings  -->
-			<table class="centered">
-				<tr><th colspan="2">Chaînes standard</th></tr>
-				<tr>
-					<th>ISO 8601&nbsp;:</th>
-					<td id="ISOdatetime"></td>
-				</tr>
-				<tr>
-					<th>calendrier&nbsp;:</th>
-					<td id="dateString"></td>
-				</tr>
-				<tr>
-					<th>Posix&nbsp;:</th>
-					<td id="Posixnumber"></td>
-				</tr>
-			</table>
 		</section>
 	</section>
 	<section class="panel centered autoscroll"><h2 class="panelhead">Options générales</h2>
@@ -497,7 +497,7 @@
 </div>
 <section><h2 class="panelhead">Affichages calculés</h2></section>
 <div class="centered autoscroll">
-	<section class="outdisplay"><h3 class="panelhead">Calendrier unicode</h3>
+	<section class="outdisplay"><h3 class="panelhead">Calendrier Unicode</h3>
 		<table class="centered">
 			<tr><th>Calendrier&nbsp;:</th><td id="Calendname"></td></tr>
 		</table>
@@ -526,6 +526,22 @@
 		<h4 class="panelhead">Affichage étendu</h4>
 		<table class="centered">
 			<tr><td id="Cstring"></td></tr>
+		</table>
+	</section>
+	<section class="outdisplay"><h3 class="panelhead">Chaînes d'expression de date</h3>
+		<table class="centered">
+			<tr>
+				<th>ISO 8601&nbsp;:</th>
+				<td id="ISOdatetime"></td>
+			</tr>
+			<tr>
+				<th>Calendrier utilisateur&nbsp;:</th>
+				<td id="dateString"></td>
+			</tr>
+			<tr>
+				<th>Compteur Posix&nbsp;:</th>
+				<td id="Posixnumber"></td>
+			</tr>
 		</table>
 	</section>
 </div>
