@@ -196,25 +196,6 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 		else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear };
 		return fields
 	}
-/*
-	solveAskedFields (askedFields) {
-		var fields = {...askedFields};
-		if (fields.era != undefined) {
-			// compute value from deemed existing fields, throw if NaN
-			if (fields.year <= 0) throw new RangeError ('If era is defined, year shall be > 0: ' + fields.year);
-			let fullYear = fields.era == eras [0] ? 1 - fields.year : fields.year;
-			if (fields.fullYear == undefined) { fields.fullYear = fullYear }
-				else if (fields.fullYear != fullYear) 
-					throw new RangeError ('Existing fullYear field inconsistent with era and year:' + fields.era + ', ' + fields.year + ', ' + fields.fullYear);
-			}
-		else {
-			if (fields.year != undefined && fields.fullYear != undefined)
-				{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
-			else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear }
-		}
-		return fields;
-	}
-*/
 	fieldsFromCounter (timeStamp) {
 		let myDate = new ExtDate ("iso8601", timeStamp),
 			myFields = {
