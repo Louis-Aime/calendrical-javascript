@@ -2,23 +2,26 @@
 Basic routines in javascript for computations on calendars, including 
  * the Cycle Based Calendar Computation Engine,
  * a week computation engine that emcompasses any architecture of weeks and week numbering, including ISO 8601,
- * a basic conversion tool from iso 8601 date figures to any day counter (Julian Day, Microsoft, Unix-Posix...) and the reverse,
+ * a basic conversion tool from iso 8601 date figures to any day counter (Julian Day, Microsoft, Unix-Posix divided by 86400000, etc.) and the reverse,
  * basic constants to convert to or from day counter to milliseconds counter,
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
- * a small routine that fetches a XML file and makes a DOM out of it,
- * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars,
-   * light version as a string and a module routine that transforms the string into a DOM,
-   * complete version as a XML file that can be fetched from https://louis-aime.github.io/calendrical-javascript/pldr.xml,
- * classes for custom calendars that are not available from Unicode, including the Julian and the Milesian calendars, and a class for any western calendar that switches from Julian to Gregorian at a user-specified date.
+ * a small routine that fetches an XML file and makes a DOM out of it,
+ * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars (fallback to fetching an external pldr),
+ * four classes for custom calendars that are not available from Unicode:
+   * the real ISO 8601 calendar i.e. the proleptic Gregorian calendar with years expressed as a signed number without eras and with the suitable week reckoning system,
+   * the Milesian calendar, 
+   * the Julian calendar, with BC/BCE years counted backwards and displayed following CLDR,
+   * the "western calendar", managed any historical calendar used in Western Europe, following the Julian calendar until a customised date of switching to Gregorian,
+   * the French Revolution calendar.
 The package  anticipate a few features of the Temporal initiative of Ecma TC39.
 
-The datextendedtest* files are for test and demonstrating purposes. This demo is also available from GitHub Pages .
+The datextendedtest* files are for test and demonstrating purposes. The demo is also available from GitHub Pages.
 
 ## Module architecture
 This module uses ES6 module syntax (export / import).
 aggregate.js re-exports all entry points.
 
-Users who prefer scripts to ES 6 module should just erase all `export` statements at end of files, and `export` word before each class declaration in calendars.js. 
+Users who prefer scripts to ES 6 module should just erase all `export` statements.
 
 ## GitHub Page site for test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -46,33 +49,40 @@ The **IsoCounter** exported class enables conversion from any day counter to iso
 The parameters for using these classes are described in details in the source. Examples are given in the file calendars.js.
 
 ## fetchdom.js
-This small exported function launches a request to an XML file and transforms it into a DOM object. The result is a Promise.
+The fetchDOM default exported function launches a request to an XML file and transforms it into a DOM object. It returns a Promise.
 
 ### pldr.xml
-The default extended object is a DOM representing a "Private Locale Data Register", possible extension of Common Locale Data Register for custom calendars. 
-This is used only for the milesian calendar, but can be extended on the same principle to ohter custom of even Unicode built-in calendars.
+The XML file represents a "Private Locale Data Register" in DOM, possible extension of Common Locale Data Register (CLDR) for custom calendars. 
+This is used only for the milesian calendar, but can be extended on the same principle to other custom of even Unicode built-in calendars.
 
 ### pldr.js
-A string that holds a reduced version of pldr.xml: no language-specific names. This module can be used if pldr.xml is not available or not wished.
+This files contains a reduced version of pldr.xml, stored as a string, with no language-specific names. 
+The getPldrDOM default exported function transforms the string as DOM. 
+This module should be imported as a fallback, in case the remote XML file for pldr is not available.
 
 ## Extension of Javascript objects
 
 ### extdate.js
-This module enhances calendrical functions in JavaScript
-* **ExtDate** class extends the Date object. You can use date elements with calendars that you define yourself. However Temporal will offer better opportunities.
+This module enhances calendrical functions in JavaScript. 
+* default **ExtDate** class extends the Date object. You can use date elements with calendars that you define yourself. However Temporal will offer better opportunities.
 
 ### extdatetimeformat.js
-* **ExtDateTimeFormat** extends the Intl.DateTimeFormat object. You can customize the way dates are displayed with new options and custom calendars.
+* default **ExtDateTimeFormat** extends the Intl.DateTimeFormat object. You can customize the way dates are displayed with new options and custom calendars. A new eraDisplay option gives a stronger control of the display of eras.
 
 ## calendars.js
-With Chronos.Cbcce for the calendrical computations, and ExtDate for embedding in ordinary code, you can define custom calendars in a few lines. 
-This file proposes examples of calendars that are missing in Unicode's tools.
+With Chronos.Cbcce for the calendrical computations, ExtDate for embedding in ordinary code, and ExtDateTimeFormat for a better control of display options, 
+you can define custom calendars in a few lines. 
+This file proposes examples of calendars that are missing in Unicode's tools. 
 
 ### MilesianCalendar
 The **MilesianCalendar** exported class specifies the Milesian calendar as defined at www.calendriermilesien.org.
 
 ### GregorianCalendar
-This exported class defines the same calendar as *gregory*, but you can display week data conforming to iso8601, and you can specify a date giving the week coordinates.
+This exported class defines the same calendar as *iso8601*, i.e. the Gregorian proleptic calendar. 
+However:
+* the years follow the algebraic notation: years are signed numbers, and year 0 means 1 B.C. (or B.C.E.);
+* you can display week data conforming to iso8601, and you can specify a date giving the ISO 8601 week coordinates;
+* dates are displayed using CLDR's definition, except for eras.
 
 ### JulianCalendar
 The **JulianCalendar** exported class defines the Julian calendar.
@@ -82,7 +92,7 @@ The **WesternCalendar** exported class defines the calendar structure of most Eu
 The author specifies the switching date at instatiation.
 
 ### FrenchRevCalendar
-The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the officiel French calendar from 1792 to 1805.
+The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the civil French calendar used from 1793 to 1805.
 
 ## Usage
 
@@ -188,8 +198,8 @@ The source of this site is not part of the package, but is available at the GitH
 ### Calendars used in the demonstration site.
 
 The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
- * **milesian**: the milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required.
- * **gregorian**: the ordinary gregorian calendar, but here you can make week computations.
- * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, which look very much like the Gregorian calendar's.  
- * **vatican, french, german, english** : they instantiate the *WesternCalendar*, with diffenent switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
+ * **milesian**: the Milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required.
+ * **iso_8601**: the Gregorian proleptic calendar as specified by ISO 8601, with week computations.
+ * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, using CLDR's names for days, months, eras.  
+ * **historic** : you instantiate the *WesternCalendar* with a user-defined switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
  * **frenchRev**: the calendar defined by the French Convention in 1793.
