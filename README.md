@@ -7,7 +7,7 @@ Basic routines in javascript for computations on calendars, including
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
  * a small routine that fetches an XML file and makes a DOM out of it,
  * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars (fallback to fetching an external pldr),
- * four classes for custom calendars that are not available from Unicode:
+ * classes for custom calendars that are not available from Unicode:
    * the real ISO 8601 calendar i.e. the proleptic Gregorian calendar with years expressed as a signed number without eras and with the suitable week reckoning system,
    * the Milesian calendar, 
    * the Julian calendar, with BC/BCE years counted backwards and displayed following CLDR,
