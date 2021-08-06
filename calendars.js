@@ -376,9 +376,7 @@ export class WesternCalendar { // Framework for calendars of European countries,
 	eras = ["BC", "AS", "NS"]	// define before partsFormat in order to refer to it.
 	canvas = "gregory"
 	stringFormat = "fields"	// formatting options differ from base calendars
-	partsFormat = {
-		era : { mode : "list", codes : this.eras, source : this.eras }
-	}
+	// partsFormat = {	era : { mode : "list", codes : this.eras, source : this.eras }	} // by not defining this object, displayed eras are only BC and AD.
 	firstSwitchDate = new Date ("1582-10-15T00:00:00Z") // First date of A.S. or N.S. era
 	julianCalendar = new JulianCalendar (this.id) 
 	gregorianCalendar = new GregorianCalendar (this.id)
