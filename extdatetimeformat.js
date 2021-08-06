@@ -7,7 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-07	Any type of calendar, not only custom, can be specified as the last parameter.
+/*	Version	M2021-08-16 options object passed as parameter shall not be changed
+	M2021-08-07	Any type of calendar, not only custom, can be specified as the last parameter.
 	M2021-07-28	Use fullYear as a field of ExtDate, not as a function
 	M2021-07-24 separate ExtDateTimeFormat (purge version history)
 	M2021-07-18 (last change before splitting - nothing here)
@@ -116,11 +117,12 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			If no pldr is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.
 	*/
 	constructor (locale, options, calendar) { // options should not be set to null, not accepted by Unicode
-		if (typeof calendar == "string") options.calendar = calendar;
-		super (locale, options);
+		let myOptions = {...options}; // copy originally asked options.
+		if (typeof calendar == "string") myOptions.calendar = calendar;
+		super (locale, myOptions);
 		// Resolve this.calendar options
 		if (typeof calendar == "object") this.calendar = calendar;
-		this.options = {...options};	// copy originally asked options.
+		this.options = myOptions;	// this.options may be changed without changing the parameter
 		this.locale = locale;
 		// Resolve case where no field is asked for display : if none of weekday, year, month, day, hour, minute, second is asked, set a standard suite
 		if (this.options == undefined) this.options = {};
