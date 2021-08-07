@@ -7,7 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-16 options object passed as parameter shall not be changed
+/*	Version	M2021-08-17	time fields delimiter ":" or "." are changed to " h " or " min " (only ":" was changed previously)
+	M2021-08-16 options object passed as parameter shall not be changed
 	M2021-08-07	Any type of calendar, not only custom, can be specified as the last parameter.
 	M2021-07-28	Use fullYear as a field of ExtDate, not as a function
 	M2021-07-24 separate ExtDateTimeFormat (purge version history)
@@ -446,7 +447,8 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 					if (!isNaN(myParts[i].value)) myParts[i].value = this.figure1.format(item.value);
 					switch (item.type) {
 						// case "month" : case "day" : if (i+1 < myParts.length && myParts[i+1].value != ' ') myParts[i+1].value = ' '; break; // pb with month before year
-						case "hour" : case "minute" : if (i+1 < myParts.length && myParts[i+1].value == ":") myParts[i+1].value = item.type == "hour" ? " h " : " min "; break;
+						case "hour" : case "minute" : if (i+1 < myParts.length && [":","."].includes(myParts[i+1].value)) 
+															myParts[i+1].value = item.type == "hour" ? " h " : " min "; break;
 						case "second" : if (i+1 < myParts.length) { if (myParts[i+1].value == " ") myParts[i+1].value = " s " }
 										else myParts.push({ type : "literal", value : " s"} );
 					}
