@@ -185,6 +185,9 @@ A new field is handled in the options object:
    * "auto" (default value): display era part if and only if 1. year is displayed, 2. era of now is not equal to era of formatted date.
    * "never": do not display era, whatever the date and the *era* option may be.
    * "always": display era following *era* option; if this option is undefined, it is deemed "short".
+   
+The values "numeric" and "2-digit" for fields "hour" and "minute" yield different effects whereas they resolve to the same value "2-digit" with Intl.DateTimeFormat.
+
 #### methods
  * resolvedOptions(): same as for Intl.DateTimeFormat, eraDisplay is added.
  * displayEra (date): boolean (private function).
