@@ -21,7 +21,7 @@ The datextendedtest* files are for test and demonstrating purposes. The demo is 
 This module uses ES6 module syntax (export / import).
 aggregate.js re-exports all entry points.
 
-Users who prefer scripts to ES 6 module should just erase all `export` statements.
+Users who prefer scripts to ES6 module should just erase all `export` statements.
 
 ## GitHub Page site for test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -48,7 +48,7 @@ The **IsoCounter** exported class enables conversion from any day counter to iso
 
 The parameters for using these classes are described in details in the source. Examples are given in the file calendars.js.
 
-## fetchdom.js
+### fetchdom.js
 The fetchDOM default exported function launches a request to an XML file and transforms it into a DOM object. It returns a Promise.
 
 ### pldr.xml
@@ -69,32 +69,35 @@ This module enhances calendrical functions in JavaScript.
 ### extdatetimeformat.js
 * default **ExtDateTimeFormat** extends the Intl.DateTimeFormat object. You can customize the way dates are displayed with new options and custom calendars. A new eraDisplay option gives a stronger control of the display of eras.
 
-## calendars.js
+## Extra and custome calendars
+
 With Chronos.Cbcce for the calendrical computations, ExtDate for embedding in ordinary code, and ExtDateTimeFormat for a better control of display options, 
 you can define custom calendars in a few lines. 
-This file proposes examples of calendars that are missing in Unicode's tools. 
+
+The file **calendars.js** contains examples of calendars that are missing in Unicode's tools.
 
 ### MilesianCalendar
-The **MilesianCalendar** exported class specifies the Milesian calendar as defined at www.calendriermilesien.org.
+This exported class specifies the Milesian calendar as defined at www.calendriermilesien.org.
 
 ### GregorianCalendar
 This exported class defines the same calendar as *iso8601*, i.e. the Gregorian proleptic calendar. 
 However:
-* the years follow the algebraic notation: years are signed numbers, and year 0 means 1 B.C. (or B.C.E.);
+* the years follow the algebraic notation: years are signed numbers, and year 0 means 1 B.C.;
 * you can display week data conforming to iso8601, and you can specify a date giving the ISO 8601 week coordinates;
 * dates are displayed using CLDR's definition, except for eras.
 
 ### JulianCalendar
-The **JulianCalendar** exported class defines the Julian calendar.
+This exported class defines the Julian calendar.
 
 ### WesternCalendar
-The **WesternCalendar** exported class defines the calendar structure of most European countries: Julian calendar period, then switching to the Gregorian calendar. 
+This exported class defines the calendar structure of most European countries: Julian calendar period, then switching to the Gregorian calendar. 
 The author specifies the switching date at instatiation.
 
 ### FrenchRevCalendar
-The **FrenchRevCalendar** exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. This calendar conforms to the civil French calendar used from 1793 to 1805.
+This exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. 
+This calendar conforms to the civil French calendar used from 1793 to 1805.
 
-## Usage
+## Exported objects usage
 
 ### Milliseconds : static object
  * DAY_UNIT, HOUR_UNIT, MINUTE_UNIT, SECOND_UNIT : number of milliseconds in these units.
@@ -102,8 +105,8 @@ The **FrenchRevCalendar** exported class defines the calendar used under the Fre
 ### Cbcce : class
 #### Constructor (calendRule : object)
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
- * calendRule is a compound object that describes how to transform a counter into a compound object with date fields, and the reverse. The calendar should follow the integral postfix intercalation rule. The Roman (julian-gregorian) calendar follows this rule if the beginning of the year is shifted to 1 March.
-
+ * calendRule is a compound object that describes how to transform a counter into a compound object with date fields, and the reverse. 
+ * The calendar should follow the integral postfix intercalation rule. The Roman (julian-gregorian) calendar follows this rule if the beginning of the year is shifted to 1 March.
 #### static functions
  * mod (a: number, b: number): number. The calendar modulo. b is strictly positive. Result is the positive remainder of the integer division a / b. This is not equal to a % b! Example: mod (-2,3) is 1.
  * divmod (a : number, b : number): array of numbers, \[0\] is integer quotient, \[1\] is positive remainder. Exmple: divmod (-2, 3) is \[-1, 1\].
@@ -113,7 +116,6 @@ The complete description of the parameters is available in Chronos.js. Calendars
 #### methods
  * getObject (askedNumber): object with date fields obtained from the number with the Cycle Based Calendar Computation Engine. The number may be the Posix time stamp or any other counter that designates an instant, as specified in calendRule.
  * getNumber (askedObject): number. The reverse operation with respect to getObject.
-
 ### WeekClock : class
 #### Constructor (weekdayRule : object)
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
@@ -123,7 +125,6 @@ The complete description of the parameters is available in Chronos.js. Calendars
   * getNumberFromWeek (weekYear, weekNumber, weekday) builds the number of the day from the week indications.
 
 ### IsoCounter : class
-
 #### constructor (originYear, originMonth, originDay)
  * The iso coordinates of the epoch for this counter. Note that originMonth is in the range 1 to 12, not 0 to 11. By default the Unix epoch (1970, 1, 1) is assumed.
 #### methods
@@ -141,37 +142,37 @@ Extends the Date object with the flavour of Temporal proposal, using custom cale
    * if otherArguments is a sole number, it is interpretred as a timestamp, the number of milliseconds since Unix epoch;
    * if otherArguments is a list of several numeric arguments, they are interpreted as the date coordinates in ISO 8601 calendar.
 However, in the last case, 
-   * the first number is a *full year*, that is 14 means the year where Tiberius takes the power in Rome after Augustus' death, not the beginning of World War 1.
-   * the second number is the month number in the range 1..12, not 0..11.
-   * the missing arguments are replaced by 1 for the day and 0 for all other (hour to milliseconds)
+   * the first number is a *full year*, that is 14 means the year where Tiberius takes the power in Rome after Augustus' death, not the beginning of World War 1;
+   * the second number is the month number in the range 1..12, not 0..11;
+   * the missing arguments are replaced by 1 for the day and 0 for all other (hour to milliseconds);
    * the date is always evaluated as a local date with respect to the system time zone.
 #### static objects
- * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value.
+ * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value;
  * numericWeekFields: a similar array for informations on weeks.
 #### static functions
  * fullUTC (fullYear, month, day, hour, minute, second, millisecond): number, all parameters are numbers. Set ExtDate object to the date specified by the parameters, deemed UTC (not local). This is very much like Date.UTC, except:
    * the year element is a full year, no 2-digit year is admitted;
    * the month element is in the range 1..12.
 #### methods
- * getRealTZmsOffset (TZ:string): number;
-   * if TZ is undefined or "", return the real offset from UTC to system local time *in milliseconds*. This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries: as there were no time zones, the real offset is computed to the second, but the traditional method may round to minutes.   
-   * else, TZ is considered the name of a time zone; the time offset in millisecond for this time zone at this date is returned. 
- * toResolvedLocaleDate (TZ: string): ExtDate object. TZ is the name of a time zone. The method returns a Date object whose UTC field values correspond to this date at the specified time zone. If TZ is not identified, the system time zone is assumed.
+* getRealTZmsOffset (TZ:string): number;
+  * if TZ is undefined or "", return the real offset from UTC to system local time *in milliseconds*. This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries: as there were no time zones, the real offset is computed to the second, but the traditional method may round to minutes.   
+  * else, TZ is considered the name of a time zone; the time offset in millisecond for this time zone at this date is returned. 
+* toResolvedLocaleDate (TZ: string): ExtDate object. TZ is the name of a time zone. The method returns a Date object whose UTC field values correspond to this date at the specified time zone. If TZ is not identified, the system time zone is assumed.
 In the next functions, the TZ parameter my be equal to "UTC", or to anything else including undefined. The other parameters or results are evaluated at the system local time zone, or at UTC time if and only if TZ == "UTC". 
 The time stamp is the number of milliseconds since Unix epoch (1 Jan. 1970 00:00 h UTC)
- * getFields (TZ): object. The fields of the date, in the associated custom calendar. The corresponding time stamp is returned.
- * getISOFields (TZ): object. The fields of the date in the ISO 8601 calandar.
- * setFromFields (TZ): number. Set the ExtDate object to the date expressed by the fields in the associated calendar. The corresponding time stamp is returned.
- * setFromWeekFields (TZ): number. Set the ExtDate object to the date expressed as week date in the associated calendar.
- * inLeapYear (TZ): whether the year of the date in the associated calendar is a leap year.
- * toCalString (TZ): a string that expresses the date in the corresponding calendar. The string begins with [<calendarname>].
- * era(TZ), year(TZ), fullYear (TZ), month(TZ), day (TZ): the respective field in the associated calendar. fullYear is an unambiguous signed integer that expresses the year with respect to the first "year 0" for this calendar.
- * The time elements can be obtained by the standard Date methode getHours(), getUTCHours(), etc.
- * weekday (TZ): a number that expresses the day of week of this date, for the week associated with the calendar, e.g. for the French revolutionnary calendar, the number is in the range 1..16, i.e. 1..10 for Unedi to Decadi, 11 to 16 for the six sansculottides days. With the 7-days week, the number is in the range 1 (Monday) to 7 (Sunday).
- * weekNumber (TZ): the number of the week following the calendar's rule
- * weeksInYear (TZ): the number fullYear (TZ),of weeks in this year  following the calendar's rule.
- * weekYear (TZ): unambiguous signed number of the year the numbered week for this date belongs to.
-  
+* getFields (TZ): object. The fields of the date, in the associated custom calendar. The corresponding time stamp is returned.
+* getISOFields (TZ): object. The fields of the date in the ISO 8601 calandar.
+* setFromFields (TZ): number. Set the ExtDate object to the date expressed by the fields in the associated calendar. The corresponding time stamp is returned.
+* setFromWeekFields (TZ): number. Set the ExtDate object to the date expressed as week date in the associated calendar.
+* inLeapYear (TZ): whether the year of the date in the associated calendar is a leap year.
+* toCalString (TZ): a string that expresses the date in the corresponding calendar. The string begins with [<calendarname>].
+* era(TZ), year(TZ), fullYear (TZ), month(TZ), day (TZ): the respective field in the associated calendar. fullYear is an unambiguous signed integer that expresses the year with respect to the first "year 0" for this calendar.
+* The time elements can be obtained by the standard Date methode getHours(), getUTCHours(), etc.
+* weekday (TZ): a number that expresses the day of week of this date, for the week associated with the calendar, e.g. for the French revolutionnary calendar, the number is in the range 1..16, i.e. 1..10 for Unedi to Decadi, 11 to 16 for the six sansculottides days. With the 7-days week, the number is in the range 1 (Monday) to 7 (Sunday).
+* weekNumber (TZ): the number of the week following the calendar's rule
+* weeksInYear (TZ): the number fullYear (TZ),of weeks in this year  following the calendar's rule. 
+* weekYear (TZ): unambiguous signed number of the year the numbered week for this date belongs to.
+
 ### ExtDateTimeFormat: class
 Extends the Intl.DateTimeFormat object for custom calendars, and offers new functionalities. All method of the Intl.DateTimeFormat object are available, however formatToParts, format, and resolvedOptions are enhanced.
 #### constructor (locale, options, calendar)
@@ -201,5 +202,5 @@ The above mentionned calendar classes are intantiated in the following calendar 
  * **milesian**: the Milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required.
  * **iso_8601**: the Gregorian proleptic calendar as specified by ISO 8601, with week computations.
  * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, using CLDR's names for days, months, eras.  
- * **historic** : you instantiate the *WesternCalendar* with a user-defined switching dates to Gregorian. The *era* display is used to diffentiate "Ancient Style" (Julian reckoning) from "New Style" (Gregorian).
+ * **historic** : you instantiate the *WesternCalendar* with a user-defined switching date to Gregorian. The *era* field is used to diffentiate "AS" (Ancient Style, meaning Julian reckoning) from "NS" (New Style, Gregorian reckoning); however, as CLDR does not handle these eras yet, they both appear as "AD"; with the proposed eraDisplay option set to default, the era shall be displayed for AS and BC dates.
  * **frenchRev**: the calendar defined by the French Convention in 1793.
