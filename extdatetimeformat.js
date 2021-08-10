@@ -7,7 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-17	time fields delimiter ":" or "." are changed to " h " or " min " (only ":" was changed previously)
+/*	Version	M2021-08-20 Typos in comments
+	M2021-08-17	time fields delimiter ":" or "." are changed to " h " or " min " (only ":" was changed previously)
 	M2021-08-16 options object passed as parameter shall not be changed
 	M2021-08-07	Any type of calendar, not only custom, can be specified as the last parameter.
 	M2021-07-28	Use fullYear as a field of ExtDate, not as a function
@@ -70,15 +71,15 @@ class CustomCalendar {
 		"fields" : general structure of string as stated from options, but values changed following fields of this calendar, and modified as stated by "partsFormat"
 				// as of now, this option only works with Roman-like calendars
 		"auto" (default): means "built-in".
-	* partsFormat : an Object, that specify how to format each part corresponding to each date field. Each tag is the name of a part to display (e.g. "era").
-		Each value is itself an object with the following fields:
-			mode: how to find the value: 
+	* partsFormat : an object, that specifies how to format each part corresponding to each date field. Each tag is the name of a part to display (e.g. "era").
+		Each field corresponding to a part is itself an object with the following fields:
+			mode: how to find the value for the part: 
 				"cldr" : leave value set by standard FormatToParts (equivalent to no object for this part name).
 				"field": put field as is; if undefined, put "". For test and debug, and for void fields.
-				"list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found in "codes"
+				"list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found in "codes" field.
 				"pldr" : values to be found in calendar.pldr, a DOM which represents a "private locale data register" designated with its URI/URL or identifier
-			source : the reference to the values, if "list" or "pldr".
-			codes : in case of "list" for a non-numeric field, the array of codes to search for
+			source : the reference to the values, if "list".
+			codes : in case of "list" for a non-numeric field, the array of codes to search for.
 		(note: maybe we could just put "source" and test typeof source, to be seen later)
 	** Methods (see extdate)**
 	// Possible fields elements from ExtDate
