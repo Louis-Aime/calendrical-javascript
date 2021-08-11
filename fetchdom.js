@@ -3,7 +3,8 @@ Charset UTF-8.
 Contents:
 	function fetchDOM, returns a Promise object - fetches an XML file into a DOM.
 */
-/* Version	M2021-07-22	make a module.
+/* Version	M2021-08-21	Handle all error cases in a similar way, setting the error variable to the error code.
+	M2021-07-22	make a module.
 	M2021-02-13	Build as a Promise, in a similar way to import(), and not embbeded as a module.
 */
 /* Copyright Miletus 2016-2021 - Louis A. de Fouquières
@@ -23,18 +24,15 @@ export default function fetchDOM (XMLResource, timeout = 0) {	// This is similar
 			})
 		XMLRequest.addEventListener ("error", 
 			function (event) {
-				console.error("XMLHttpRequest error on resource: " + XMLResource);
-				fail (null)
+				fail ("XMLHttpRequest error on resource: " + XMLResource)
 			})
 		XMLRequest.addEventListener ("abort", 
 			function (event) {
-				console.error("XMLHttpRequest abort on resource: " + XMLResource);
-				fail (null)
+				fail ("XMLHttpRequest abort on resource: " + XMLResource)
 			})
 		XMLRequest.addEventListener ("timeout", 
 			function (event) {
-				console.error("XMLHttpRequest timeout on resource: " + XMLResource);
-				fail (null)
+				fail ("XMLHttpRequest timeout on resource: " + XMLResource)
 			})
 		if (timeout != 0) XMLRequest.timeout = timeout;
 		XMLRequest.open("GET", XMLResource);
