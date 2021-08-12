@@ -1,7 +1,6 @@
 /* chronos.js: Basic functions for calendrical computations
 Character set is UTF-8
 Contents: 
- * Milliseconds: a const object, with counts in ms of basic time units from second to day.
  * Cbcce (ex Chronos): a class that implements the Cycle-Based Calendrical Computations Engine to convert a timestamp to or from a date.
  * WeekClock: a class that yields week figures for a specified week structure.
  * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
@@ -12,7 +11,8 @@ Contents:
 	Non-integer parameter will yield erroneous non-integer values.
 	Default parameters assume that computations are done using 1 for the first month of any calendar.
 */
-/* Version	M2021-07-23	
+/* Version	M2021-08-22: time units transferred to another module
+	M2021-07-23	
 		Compute a date stamp from week fields
 		Class Chronos changed to Cbcce
 		Add control of missing or invalid fields in Cbcce
@@ -58,14 +58,6 @@ or the use or other dealings in the software.
 Inquiries: www.calendriermilesien.org
 */
 "use strict";
-/** Basic units in milliseconds 
-*/
-export const Milliseconds = {	// Basic durations in milliseconds
-	DAY_UNIT : 86400000,
-	HOUR_UNIT : 3600000,
-	MINUTE_UNIT : 60000,
-	SECOND_UNIT : 1000
-}
 /** Instantiate Cbcce for calendar specific computations. Class parameter is a single object that represent the calendar's cycle structure.
  * @param (Object)	calendRule:  the cycle structure and intercalation rules of the calendar. Example hereunder:
 	 * Example = {
