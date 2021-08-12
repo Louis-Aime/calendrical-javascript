@@ -7,9 +7,10 @@ Contents:
 /* General note
 	Parameters data shall be integer numbers unless otherwhise specified. No special check is performed. 
 	Passing non numeric value will yield NaN results.
-	Paasing non integer values will yield erroneous results. Please control that figures are integer in your application.
+	Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-08-13	GregorianCalendar is the real ISO 8601 calendar, without era and with algebraic years.
+/* Versions:	M2021-08-22	Time units imported from time-units.js
+	M2021-08-13	GregorianCalendar is the real ISO 8601 calendar, without era and with algebraic years.
 	M2021-07-29
 		Add solveAskedFields (fields) as required function
 		Suppress fullYear as a function, maintain as a field
@@ -62,7 +63,8 @@ or the use or other dealings in the software.
 Inquiries: www.calendriermilesien.org
 */
 "use strict";
-import {Milliseconds, Cbcce, WeekClock} from "./chronos.js";
+import {Cbcce, WeekClock} from "./chronos.js";
+import Milliseconds from "./time-units.js";
 import ExtDate from "./extdate.js";
 
 export class MilesianCalendar { 
