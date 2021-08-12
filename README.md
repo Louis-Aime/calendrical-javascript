@@ -1,5 +1,6 @@
 # calendrical-javascript
-Basic routines in javascript for computations on calendars, including 
+Basic routines in javascript for computations on calendars, including
+ * basic duration units,
  * the Cycle Based Calendar Computation Engine,
  * a week computation engine that emcompasses any architecture of weeks and week numbering, including ISO 8601,
  * a basic conversion tool from iso 8601 date figures to any day counter (Julian Day, Microsoft, Unix-Posix divided by 86400000, etc.) and the reverse,
@@ -13,25 +14,32 @@ Basic routines in javascript for computations on calendars, including
    * the Julian calendar, with BC/BCE years counted backwards and displayed following CLDR,
    * the "western calendar", managed any historical calendar used in Western Europe, following the Julian calendar until a customised date of switching to Gregorian,
    * the French Revolution calendar.
-The package  anticipate a few features of the Temporal initiative of Ecma TC39.
+The package  anticipate some features of the Temporal initiative of Ecma TC39.
 
-The datextendedtest* files are for test and demonstrating purposes. The demo is also available from GitHub Pages.
+The datextendedtest\*, calendar-demo\* files are for test and demonstrating purposes. The demo is also available from GitHub Pages.
+The aggregate.js file re-exports all current modules entries, it is maintained as an example and for compatibility purposes, but it may be left apart.
+The calendrical-init.js file is an example of initiator file, it may be used as such or the code may be adapted.
 
 ## Module architecture
 This module uses ES6 module syntax (export / import).
-aggregate.js re-exports all entry points.
 
-Users who prefer scripts to ES6 module should just erase all `export` statements.
+### aggregate.js
+This file is used as a reexporter of all modules except pldr.js. 
+The **timeUnits** default object is reexported under the name **Milliseconds** for compatibility.
+This file shall is deprecated.
+All modules of this package name directly the modules they imports.
+The javascript-demo\* html pages do not use aggregate.js.
 
-## GitHub Page site for test and demos
+## GitHub Page site for reference, test and demos
 https://louis-aime.github.io/calendrical-javascript/
 
 ## Basic toolkit
 Routines that help developing calendrical computations for new calendars.
 
-### chronos.js
-Exported const **Milliseconds**: key numeric constants for converting milliseconds (used in present Javascript environment) into days, hours, minutes, seconds and the reverse. 
+### time-units.js
+The default exported const **timeUnits** is an object with key numeric constants for duration units conversions. 
 
+### chronos.js
 The **Cbcce** (Cycle Based Calendrical Computation Engine exported class offers common routines and tools for calendrical computations: 
  * Basic div and mod computations for calendrical purposes.
  * Basic computation of leap years for Julian and Gregorian calendars.
@@ -49,11 +57,12 @@ The **IsoCounter** exported class enables conversion from any day counter to iso
 The parameters for using these classes are described in details in the source. Examples are given in the file calendars.js.
 
 ### fetchdom.js
-The fetchDOM default exported function launches a request to an XML file and transforms it into a DOM object. It returns a Promise.
+The default exported function fetchDOM launches an XMLHttpRequest to an XML file and then transforms it into a DOM object. It returns a Promise.
 
 ### pldr.xml
-The XML file represents a "Private Locale Data Register" in DOM, possible extension of Common Locale Data Register (CLDR) for custom calendars. 
-This is used only for the milesian calendar, but can be extended on the same principle to other custom of even Unicode built-in calendars.
+The XML file represents a "Private Locale Data Repository" to be converted as DOM, possible extension of Common Locale Data Repository (CLDR) for custom calendars.
+The "live" file is accessed from https://louis-aime.github.io/calendrical-javascript/pldr.xml.
+This file is organised in the same way as the Common Locale Data Repository.
 
 ### pldr.js
 This files contains a reduced version of pldr.xml, stored as a string, with no language-specific names. 
@@ -63,11 +72,17 @@ This module should be imported as a fallback, in case the remote XML file for pl
 ## Extension of Javascript objects
 
 ### extdate.js
-This module enhances calendrical functions in JavaScript. 
-* default **ExtDate** class extends the Date object. You can use date elements with calendars that you define yourself. However Temporal will offer better opportunities.
+This module extends the Date object for operation with custom calendars.
+The default exported class **ExtDate** extends Date. An ExtDate object is associated with a custom calendar.
+You can specify dates using the custom calendar's reckoning system. 
+This foreshadows some of Temporal operations.
 
 ### extdatetimeformat.js
-* default **ExtDateTimeFormat** extends the Intl.DateTimeFormat object. You can customize the way dates are displayed with new options and custom calendars. A new eraDisplay option gives a stronger control of the display of eras.
+This module extends the Intl.DateTimeFormat object for operations with custom or built-in calendars. 
+The default exported class **ExtDateTimeFormat** extends the Intl.DateTimeFormat object. 
+* A new eraDisplay option gives a stronger control of the display of eras.
+* Time options (hour, minute, second) handled "numeric" and "2-digit" in different ways.
+* You can use instantiated objects with  built-in or custom calendars.
 
 ## Extra and custome calendars
 
@@ -94,15 +109,17 @@ This exported class defines the calendar structure of most European countries: J
 The author specifies the switching date at instatiation.
 
 ### FrenchRevCalendar
-This exported class defines the calendar used under the French revolution, with the week replaced by the decade. This version uses a specific solar intercalation algorithm. 
+This exported class defines the calendar used under the French revolution, with the week replaced by the decade. 
+This version uses a specific solar intercalation algorithm. 
 This calendar conforms to the civil French calendar used from 1793 to 1805.
 
 ## Exported objects usage
 
-### Milliseconds : static object
+### timeUnits : static object
  * DAY_UNIT, HOUR_UNIT, MINUTE_UNIT, SECOND_UNIT : number of milliseconds in these units.
 
 ### Cbcce : class
+
 #### Constructor (calendRule : object)
 The complete description of the parameters is available in Chronos.js. Calendars.js gives usage examples.
  * calendRule is a compound object that describes how to transform a counter into a compound object with date fields, and the reverse. 
@@ -200,10 +217,9 @@ The mini-site https://louis-aime.github.io/calendrical-javascript/ enables you t
 The source of this site is not part of the package, but is available at the GitHub repository.
 
 ### Calendars used in the demonstration site.
-
-The above mentionned calendar classes are intantiated in the following calendar objects that can be used with *ExtDate* and *ExtDateTimeFormat*:
+The above mentionned calendar classes are intantiated as calendar objects with the following id, and can be used with *ExtDate* and *ExtDateTimeFormat*:
  * **milesian**: the Milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr.js is required.
  * **iso_8601**: the Gregorian proleptic calendar as specified by ISO 8601, with week computations.
  * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, using CLDR's names for days, months, eras.  
- * **historic** : you instantiate the *WesternCalendar* with a user-defined switching date to Gregorian. The *era* field is used to diffentiate "AS" (Ancient Style, meaning Julian reckoning) from "NS" (New Style, Gregorian reckoning); however, as CLDR does not handle these eras yet, they both appear as "AD"; with the proposed eraDisplay option set to default, the era shall be displayed for AS and BC dates.
+ * **historic** : you instantiate the *WesternCalendar* with a user-defined switching date to Gregorian. The *era* field is used to diffentiate "AS" (Ancient Style, meaning Julian reckoning) from "NS" (New Style, Gregorian reckoning); however, as CLDR does not handle these eras yet, they both appear as "AD"; with the proposed eraDisplay option set to default, the era 'AD' or equivalent following language shall be displayed for AS and BC dates.
  * **frenchRev**: the calendar defined by the French Convention in 1793.
