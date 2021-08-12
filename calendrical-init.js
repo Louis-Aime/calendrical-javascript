@@ -1,4 +1,4 @@
-/* Initialiser for calendrical-javascript demonstrator
+/* Example of initialiser for calendrical-javascript
 This aynschronous function initialises the user modules of calendrical-javascript for a web page environment.
 To be customised
  */

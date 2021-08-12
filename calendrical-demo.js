@@ -2,7 +2,7 @@
 To be used with suitable calendrical-demo-**.html file.
 Character set is UTF-8
 Contents: animtation routines for the html page.
-Required objects initiated by calendrical-demo-init or equivalent
+Required objects initiated by calendrical-init or equivalent
 	loadCalendrical: promise that modules are imported
 	calendrical: prefix name for imported modules
 */
