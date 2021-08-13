@@ -7,7 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-20 Typos in comments
+/*	Version	M2021-08-23	Enhance comparison of eras
+	M2021-08-20 Typos in comments
 	M2021-08-17	time fields delimiter ":" or "." are changed to " h " or " min " (only ":" was changed previously)
 	M2021-08-16 options object passed as parameter shall not be changed
 	M2021-08-07	Any type of calendar, not only custom, can be specified as the last parameter.
@@ -64,7 +65,7 @@ class CustomCalendar {
 	** Properties **
 	id = (a string) 	// a specific name for this calendar, for the ExtDate.toCalString method (not in ExtDateTimeFormat)
 	**canvas: the name of a built-in calendar that provides the initial structure, and possible the names of months, weekdays etc. for the target calendar.
-	* pldr = a DOM		// the "private locale data register" to use for displaying certain fields (e.g. months) with ExtDateTimeFormat
+	* pldr = a DOM		// the "private locale data repository" to use for displaying certain fields (e.g. months) with ExtDateTimeFormat
 	* eras : an array of the string codes for the eras for this calendar, if eras used.
 	* stringFormat : a field expressing how date string is computed. Possible values are
 		"built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then modify each part as stated by "partsFormat" object
@@ -77,7 +78,7 @@ class CustomCalendar {
 				"cldr" : leave value set by standard FormatToParts (equivalent to no object for this part name).
 				"field": put field as is; if undefined, put "". For test and debug, and for void fields.
 				"list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found in "codes" field.
-				"pldr" : values to be found in calendar.pldr, a DOM which represents a "private locale data register" designated with its URI/URL or identifier
+				"pldr" : values to be found in calendar.pldr, a DOM which represents a "private locale data repository" designated with its URI/URL or identifier
 			source : the reference to the values, if "list".
 			codes : in case of "list" for a non-numeric field, the array of codes to search for.
 		(note: maybe we could just put "source" and test typeof source, to be seen later)
@@ -115,7 +116,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	 * @param (Object) a calendar. 
 			If this parameter is not specified, the calendar resolved with locale and options will be used.
 			If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options.
-			If specified as a custom calendar and if a Private Locale Data Register is given, this will be used for calendar's entity names. 
+			If specified as a custom calendar and if a Private Locale Data Repository is given, this will be used for calendar's entity names. 
 			If no pldr is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.
 	*/
 	constructor (locale, options, calendar) { // options should not be set to null, not accepted by Unicode
@@ -247,19 +248,20 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 					return false;
 				var today = new ExtDate(this.calendar);
 				if (this.calendar == undefined) {	// a built-in calendar, let us just compare with a particular formatting - with Temporal, this part of code is cancelled
-					let eraFormat = new Intl.DateTimeFormat ( this.options.locale, { calendar : this.options.calendar, year : "numeric", era : "short" } ),
+					let eraFormat = new Intl.DateTimeFormat ( this.options.locale, { calendar : this.options.calendar, year : "numeric", era : "long" } ),
 						dateParts = eraFormat.formatToParts(date),
-						todaysParts = eraFormat.formatToParts(today);
-						let eraIndex = dateParts.findIndex(item => item.type == "era");
-						if (eraIndex >= 0) return !(dateParts[eraIndex].value == todaysParts[eraIndex].value);
-						return false; // no era part was found... answer no because no era part 
+						todaysParts = eraFormat.formatToParts(today),
+						eraIndex = dateParts.findIndex(item => item.type == "era"),
+						todayEraIndex = todaysParts.findIndex(item => item.type == "era");
+					if (eraIndex >= 0) { return todayEraIndex < 0 ? true : (dateParts[eraIndex].value !== todaysParts[todayEraIndex].value) }
+					else return false; // no era part found in date to be displayed, do not atempt to display 
 				}
 				else 	// a custom calendar with era, simplier to use
-					return this.calendar.fieldsFromCounter(date.toResolvedLocalDate(this.options.timeZone).valueOf()).era 
-						!= this.calendar.fieldsFromCounter(today.toResolvedLocalDate (this.options.timeZone).valueOf()).era ;
+					return this.calendar.fieldsFromCounter(date.toResolvedLocalDate (this.options.timeZone).valueOf()).era 
+						!== this.calendar.fieldsFromCounter(today.toResolvedLocalDate (this.options.timeZone).valueOf()).era ;
 		}
 	}
-	/** Fetch a value from a Private Locale Date Registry (pldr)
+	/** Fetch a value from a Private Locale Date Repository (pldr)
 	 * @param (String) - name of the element (era / month / dayofweek)
 	 * other parameters are linked to this.
 	*/
