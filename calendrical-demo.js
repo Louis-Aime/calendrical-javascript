@@ -11,7 +11,8 @@ Required objects initiated by calendrical-init or equivalent
 	The event listeners are designed as to follow forms value. A "refresh" action will set to value in forms. 
 	Control are done as to avoid changes to illegal values in forms (except dates that cab be balanced).
 */
-/* Version:	M2021-08-22 splitted from initialiser and renamed
+/* Version:	M2021-08-23	try / catch each .format
+	M2021-08-22 splitted from initialiser and renamed
 	M2021-08-13 optimised, and switch to Gregorian
 	V2021-07-28: fullYear is no more a function.
 	V2021-07-25	
@@ -102,48 +103,38 @@ function setDisplay () { // Considering that targetDate time has been set to the
 	document.week.weekday.value = targetDate.weekday(TZ);	//getElementById("dayownum").innerHTML
 	document.week.weeksinyear.value = targetDate.weeksInYear(TZ);	// getElementById("weeksinyear").innerHTML
 
-	document.week.dayofweek.value = 	// getElementById("dayname").innerHTML
+	try {
+		document.week.dayofweek.value = 	// getElementById("dayname").innerHTML
 			new calendrical.ExtDateTimeFormat 
-			( document.Locale.Elocale.value == "" ? undefined : document.Locale.Elocale.value,
-				{weekday : "long", 
-				timeZone : TZ == "" ? undefined : TZ },
-				calendars[customCalIndex])
-				.format(targetDate);
-				
+				( document.Locale.Elocale.value == "" ? undefined : document.Locale.Elocale.value,
+					{ weekday : "long", timeZone : TZ == "" ? undefined : TZ }, calendars[customCalIndex] )
+						.format(targetDate);
+		}
+	catch (e) { document.week.dayofweek.value = e.message + "\n" + e.fileName + " line " + e.lineNumber };
 
-	// Update local time fields - using	Date properties
+	// Update system local time fields
 	document.time.hours.value = targetDate.hours(TZ);
 	document.time.mins.value = targetDate.minutes(TZ);
 	document.time.secs.value = targetDate.seconds(TZ);
 	document.time.ms.value = targetDate.milliseconds(TZ);
 
 	// Display UTC date & time in custom calendar, ISO, and Posix number
-	myElement = document.getElementById("dateString");
-	myElement.innerHTML = targetDate.toCalString(TZ);
-	myElement = document.getElementById("ISOdatetime");
-	myElement.innerHTML = targetDate.toISOString();
-	myElement = document.getElementById("Posixnumber");
-	myElement.innerHTML = targetDate.valueOf();
+	document.getElementById("dateString").innerHTML = targetDate.toCalString(TZ);
+	document.getElementById("ISOdatetime").innerHTML = targetDate.toISOString();
+	document.getElementById("Posixnumber").innerHTML = targetDate.valueOf();
 
-	// Display formatted date strings
+	// Display formatted date strings - all with try / catch
 	document.getElementById("Calendname").innerHTML = usedOptions.calendar;
-	document.getElementById("Xstring").innerHTML = extAskedOptions.format(targetDate); 	// (valid ? "" : "(!) ") +
-	// Display custom calendar string - error control
+	myElement = document.getElementById("Ustring");
+	try { myElement.innerHTML = askedOptions.format(targetDate) }
+	catch (e) { myElement.innerHTML = e.message + "\n" + e.fileName + " line " + e.lineNumber };
+	myElement = document.getElementById("Xstring");
+	try { myElement.innerHTML = extAskedOptions.format(targetDate) }
+	catch (e) { myElement.innerHTML = e.message + "\n" + e.fileName + " line " + e.lineNumber };
 	document.getElementById("Customname").innerHTML = calendars[customCalIndex].id;
-	try {
-		document.getElementById("Cstring").innerHTML = cusAskedOptions.format(targetDate);
-	}
-	catch (e) {
-		document.getElementById("Cstring").innerHTML = e.message
-	}
-	let	myUnicodeElement = document.getElementById("Ustring");
-	try { 
-		myUnicodeElement.innerHTML = askedOptions.format(targetDate); // (valid ? "" : "(!) ") +
-		}
-	catch (e) { 
-		alert (e.message + "\n" + e.fileName + " line " + e.lineNumber);
-		myUnicodeElement.innerHTML = "(!)"; 
-		}
+	myElement = document.getElementById("Cstring");
+	try { myElement.innerHTML = cusAskedOptions.format(targetDate) }
+	catch (e) { myElement.innerHTML = e.message + "\n" + e.fileName + " line " + e.lineNumber };
 	// Add supplemental computations
 		document.getElementById("fullyear").innerHTML = targetDate.fullYear(TZ);
 		document.yeartype.leapyear.value = targetDate.inLeapYear(TZ);
