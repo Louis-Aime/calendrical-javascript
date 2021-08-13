@@ -23,12 +23,12 @@ The calendrical-init.js file is an example of initiator file, it may be used as 
 ## Module architecture
 This module uses ES6 module syntax (export / import).
 
-### aggregate.js
-This file is used as a reexporter of all modules except pldr.js. 
-The **timeUnits** default object is reexported under the name **Milliseconds** for compatibility.
-This file shall is deprecated.
+### aggregate.js (deprecated)
+This file has been deprecated. 
+This file was used as a reexporter of all modules except pldr.js. 
+The default object of time-units.js used to be reexported under the name **Milliseconds** for compatibility.
 All modules of this package name directly the modules they imports.
-The javascript-demo\* html pages do not use aggregate.js.
+The javascript-demo\* html pages and associated .js do not use aggregate.js.
 
 ## GitHub Page site for reference, test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -215,6 +215,16 @@ The values "numeric" and "2-digit" for fields "hour" and "minute" yield differen
 ## Simple demonstrating and testing application
 The mini-site https://louis-aime.github.io/calendrical-javascript/ enables you to test most facilities of this package. 
 The source of this site is not part of the package, but is available at the GitHub repository.
+
+### HTML files
+The files calendrical-demo-fr and calendrical-demo-en are written in French and English respectively. They hold the same demonstration. 
+Initial values of fields may be set through 'value' of 'selected' attributes.
+
+### celendrical-init.js
+An example of modules initialisation. Works with calendrical-demo.js.
+
+### calendrical-demo.js
+Event handlers for calendrical-demo-\* HTML files. Initialisation should be done with calendrical-init.js (or some other).	
 
 ### Calendars used in the demonstration site.
 The above mentionned calendar classes are intantiated as calendar objects with the following id, and can be used with *ExtDate* and *ExtDateTimeFormat*:
