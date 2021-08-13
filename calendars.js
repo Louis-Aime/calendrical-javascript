@@ -9,7 +9,8 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-08-22	Time units imported from time-units.js
+/* Versions:	M2021-08-23	Era is never displayed with Gregorian (proleptic) calendar
+	M2021-08-22	Time units imported from time-units.js
 	M2021-08-13	GregorianCalendar is the real ISO 8601 calendar, without era and with algebraic years.
 	M2021-07-29
 		Add solveAskedFields (fields) as required function
@@ -178,7 +179,8 @@ export class GregorianCalendar {	// this class is only usefull as long as Tempor
 	eras = null			// no era with the "real" proleptic Gregorian calendar.
 	canvas = "gregory"
 	stringFormat = "built-in"	// formatting options start from canvas calendars values
-	partsFormat = {	// no special instruction 
+	partsFormat = {
+		era : { mode : "field" },
 		year : { mode : "field" }
 	}
 	// no clockwork, use standard Date routines
