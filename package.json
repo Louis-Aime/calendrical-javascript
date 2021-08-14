@@ -1,6 +1,6 @@
 {
   "name": "calendrical-javascript",
-  "version": "5.5.1",
+  "version": "5.5.2",
   "description": "Basic routines in javascript for computations on calendars, including \r  * the Cycle Based Calendar Computation Engine,\r  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,\r  * fetchdom, a function that fetches an XML file and makes a DOM object from it,\r * pldr, a \"private locale data register\" that extends Unicode's CLDR for display of dates in calendars,\r  * a set of non-Unicode calendars reckoning function.\r The software object anticipate the Temporal initiative of ECMA TC39.",
   "main": "calendars.js",
   "directories": {
