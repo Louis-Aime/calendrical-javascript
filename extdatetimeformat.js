@@ -7,7 +7,9 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-23	Enhance comparison of eras
+/*	Version	M2021-08-24	
+		Enhance comparison of eras
+		Enhance deletion of era part
 	M2021-08-20 Typos in comments
 	M2021-08-17	time fields delimiter ":" or "." are changed to " h " or " min " (only ":" was changed previously)
 	M2021-08-16 options object passed as parameter shall not be changed
@@ -241,18 +243,19 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		let date = new ExtDate(this.calendar, aDate.valueOf());
 		switch (this.options.eraDisplay) {
 			case "never" : return false;
-			case "always": return true;
+			case "always": if (this.calendar != undefined && this.calendar.eras == null) { return false } else return true;	// if custom calendar has no era, return false
 			case "auto":
 				if ((this.options.year == null && this.options.era == null)	// Neither year option nor era option set
 					|| (this.calendar != undefined && this.calendar.eras == null))		// this calendar has no era whatsoever
 					return false;
 				var today = new ExtDate(this.calendar);
 				if (this.calendar == undefined) {	// a built-in calendar, let us just compare with a particular formatting - with Temporal, this part of code is cancelled
-					let eraFormat = new Intl.DateTimeFormat ( this.options.locale, { calendar : this.options.calendar, year : "numeric", era : "long" } ),
+								// era : "short" is the better choice to get a discriminant era. "long" may lead to no era field at all !
+					let eraFormat = new Intl.DateTimeFormat ( this.options.locale, { calendar : this.options.calendar, year : "numeric", era : "short" } ),
 						dateParts = eraFormat.formatToParts(date),
 						todaysParts = eraFormat.formatToParts(today),
 						eraIndex = dateParts.findIndex(item => item.type == "era"),
-						todayEraIndex = todaysParts.findIndex(item => item.type == "era");
+						todayEraIndex = todaysParts.findIndex(item => item.type == "era");	// those indexes may be different !
 					if (eraIndex >= 0) { return todayEraIndex < 0 ? true : (dateParts[eraIndex].value !== todaysParts[todayEraIndex].value) }
 					else return false; // no era part found in date to be displayed, do not atempt to display 
 				}
@@ -333,7 +336,6 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		let	date = new ExtDate (this.calendar, aDate),
 			options = {...this.options},
 			displayEraOfDate = this.displayEra(date); // should Era for this date be displayed
-			//DTFOptions = {...this.DTFOptions}, // a copy, with era option set to some value if eraDisplay != "never"
 
 		if (!displayEraOfDate) delete options.era // Alas, this is not enough
 		else if (options.era == null) options.era = "short";
@@ -462,7 +464,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		if (!displayEraOfDate) {
 			let n = myParts.findIndex((item) => (item.type == "era")), nn = n;
 			if (n >= 0) { // there is an undesired era section, check whether there is an unwanted literal connected to it
-				nn = nn > 0 ? nn-- : nn++ // nn is index of era part neighbour.
+				if (nn > 0) { nn-- } else { nn++ }; // nn is index of era part neighbour.
 				if (myParts[nn].type == "literal") myParts.splice (Math.min(n,nn),2) // Suppress era part and its neighbour
 				else myParts.splice (n,1); 
 			}
