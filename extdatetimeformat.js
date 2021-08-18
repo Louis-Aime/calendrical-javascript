@@ -7,7 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-24	
+/*	Version	M2021-08-28	Static objects are only methods
+	M2021-08-24	
 		Enhance comparison of eras
 		Enhance deletion of era part
 	M2021-08-20 Typos in comments
@@ -230,7 +231,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			default : ;
 		}
 	}	// end constructor
-	static dateFieldNames = ["era", "year", "month", "day"]
+	static dateFieldNames () { return ["era", "year", "month", "day"] }
 	/** the resolved options for this object, that slightly differ from those of Intl.DateTimeFormat.
 	 * @return (Object) the options revised to reflect what will be provided. eraDisplay is also resolved.
 	*/

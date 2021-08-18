@@ -7,7 +7,8 @@ Contents
 	ExtDate: extension of Date object that uses custom calendars (but not built-in calendars)
 	One new method for Date for generalised time zone offset management
 */
-/*	Version	M2021-07-28 introduce solveAskedFields
+/*	Version	M2021-08-28	Static objects are only methods
+	M2021-07-28 introduce solveAskedFields
 	M2021-07-25 : 
 		Separate ExtDate and Intl.ExtDateTimeFormat
 		Complete set of fields and complete parameter for getISOFields
@@ -177,12 +178,12 @@ export default class ExtDate extends Date {
 				} 
 			else {	// analyse fields in terms of the specified custom calendar
 				let fields = new Object;
-				for (let i = 0; i < ExtDate.numericFields.length; i++) {
+				for (let i = 0; i < ExtDate.numericFields().length; i++) {
 					if (i < dateArguments.length) {
 						if (!Number.isInteger(dateArguments[i])) throw new TypeError 
-							('Argument ' + ExtDate.numericFields[i].name + ' is not integer: ' + dateArguments[i]);
-						fields[ExtDate.numericFields[i].name] = dateArguments[i];
-					} else {fields[ExtDate.numericFields[i].name] = ExtDate.numericFields[i].value} //	If no value specified among arguments, set default value.
+							('Argument ' + ExtDate.numericFields()[i].name + ' is not integer: ' + dateArguments[i]);
+						fields[ExtDate.numericFields()[i].name] = dateArguments[i];
+					} else {fields[ExtDate.numericFields()[i].name] = ExtDate.numericFields()[i].value} //	If no value specified among arguments, set default value.
 				}
 				let UTCDate = new Date (calendar.counterFromFields (fields));
 				super (UTCDate.valueOf() + UTCDate.getRealTZmsOffset());
@@ -194,11 +195,11 @@ export default class ExtDate extends Date {
 	}
 	/** Basic data
 	*/
-	static numericFields = [ {name : "fullYear", value : 0}, {name : "month", value : 1}, {name : "day", value : 1},
-		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] 
+	static numericFields() { return [ {name : "fullYear", value : 0}, {name : "month", value : 1}, {name : "day", value : 1},
+		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] }
 		// names of numeric date elements
-	static numericWeekFields = [ {name : "weekYear", value : 0}, {name : "weekNumber", value : 1}, {name : "weekday", value : 1},	
-		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] 
+	static numericWeekFields() { return [ {name : "weekYear", value : 0}, {name : "weekNumber", value : 1}, {name : "weekday", value : 1},
+		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] }
 		// names of numeric week figures elements
 	/** Basic utility fonction: get UTC date from ISO fields in UTC, including full year i.e. 79 means year 79 AD, when Pompeii was buried under volcano ashes.
 	*/
@@ -326,14 +327,14 @@ export default class ExtDate extends Date {
 		fields = Object.assign (fields, askedFields);
 /*		This part seems unnecessary since fields already exist.
 	// 3. Now field should be complete
-		if (ExtDate.numericFields.some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
+		if (ExtDate.numericFields().some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
 			throw new TypeError 
-				(ExtDate.numericFields.map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in date fields: "));
-		ExtDate.numericFields.forEach ( (item) => { if (fields[item.name] == undefined) 
+				(ExtDate.numericFields().map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in date fields: "));
+		ExtDate.numericFields().forEach ( (item) => { if (fields[item.name] == undefined) 
 			fields[item.name] = startingFields[item.name] } );
 */
 		// Construct an object with the date indication only, at 0 h UTC
-		let dateFields = {}; ExtDate.numericFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
+		let dateFields = {}; ExtDate.numericFields().slice(0,3).forEach ( (item) => {dateFields[item.name] = fields[item.name]} );
 		this.setTime(this.calendar.counterFromFields (dateFields));
 		// finally set time to this date from TZ, using .setHours or .setUTCHours
 		return this.setFullTime (TZ , fields.hours, fields.minutes, fields.seconds, fields.milliseconds)
@@ -349,11 +350,11 @@ export default class ExtDate extends Date {
 			weekFields = this.getWeekFields (TZ);
 		weekFields = Object.assign (weekFields, myFields);	// add date expressed in week coordinates.
 /*	This part seems unnecessary since fields already exist.
-		if (ExtDate.numericWeekFields.some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
+		if (ExtDate.numericWeekFields().some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
 			throw new TypeError 
-				(ExtDate.numericWeekFields.map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in week date: "));
+				(ExtDate.numericWeekFields().map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in week date: "));
 */
-		let dateFields = {}; ExtDate.numericWeekFields.slice(0,3).forEach ( (item) => {dateFields[item.name] = weekFields[item.name]} );
+		let dateFields = {}; ExtDate.numericWeekFields().slice(0,3).forEach ( (item) => {dateFields[item.name] = weekFields[item.name]} );
 		this.setTime(this.calendar.counterFromWeekFields (dateFields));
 		// finally set time to this date from TZ, using setFullTime
 		return this.setFullTime (TZ, timeFields.hours, timeFields.minutes, timeFields.seconds, timeFields.milliseconds);
