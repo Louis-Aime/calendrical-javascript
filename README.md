@@ -7,7 +7,7 @@ Basic routines in javascript for computations on calendars, including
  * basic constants to convert to or from day counter to milliseconds counter,
  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,
  * a small routine that fetches an XML file and makes a DOM out of it,
- * pldr, a "private locale data register" that extends Unicode's CLDR for display of dates in several calendars (fallback to fetching an external pldr),
+ * pldr, a "private locale data repository" that extends Unicode's CLDR for display of dates in several calendars (fallback to fetching an external pldr),
  * classes for custom calendars that are not available from Unicode:
    * the real ISO 8601 calendar i.e. the proleptic Gregorian calendar with years expressed as a signed number without eras and with the suitable week reckoning system,
    * the Milesian calendar, 
@@ -17,18 +17,10 @@ Basic routines in javascript for computations on calendars, including
 The package  anticipate some features of the Temporal initiative of Ecma TC39.
 
 The datextendedtest\*, calendar-demo\* files are for test and demonstrating purposes. The demo is also available from GitHub Pages.
-The aggregate.js file re-exports all current modules entries, it is maintained as an example and for compatibility purposes, but it may be left apart.
 The calendrical-init.js file is an example of initiator file, it may be used as such or the code may be adapted.
 
 ## Module architecture
 This module uses ES6 module syntax (export / import).
-
-### aggregate.js (deprecated)
-This file has been deprecated. 
-This file was used as a reexporter of all modules except pldr.js. 
-The default object of time-units.js used to be reexported under the name **Milliseconds** for compatibility.
-All modules of this package name directly the modules they imports.
-The javascript-demo\* html pages and associated .js do not use aggregate.js.
 
 ## GitHub Page site for reference, test and demos
 https://louis-aime.github.io/calendrical-javascript/
@@ -163,10 +155,9 @@ However, in the last case,
    * the second number is the month number in the range 1..12, not 0..11;
    * the missing arguments are replaced by 1 for the day and 0 for all other (hour to milliseconds);
    * the date is always evaluated as a local date with respect to the system time zone.
-#### static objects
- * numericFields: an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value;
- * numericWeekFields: a similar array for informations on weeks.
-#### static functions
+#### static methods
+ * numericFields(): return an array of objects that have 2 keys: *name* is a string that holds the name of a numeric field; and *value* is a number, the default value;
+ * numericWeekFields(): return a similar array for informations on weeks.
  * fullUTC (fullYear, month, day, hour, minute, second, millisecond): number, all parameters are numbers. Set ExtDate object to the date specified by the parameters, deemed UTC (not local). This is very much like Date.UTC, except:
    * the year element is a full year, no 2-digit year is admitted;
    * the month element is in the range 1..12.
