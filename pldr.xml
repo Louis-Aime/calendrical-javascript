@@ -471,7 +471,7 @@ Language-specifif is <ldml>
 	<eras>
 		<eraNames>
 			<era type="0">French era</era>
-		</eraNmes>
+		</eraNames>
 		<eraAbbr>
 			<era type="0">Fr. e.</era>
 		</eraAbbr>
@@ -1010,7 +1010,7 @@ Language-specifif is <ldml>
 			<eras>
 				<eraNames>
 					<era type="0">ère des Français</era>
-				</eraNmes>
+				</eraNames>
 				<eraAbbr>
 					<era type="0">è. Fr.</era>
 				</eraAbbr>
