@@ -2,8 +2,8 @@
 This aynschronous function initialises the user modules of calendrical-javascript for a web page environment.
 To be customised
  */
-/* Version	M2021-08-22
-	M 2021-08-22	Created by extraction from former bundled .js file
+/* Version	M2021-08-29	Local XML file
+	Version log on GitHub
 */
 /* Copyright Miletus 2017-2021 - Louis A. de Fouquières
 Permission is hereby granted, free of charge, to any person obtaining
@@ -32,7 +32,7 @@ const // Promises of loading user modules, and global object than collects all v
 	calendrical = {},	// prefix for the calendrical modules, that may be accessed from the global object.
 	loadCalendrical = Promise.all([
 		import ('./fetchdom.js').then (
-			(value) => value.default ('https://louis-aime.github.io/calendrical-javascript/pldr.xml', 1000),
+			(value) => value.default ('./pldr.xml', 1000),
 			(error) => { throw 'Error loading standard modules' }		// failure fetching pldr as XML file, fallback in next step
 			).then (
 				(value) => { calendrical.pldrDOM = value },			// fetching XML file has succeeded.
