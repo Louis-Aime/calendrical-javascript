@@ -7,38 +7,8 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-28	Static objects are only methods
-	M2021-08-24	
-		Enhance comparison of eras
-		Enhance deletion of era part
-	M2021-08-20 Typos in comments
-	M2021-08-17	time fields delimiter ":" or "." are changed to " h " or " min " (only ":" was changed previously)
-	M2021-08-16 options object passed as parameter shall not be changed
-	M2021-08-07	Any type of calendar, not only custom, can be specified as the last parameter.
-	M2021-07-28	Use fullYear as a field of ExtDate, not as a function
-	M2021-07-24 separate ExtDateTimeFormat (purge version history)
-	M2021-07-18 (last change before splitting - nothing here)
-	M2021-06-13	
-		Error not as objects, but close to the corresponding code.
-		Suppress unicodeValidDateinCalendar, calendar validity control (all calendars work since ICU 68)
-	M2021-01-09 set h12 and hourCycle as in original Intl
-	M2021-01-08 - when a field is undefined and should be displayed, tagging as "field" yield a void field
-	M2020-12-27 no export
-	M2020-12-18 resolving partly eraDisplay at construction
-	M2020-12-08 Use import and export
-	M2020-12-07	Do not change time part if language is among right-to-left.
-	M2020-11-29 control calendar parameter to ExtDate and ExtDateTimeFormat constructors
-	M2020-11-27 Modify literals of time part only, not of date part, solve a few bugs
-		only replace ":" literals in time part of string with " h ", " min " or " s " indication if corresponding option is "numeric"
-		empty option case of DateTimeFormat was not properly evaluated
-		setFromFields: day field was not taken into account
-	M2020-11-25 replace any literal other than " " that follows numeric field with option "numeric" (not with option "2-digit")
-	M2020-11-24 - Add week-related fields added to date object for formatToParts
-	M2020-11-22 complete comments
-	M2020-11-19 (nothing here)
-	M2020-11-17 consolidate files
-	M2020-10 : works in progress
-	Sources: display function for the Julian and the Milesian calendars
+/*	Version	M2021-08-29	Bug using PLDR for weekdays
+	See history on GitHub
 */
 /* Copyright Miletus 2020-2021 - Louis A. de Fouquières
 Permission is hereby granted, free of charge, to any person obtaining
@@ -83,7 +53,8 @@ class CustomCalendar {
 				"list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found in "codes" field.
 				"pldr" : values to be found in calendar.pldr, a DOM which represents a "private locale data repository" designated with its URI/URL or identifier
 			source : the reference to the values, if "list".
-			codes : in case of "list" for a non-numeric field, the array of codes to search for.
+			codes : in case of "list" for a non-numeric field, the array of codes to search for;
+			key : with "cldr" or "pldr", this function with one parameter, the field index, gives the "key" to be inserted for searching in the base. 
 		(note: maybe we could just put "source" and test typeof source, to be seen later)
 	** Methods (see extdate)**
 	// Possible fields elements from ExtDate
@@ -235,6 +206,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	/** the resolved options for this object, that slightly differ from those of Intl.DateTimeFormat.
 	 * @return (Object) the options revised to reflect what will be provided. eraDisplay is also resolved.
 	*/
+	static weekdayKey (i) { return ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][i] }	// the keys used for weekdays in CLDR, use the same for PLDR
 	resolvedOptions() { 
 		return this.options
 	}
@@ -270,7 +242,6 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	 * other parameters are linked to this.
 	*/
 	pldrFetch (name,options,value) {	// return string value to insert to Parts
-		const weekdaytypes = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 		let selector = "", Xpath1 = "", node = {}, result = "";
 		switch (name) {
 			case "era" :	// analyse era options here since at construction it is not known whether era shall be displayed
@@ -280,13 +251,13 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 					case "narrow":selector = "eraNarrow"; break;
 				}
 				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+this.calendar.id+"']/eras/"+selector
-					+"']/era[@type="+value+ "]";
+					+"/era[@type=" + value + "]";
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				result = node.stringValue;
 				// language specific ?
 				Xpath1 = "/pldr/ldml/identity/language[@type='"+this.lang
 					+"']/../calendar[@type='"+this.calendar.id+"']/eras/"+selector
-					+"']/era[@type="+value+ "]",
+					+"/era[@type=" + value + "]";
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				if (node.stringValue != "") result = node.stringValue; // If found, replace international name with language specific one.
 				return result; break;
@@ -315,14 +286,14 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 				}
 				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+this.calendar.id+"']/days/dayContext[@type='"+this.dayContext
 					+"']/dayWidth[@type='"+selector
-					+"']/day[@type="+weekdaytypes[value] + "]";
+					+"']/day[@type=" + value + "]";
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				result = node.stringValue;
 				// Search if a language specific name exists
 				Xpath1 = "/pldr/ldml/identity/language[@type='"+this.lang
 					+"']/../calendar[@type='"+this.calendar.id+"']/days/dayContext[@type='"+this.dayContext
 					+"']/dayWidth[@type='"+selector
-					+"']/day[@type="+weekdaytypes[value] + "]",
+					+"']/day[@type=" + value + "]",
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				if (node.stringValue != "") result = node.stringValue; // If found, replace international name with language specific one.
 				return result; break;
@@ -410,7 +381,9 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 								} 
 								break;
 							case "weekday": 
-								myParts[i].value = pldrFetch ("weekday", options.weekday, date.dayOfWeek); break;
+								let key = this.calendar.partsFormat.weekday.key;
+								if ( key == undefined ) key = ExtDateTimeFormat.weekdayKey;	// a function
+								myParts[i].value = this.pldrFetch ("weekday", options.weekday, key(myDateFields.weekday)); break;
 							case "hour": switch (options.hour) {
 								case "numeric" :	// This option is often tranformed in 2-digit with ":" separators, force to individual printing
 									let ftime = new Intl.DateTimeFormat (options.locale, {timeZone : options.timeZone, hour : "numeric", timeZoneName : "short"}),
