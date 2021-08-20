@@ -9,34 +9,8 @@ Contents:
 	Passing non numeric value will yield NaN results.
 	Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
 */
-/* Versions:	M2021-08-23	Era is never displayed with Gregorian (proleptic) calendar
-	M2021-08-22	Time units imported from time-units.js
-	M2021-08-13	GregorianCalendar is the real ISO 8601 calendar, without era and with algebraic years.
-	M2021-07-29
-		Add solveAskedFields (fields) as required function
-		Suppress fullYear as a function, maintain as a field
-		Replace year by fullYear field in suitable calendars
-	M2021-07-25
-		Adapt to newest chronos.js
-		If date fields are missing, fill with default values before computing (do not throw).
-		Add a function to compute counter from week fields - and debug
-		Suppress isoWeek, set up a complete Gregorian calendar
-	M2021-07-22 This module uses ExtDate, not ExtDateTimeFormat
-	M2021-06-19 wipe dead code away (Error objects...)
-	M2021-06-13	Errors are defined on throw, not as specific objects; most type check are suppressed
-	M2021-01-12 Use modules
-	M2021-01-09 
-		eras and decade for the French Rev. calendar
-		separate class from instances
-	M2021-01-06 adapt to new chronos.js
-	M2020-12-29 no module, no myEthiopic, add Julian Day
-	M2020-12-10 import all names export from other files, as a main entry point.
-	M2020-12-08 use import from JS modules
-	M2020-11-23 - Collect all calendars in a single file
-	M2020-11-21	Enhance with DateExtended
-	M2020-11-12	Adapt to week handler	Source: since 2017
-	M2020-10-22 construct using class Chronos
-	M2020-11-10 use Chronos week computations
+/* Versions:	M2021-08-30	French rev days and months in PLDR
+See details on GitHub
 */ 
 /* Required
 	Package chronos.js for basic calendrical computations
@@ -291,8 +265,8 @@ export class JulianCalendar  {
 	*/
 	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
 	canvas = "gregory"
-	partsFormat = null	// no special instruction
-	stringFormat = "fields"	// formatting options differ from base calendars
+	stringFormat = "fields"	// prepare string parts based on value of fields, not on values computed with base calendars
+	partsFormat = null	// format each part exactly as if it were a canvas calendar date
 	shiftYearStart (dateFields, shift, base) { // Shift start of fullYear to March, or back to January, for calendrical calculations
 		let shiftedFields = {...dateFields};
 		[ shiftedFields.fullYear, shiftedFields.month ] = Cbcce.shiftCycle (dateFields.fullYear, dateFields.month, 12, shift, base ); //+ dateEnvironment.monthBase);
@@ -466,16 +440,21 @@ export class FrenchRevCalendar {
 	*/
 	canvas = "iso8601"
 	stringFormat = "fields"
+	/* 
 	dayNames = ["primidi","duodi", "tridi", "quartidi", "quintidi", "sextidi", "septidi", "octidi", "nonidi", "décadi",
 		"jour de la Vertu", "jour du Génie", "jour du Travail", "jour de l'Opinion", "jour des Récompenses", "jour de la Révolution"]
 	monthNames = ["vendémiaire", "brumaire", "frimaire", "nivôse", "pluviôse", "ventôse", "germinal", "floréal", "prairial", "messidor", "thermidor", "fructidor","sans-culottides"]
 	eraNames = ["ère des Français"]
+	*/
 	eras = ["ef"]	// list of code values for eras; one single era here.
 	partsFormat = {
-		weekday : {mode : "list", source : this.dayNames},
-		month : {mode : "list", source : this.monthNames},
+		// weekday: {mode : "list", source : this.dayNames}
+		weekday : { mode : "pldr", 
+					key : i => i },
+		month : { mode : "pldr" },		// {mode : "list", source : this.monthNames},
 		year : {mode : "field" },
-		era : {mode : "list", codes : this.eras, source : this.eraNames} 
+		// era : {mode : "list", codes : this.eras, source : this.eraNames} 
+		era : { mode : "pldr" }
 	}
 	frenchClockWork = new Cbcce ({ // To be used with a Unix timestamp in ms. Decompose into years, months, day, hours, minutes, seconds, ms
 		timeepoch : -6004454400000, // Unix timestamp of 3 10m 1779 00h00 UTC in ms, the origin for the algorithm

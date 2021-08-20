@@ -11,31 +11,8 @@ Required objects initiated by calendrical-init or equivalent
 	The event listeners are designed as to follow forms value. A "refresh" action will set to value in forms. 
 	Control are done as to avoid changes to illegal values in forms (except dates that cab be balanced).
 */
-/* Version:	M2021-08-23	try / catch each .format
-	M2021-08-22 splitted from initialiser and renamed
-	M2021-08-13 optimised, and switch to Gregorian
-	V2021-07-28: fullYear is no more a function.
-	V2021-07-25	
-		Control week figures, 
-		Add one calendar (Gregorian with week management)
-		Simplify management of system time zone / UTC time zone
-	M2021-07-22 separate extdate.js and extdatetimeformat.js, aggregate pldrString wiht other modules
-	M2021-07-18	
-		Use IIFE
-		Fix bug when setting UTC date
-	M2021-05-08 remove validity control on dates of certain calendars since ICU 68 fixes those bugs
-	M2021-02-13	Fetch pldr from an external XML file, not from a stringified version
-	M2021-02-12	Asynchronous import of calendrical objects - calendar classes are instantiated here
-	M2021-01-09	Button for custom calendar
-	M2020-12-29 Back to script (no module)
-	M2020-12-15 Collect all page-specific routines in this file
-	M2020-12-10 Aggregate links to module in this file
-	M2020-12-09 Calendrical routines as ES modules
-	M2020-11-27 deprecate manual TZ offset and all MilesianAlertMsg
-	M2020-11-24 list of calendars is in Calendar.js file
-	M2020-11 in progress
-	2017-2020: Unicode Tester
-	preceding versions were a personal makeup page
+/* Version:	M2021-08-29	French Rev calendar with pldr
+	see details on GItHub
 */
 /* Copyright Miletus 2017-2021 - Louis A. de Fouquières
 Permission is hereby granted, free of charge, to any person obtaining
@@ -423,7 +400,7 @@ window.onload = function () {
 		calendars.push (new calendrical.GregorianCalendar ("iso_8601"));
 		calendars.push (new calendrical.JulianCalendar ("julian"));
 		calendars.push (new calendrical.WesternCalendar ("historic", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day)));
-		calendars.push (new calendrical.FrenchRevCalendar ("frenchrev"));
+		calendars.push (new calendrical.FrenchRevCalendar ("frenchrev",calendrical.pldrDOM));
 		customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);  // set initial custom calendar - but calendars must exist !
 		getMode();
 		compLocalePresentationCalendar();	// set initial formatters to presentation options
