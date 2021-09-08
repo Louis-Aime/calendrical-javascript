@@ -7,7 +7,7 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2021-08-29	Bug using PLDR for weekdays
+/*	Version	M2021-09-18	When asked partFormat.mode is "field", numeric field follows locale numeration
 	See history on GitHub
 */
 /* Copyright Miletus 2020-2021 - Louis A. de Fouquières
@@ -347,7 +347,22 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			myParts.forEach( function (item, i) { 
 				if (this.calendar.partsFormat[item.type] != undefined ) switch (this.calendar.partsFormat[item.type].mode){
 					case "cldr" : break; // already computed
-					case "field" : myParts[i].value = myDateFields[item.type] == undefined ? "" : myDateFields[item.type] ; break; // insert field directly, blank if undefined
+					case "field" : switch (item.type) {
+						case "year" : switch (options.year) {
+							case "2-digit" : // Authorised only if displayed year is strictly positive, and with a quote.
+								myParts[i].value = (myDateFields.year > 0) 
+									? ("'" + this.figure2.format(myDateFields.year % 100)) 
+									: this.figure1.format(myDateFields.year);
+								break;
+							case "numeric" : myParts[i].value = this.figure1.format(myDateFields.year); break;
+							} break;
+						case "day": switch (options.day) {
+							case "2-digit" : myParts[i].value = this.figure2.format(myDateFields.day); break;
+							case "numeric" : myParts[i].value = this.figure1.format(myDateFields.day); break;
+							} break;
+						default : // insert field directly, blank if undefined
+							myParts[i].value = myDateFields[item.type] == undefined ? "" : myDateFields[item.type] ; break; 
+						} break; 
 					case "list" : switch (item.type) {
 						case "era" : myParts[i].value = this.calendar.partsFormat[item.type].source[this.calendar.partsFormat[item.type].codes.indexOf(myDateFields[item.type])];
 							break;
@@ -355,10 +370,10 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 							case "2-digit" : myParts[i].value = this.figure2.format(myDateFields.month); break;
 							case "numeric" : myParts[i].value = this.figure1.format(myDateFields.month); break;
 							default : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]
-						}; break;
+						} break;
 						case "weekday" : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]; break;
 						default : // other fields are numeric, not subject to lists;
-					} break;
+						} break;
 					case "pldr" : 		// fake ICU computations using pldr. 
 						//	myInitialParts = {...myParts}; // Initial code was nested the reverse way.
 						// myParts = myInitialParts.map ( ({type, value}) => { // .map may not map to itself
@@ -414,7 +429,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 							default : throw new RangeError ("Unknown date field: " + item.type);
 							}	// End of switch on item.type
 						break;	// End of "pldr" case
-						}	// End of switch on (this.calendar.partsFormat[item.type].mode)
+					}	// End of switch on (this.calendar.partsFormat[item.type].mode)
 			} 		// end of forEach function body
 			,this);	// Inside the function, this should be the same as here
 		}	// End of if (this.calendar.partsFormat != undefined)
