@@ -11,10 +11,11 @@ Required objects initiated by calendrical-init or equivalent
 	The event listeners are designed as to follow forms value. A "refresh" action will set to value in forms. 
 	Control are done as to avoid changes to illegal values in forms (except dates that cab be balanced).
 */
-/* Version:	M2021-08-29	French Rev calendar with pldr
-	see details on GItHub
+/* Version:	M2022-01-15	Purge historical comments
+	M2021-08-29	French Rev calendar with pldr
+	see details on GitHub
 */
-/* Copyright Miletus 2017-2021 - Louis A. de Fouquières
+/* Copyright Miletus 2017-2022 - Louis A. de Fouquières
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -67,9 +68,6 @@ function setDisplay () { // Considering that targetDate time has been set to the
 			document.querySelector("#realTZOffset").innerHTML = (systemSign == 1 ? "+ ":"- ") + absoluteTZmin + " min " + absoluteTZsec + " s";
 	}
 	// Initiate a representation of local date
-//	isoDate = new calendrical.ExtDate ('iso8601',targetDate.valueOf());	// The UTC representation of targetDate date is the local date of TZ
-	// Initiate custom calendar form with present local date
-	// let fields = targetDate.getFields(TZ);
 	document.custom.calend.value = calendars[customCalIndex].id	;	
 	document.custom.year.value = targetDate.fullYear(TZ); // display fullYear, not just year. fields.year is displayed with era in date string.
 	document.custom.monthname.value = targetDate.month(TZ); // Display month value in 1..12 range.
@@ -209,12 +207,6 @@ function compLocalePresentationCalendar() { // Compute new formatting objects
 	document.timeOptions.EAmPm.value = usedOptions.dayPeriod;
 	
 	// Display all effective options for extended formatter
-	//document.Locale.Xlocale.value = extUsedOptions.locale;
-	//document.Locale.Xcalend.value = extUsedOptions.calendar;
-	//document.Locale.Xnum.value = extUsedOptions.numberingSystem;
-	//document.Locale.XdateStyle.value = extUsedOptions.dateStyle;
-	//document.Locale.XtimeStyle.value = extUsedOptions.timeStyle ;
-	//document.Locale.XTimeZone.value = extUsedOptions.timeZone;
 	document.dateOptions.Xweekday.value = extUsedOptions.weekday;
 	document.dateOptions.Xera.value = extUsedOptions.era;
 	document.dateOptions.Xyear.value = extUsedOptions.year;
@@ -235,7 +227,6 @@ function setCalend() {	// set current custom calend to new value and compute fie
 	customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);  // change custom calendar
 	targetDate = new calendrical.ExtDate(calendars[customCalIndex], targetDate.valueOf());	// set custom calendar if changed, and set date.
 	compLocalePresentationCalendar(); // necessary to recompute formatters
-	// setDisplay();
 }
 function calcCustom() {
 	var 
@@ -243,9 +234,7 @@ function calcCustom() {
 	 month = Math.round (document.custom.monthname.value),
 	 year =  Math.round (document.custom.year.value),
 	 testDate;
-	 // HTML controls that day, month and year are numbers
-	// customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);	// global variable
-	// let testDate = new calendrical.ExtDate (calendars[customCalIndex], year, month, day);
+	// HTML controls that day, month and year are numbers
 	switch (TZ) {
 		case "":  // Set date object from custom calendar date indication, and with time of day of currently displayed date.
 			testDate = new calendrical.ExtDate (calendars[customCalIndex], year, month, day, targetDate.getHours(), targetDate.getMinutes(), targetDate.getSeconds(), targetDate.getMilliseconds())
@@ -261,7 +250,6 @@ function calcCustom() {
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
 		targetDate = new calendrical.ExtDate(calendars[customCalIndex], testDate.valueOf());	// set custom calendar if changed, and set date.
-		// setDisplay();
 		}
 }
 function calcWeek() {
@@ -297,7 +285,6 @@ function calcWeek() {
 	else {
 		// Here, no control of date validity, leave JS recompute the date if day of month is out of bounds
 		targetDate = new calendrical.ExtDate(calendars[customCalIndex], testDate.valueOf());	// set custom calendar if changed, and set date.
-		// setDisplay();
 		}
 }
 
@@ -308,7 +295,6 @@ function changeDayOffset () {
 	let days = +document.control.shift.value;
 	if (isNaN(days) || days < 0) {
 		alert ("Invalid input");
-		// clockRun(0);
 		}
 	else 
 	{ 
@@ -322,11 +308,9 @@ function setDayOffset (sign=1) {
 	testDate.setTime (testDate.getTime() + sign * dayOffset * calendrical.TimeUnits.DAY_UNIT);
 	if (isNaN(testDate.valueOf())) { 
 		alert ("Out of range");
-		// clockRun(0);
 		}
 	else {
 		targetDate.setTime( testDate.valueOf() );
-		// setDisplay();
 	}
 }
 function calcTime() { // Here the hours are deemed local hours
@@ -340,7 +324,6 @@ function calcTime() { // Here the hours are deemed local hours
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		targetDate = new calendrical.ExtDate (calendars[customCalIndex],testDate.valueOf());
-		// setDisplay();
 	}
 	
 }
@@ -363,7 +346,6 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		targetDate.setTime( testDate.valueOf() );
-		// setDisplay();
 	}
 }
 function getMode() {
@@ -373,7 +355,6 @@ function getMode() {
 	/** TZOffset is JS time zone offset in milliseconds (UTC - local time)
 	 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
 	*/
-
 }
 function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
@@ -382,12 +363,10 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		targetDate.setTime (testDate.valueOf());
-		// setDisplay();
 	}
 }
 function setDateToNow(){ // Self explanatory
 	targetDate = new calendrical.ExtDate(calendars[customCalIndex]); // set new Date object.
-	// setDisplay ();
 }
 /* Events handlers
 */
