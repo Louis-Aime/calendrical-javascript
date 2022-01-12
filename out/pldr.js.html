@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pldr.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pldr.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** a Private Locale Data Register stored as a string, with its DOM parser
+ * @module {ESS2015} pldr
+ * @version M2021-02-13
+ * @license MIT Louis A. de Fouquières 2016-2022
+ * Inquiries: https://github.com/Louis-Aime
+ */
+// Charset UTF-8. This file contains non-ANSI characters.
+/*Version	M2022-01-19 Enhance JSdoc comments
+	M2021-07-22	update names, fix typo errors
+	M2021-02-13: A fallback function if the complete pldr is not available
+	M2020-12-08: use export
+	M2020-11-18:	No "numeric" monthWidth in stand-alone monthContext, formatToParts shall build 1 or 2 digit numbers
+	M2020-10-28: adapted and names changed for the new packaged version of calendar routines
+	M2020-01-12: strict mode
+	M2019-07-24: Control bidirectionnal issues by inserting Unicode FSI &amp; PDI characters
+	M2018-11-11: Enhance comments, put JSDoc comments.
+	M2018-06-04
+		Build an original narrow type
+		type format monthWidth numeric differs from type stand-alone.
+	M2017: Build month names in Latin (default), fr, en, de, es, pt (see XML file)
+*/
+"use strict";
+/** Stringified XML base, consisting in 2 blocks: 
+ * ldmlBCP47 declares Milesian calendar general item, 
+ * ldml declares language specific names; this block does not exist in this string.
+ * If this file is used for a Web site and not as a module, consider changing "const" to "var" in order to avoid redeclaration errors.
+*/
+const pldrstring =
+'&lt;?xml version="1.0" encoding="UTF-8" ?>\
+&lt;!-- Milesian month names definition - non language-specific section  -->\
+&lt;!-- &lt;!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->\
+&lt;pldr> &lt;!-- Private locale data registry - for moke-up -->\
+&lt;ldmlBCP47>\
+&lt;calendar type="milesian"> &lt;!-- name will have to be registred -->\
+	&lt;months>\
+	&lt;monthContext type="format">\
+	&lt;default type="abbreviated"/> &lt;!-- Is it necessary ? -->\
+		&lt;monthWidth type="wide">\
+			&lt;month type="1" draft="unconfirmed">⁨unemis⁩&lt;/month>\
+			&lt;month type="2" draft="unconfirmed">⁨secundemis⁩&lt;/month>\
+			&lt;month type="3" draft="unconfirmed">⁨tertemis⁩&lt;/month>\
+			&lt;month type="4" draft="unconfirmed">⁨quartemis⁩&lt;/month>\
+			&lt;month type="5" draft="unconfirmed">⁨quintemis⁩&lt;/month>\
+			&lt;month type="6" draft="unconfirmed">⁨sextemis⁩&lt;/month>\
+			&lt;month type="7" draft="unconfirmed">⁨septemis⁩&lt;/month>\
+			&lt;month type="8" draft="unconfirmed">⁨octemis⁩&lt;/month>\
+			&lt;month type="9" draft="unconfirmed">⁨novemis⁩&lt;/month>\
+			&lt;month type="10" draft="unconfirmed">⁨decemis⁩&lt;/month>\
+			&lt;month type="11" draft="unconfirmed">⁨undecemis⁩&lt;/month>\
+			&lt;month type="12" draft="unconfirmed">⁨duodecemis⁩&lt;/month>\
+		&lt;/monthWidth>\
+		&lt;monthWidth type="abbreviated"> &lt;!-- short international explicit notation -->\
+			&lt;month type="1" draft="unconfirmed">⁨1m⁩&lt;/month>\
+			 &lt;month type="2" draft="unconfirmed">⁨2m⁩&lt;/month>\
+			 &lt;month type="3" draft="unconfirmed">⁨3m⁩&lt;/month>\
+			 &lt;month type="4" draft="unconfirmed">⁨4m⁩&lt;/month>\
+			 &lt;month type="5" draft="unconfirmed">⁨5m⁩&lt;/month>\
+			 &lt;month type="6" draft="unconfirmed">⁨6m⁩&lt;/month>\
+			 &lt;month type="7" draft="unconfirmed">⁨7m⁩&lt;/month>\
+			 &lt;month type="8" draft="unconfirmed">⁨8m⁩&lt;/month>\
+			 &lt;month type="9" draft="unconfirmed">⁨9m⁩&lt;/month>\
+			 &lt;month type="10" draft="unconfirmed">⁨10m⁩&lt;/month>\
+			 &lt;month type="11" draft="unconfirmed">⁨11m⁩&lt;/month>\
+			 &lt;month type="12" draft="unconfirmed">⁨12m⁩&lt;/month>\
+		&lt;/monthWidth>\
+		&lt;monthWidth type="narrow"> &lt;!-- unambiguous coding system with only one letter -->\
+			 &lt;month type="1" draft="unconfirmed">⁨P⁩&lt;/month>\
+			 &lt;month type="2" draft="unconfirmed">⁨S⁩&lt;/month>\
+			 &lt;month type="3" draft="unconfirmed">⁨T⁩&lt;/month>\
+			 &lt;month type="4" draft="unconfirmed">⁨C⁩&lt;/month>\
+			 &lt;month type="5" draft="unconfirmed">⁨Q⁩&lt;/month>\
+			 &lt;month type="6" draft="unconfirmed">⁨X⁩&lt;/month>\
+			 &lt;month type="7" draft="unconfirmed">⁨E⁩&lt;/month>\
+			 &lt;month type="8" draft="unconfirmed">⁨O⁩&lt;/month>\
+			 &lt;month type="9" draft="unconfirmed">⁨N⁩&lt;/month>\
+			 &lt;month type="10" draft="unconfirmed">⁨D⁩&lt;/month>\
+			 &lt;month type="11" draft="unconfirmed">⁨U⁩&lt;/month>\
+			 &lt;month type="12" draft="unconfirmed">⁨Z⁩&lt;/month>\
+		&lt;/monthWidth>\
+		&lt;monthWidth type="numeric"> 	&lt;!-- under "format" type, i.e. with compound date string, "numeric" width is like "abbreviated" -->	\
+			 &lt;month type="1" draft="unconfirmed">⁨1m⁩&lt;/month>\
+			 &lt;month type="2" draft="unconfirmed">⁨2m⁩&lt;/month>\
+			 &lt;month type="3" draft="unconfirmed">⁨3m⁩&lt;/month>\
+			 &lt;month type="4" draft="unconfirmed">⁨4m⁩&lt;/month>\
+			 &lt;month type="5" draft="unconfirmed">⁨5m⁩&lt;/month>\
+			 &lt;month type="6" draft="unconfirmed">⁨6m⁩&lt;/month>\
+			 &lt;month type="7" draft="unconfirmed">⁨7m⁩&lt;/month>\
+			 &lt;month type="8" draft="unconfirmed">⁨8m⁩&lt;/month>\
+			 &lt;month type="9" draft="unconfirmed">⁨9m⁩&lt;/month>\
+			 &lt;month type="10" draft="unconfirmed">⁨10m⁩&lt;/month>\
+			 &lt;month type="11" draft="unconfirmed">⁨11m⁩&lt;/month>\
+			 &lt;month type="12" draft="unconfirmed">⁨12m⁩&lt;/month>\
+		&lt;/monthWidth>\
+	&lt;/monthContext>\
+	&lt;monthContext type="stand-alone">\
+		&lt;default type="abbreviated"/>\
+		&lt;monthWidth type="wide">\
+			&lt;month type="1" draft="unconfirmed">⁨unemis⁩&lt;/month>\
+			&lt;month type="2" draft="unconfirmed">⁨secundemis⁩&lt;/month>\
+			&lt;month type="3" draft="unconfirmed">⁨tertemis⁩&lt;/month>\
+			&lt;month type="4" draft="unconfirmed">⁨quartemis⁩&lt;/month>\
+			&lt;month type="5" draft="unconfirmed">⁨quintemis⁩&lt;/month>\
+			&lt;month type="6" draft="unconfirmed">⁨sextemis⁩&lt;/month>\
+			&lt;month type="7" draft="unconfirmed">⁨septemis⁩&lt;/month>\
+			&lt;month type="8" draft="unconfirmed">⁨octemis⁩&lt;/month>\
+			&lt;month type="9" draft="unconfirmed">⁨novemis⁩&lt;/month>\
+			&lt;month type="10" draft="unconfirmed">⁨decemis⁩&lt;/month>\
+			&lt;month type="11" draft="unconfirmed">⁨undecemis⁩&lt;/month>\
+			&lt;month type="12" draft="unconfirmed">⁨duodecemis⁩&lt;/month>\
+		&lt;/monthWidth>\
+		 &lt;monthWidth type="abbreviated">\
+			 &lt;month type="1" draft="unconfirmed">⁨1m⁩&lt;/month>\
+			 &lt;month type="2" draft="unconfirmed">⁨2m⁩&lt;/month>\
+			&lt;month type="3" draft="unconfirmed">⁨3m⁩&lt;/month>\
+			&lt;month type="4" draft="unconfirmed">⁨4m⁩&lt;/month>\
+			&lt;month type="5" draft="unconfirmed">⁨5m⁩&lt;/month>\
+			&lt;month type="6" draft="unconfirmed">⁨6m⁩&lt;/month>\
+			&lt;month type="7" draft="unconfirmed">⁨7m⁩&lt;/month>\
+			&lt;month type="8" draft="unconfirmed">⁨8m⁩&lt;/month>\
+			&lt;month type="9" draft="unconfirmed">⁨9m⁩&lt;/month>\
+			&lt;month type="10" draft="unconfirmed">⁨10m⁩&lt;/month>\
+			 &lt;month type="11" draft="unconfirmed">⁨11m⁩&lt;/month>\
+			 &lt;month type="12" draft="unconfirmed">⁨12m⁩&lt;/month>\
+		&lt;/monthWidth>\
+		&lt;monthWidth type="narrow"> &lt;!-- same unambiguous coding system with only one letter -->\
+			 &lt;month type="1" draft="unconfirmed">⁨P⁩&lt;/month>\
+			 &lt;month type="2" draft="unconfirmed">⁨S⁩&lt;/month>\
+			 &lt;month type="3" draft="unconfirmed">⁨T⁩&lt;/month>\
+			 &lt;month type="4" draft="unconfirmed">⁨C⁩&lt;/month>\
+			 &lt;month type="5" draft="unconfirmed">⁨Q⁩&lt;/month>\
+			 &lt;month type="6" draft="unconfirmed">⁨X⁩&lt;/month>\
+			 &lt;month type="7" draft="unconfirmed">⁨E⁩&lt;/month>\
+			 &lt;month type="8" draft="unconfirmed">⁨O⁩&lt;/month>\
+			 &lt;month type="9" draft="unconfirmed">⁨N⁩&lt;/month>\
+			 &lt;month type="10" draft="unconfirmed">⁨D⁩&lt;/month>\
+			 &lt;month type="11" draft="unconfirmed">⁨U⁩&lt;/month>\
+			 &lt;month type="12" draft="unconfirmed">⁨Z⁩&lt;/month>\
+		&lt;/monthWidth>\
+		&lt;/monthContext>\
+	&lt;/months>\
+	&lt;quarters>\
+	  &lt;quarterContext type="format">\
+		 &lt;quarterWidth type="abbreviated">\
+			 &lt;quarter type="1" draft="unconfirmed">⁨T1m⁩&lt;/quarter>\
+			 &lt;quarter type="2" draft="unconfirmed">⁨T2m⁩&lt;/quarter>\
+			 &lt;quarter type="3" draft="unconfirmed">⁨T3m⁩&lt;/quarter>\
+			 &lt;quarter type="4" draft="unconfirmed">⁨T4m⁩&lt;/quarter>\
+		&lt;/quarterWidth>\
+		&lt;quarterWidth type="wide">\
+			 &lt;quarter type="1" draft="unconfirmed">⁨primum spatium trimestre⁩&lt;/quarter>\
+			 &lt;quarter type="2" draft="unconfirmed">⁨secundum spatium trimestre⁩&lt;/quarter>\
+			 &lt;quarter type="3" draft="unconfirmed">⁨tertium spatium trimestre⁩&lt;/quarter>\
+			 &lt;quarter type="4" draft="unconfirmed">⁨quartum spatium trimestre⁩&lt;/quarter>\
+		&lt;/quarterWidth>\
+	  &lt;/quarterContext>\
+	  &lt;quarterContext type="stand-alone">\
+		 &lt;quarterWidth type="abbreviated">\
+			 &lt;quarter type="1" draft="unconfirmed">⁨T1m⁩&lt;/quarter>\
+			 &lt;quarter type="2" draft="unconfirmed">⁨T2m⁩&lt;/quarter>\
+			 &lt;quarter type="3" draft="unconfirmed">⁨T3m⁩&lt;/quarter>\
+			 &lt;quarter type="4" draft="unconfirmed">⁨T4m⁩&lt;/quarter>\
+		&lt;/quarterWidth>\
+		&lt;quarterWidth type="wide">\
+			 &lt;quarter type="1" draft="unconfirmed">⁨primo spatio trimestre⁩&lt;/quarter>\
+			 &lt;quarter type="2" draft="unconfirmed">⁨secundo spatio trimestre⁩&lt;/quarter>\
+			 &lt;quarter type="3" draft="unconfirmed">⁨tertio spatio trimestre⁩&lt;/quarter>\
+			 &lt;quarter type="4" draft="unconfirmed">⁨quarto spatio trimestre⁩&lt;/quarter>\
+		&lt;/quarterWidth>\
+	  &lt;/quarterContext>\
+	&lt;/quarters>\
+  &lt;/calendar>\
+&lt;/ldmlBCP47>\
+&lt;!-- Here starts the ldml part - language-specific -->\
+&lt;ldml>&lt;/ldml>\
+&lt;/pldr>'
+
+/** build a document object from the pldrstring object of this file.
+ * @function getPldrDOM
+ * @return the link to the document object that holds the private locale data register.
+ * @static
+*/
+export default function getPldrDOM () { return new DOMParser().parseFromString(pldrstring, "application/xml")};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jan 08 2022 20:50:01 GMT+0100 (heure normale d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

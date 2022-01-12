@@ -1,13 +1,12 @@
-/* pldr.js  Private Locale Data Register as a DOM
-Charset UTF-8. This file contains non-ANSI characters.
-Contents:
-	pldrstring: stringified version of an XML document organising non built-in calendar data for the Unicode tools.
-		this fallback version holds only non language-specific values. The XML file is more complete.
-	getPldrDOM: an exported function that yields a DOM object parsed from pldrstring.
-Notes:
-	If this file is used for a Web site and not as a module, consider changing "const pldrstring" to "var" in order to avoid several redeclaration error.
-*/
-/*Version	M2021-07-22	update names, fix typo errors
+/** a Private Locale Data Register stored as a string, with its DOM parser
+ * @module {ESS2015} pldr
+ * @version M2021-02-13
+ * @license MIT Louis A. de Fouquières 2016-2022
+ * Inquiries: https://github.com/Louis-Aime
+ */
+// Charset UTF-8. This file contains non-ANSI characters.
+/*Version	M2022-01-19 Enhance JSdoc comments
+	M2021-07-22	update names, fix typo errors
 	M2021-02-13: A fallback function if the complete pldr is not available
 	M2020-12-08: use export
 	M2020-11-18:	No "numeric" monthWidth in stand-alone monthContext, formatToParts shall build 1 or 2 digit numbers
@@ -19,15 +18,12 @@ Notes:
 		Build an original narrow type
 		type format monthWidth numeric differs from type stand-alone.
 	M2017: Build month names in Latin (default), fr, en, de, es, pt (see XML file)
-
-*/
-/* Copyright Miletus 2016-2020 - Louis A. de Fouquières
-Inquiries: www.calendriermilesien.org
 */
 "use strict";
 /** Stringified XML base, consisting in 2 blocks: 
  * ldmlBCP47 declares Milesian calendar general item, 
- * ldml declares language specific names (here empty)
+ * ldml declares language specific names; this block does not exist in this string.
+ * If this file is used for a Web site and not as a module, consider changing "const" to "var" in order to avoid redeclaration errors.
 */
 const pldrstring =
 '<?xml version="1.0" encoding="UTF-8" ?>\
@@ -178,6 +174,9 @@ const pldrstring =
 <ldml></ldml>\
 </pldr>'
 
-/** The pldrstring parsed to a DOM.
+/** build a document object from the pldrstring object of this file.
+ * @function getPldrDOM
+ * @return the link to the document object that holds the private locale data register.
+ * @static
 */
 export default function getPldrDOM () { return new DOMParser().parseFromString(pldrstring, "application/xml")};

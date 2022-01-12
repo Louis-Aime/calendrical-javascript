@@ -1,17 +1,22 @@
-/* chronos.js: Basic functions for calendrical computations
-Character set is UTF-8
-Contents: 
- * Cbcce (ex Chronos): a class that implements the Cycle-Based Calendrical Computations Engine to convert a timestamp to or from a date.
- * WeekClock: a class that yields week figures for a specified week structure.
- * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
-*/
-/* General note
+/** Basic functions for calendrical computations. 
 	All parameters should be integer numbers. In order to increase efficiency, almost no check is done. 
 	Any NaN parameter will yield NaN values.
 	Non-integer parameter will yield erroneous non-integer values.
 	Default parameters assume that computations are done using 1 for the first month of any calendar.
+ * @module {ESS2015} chronos
+ * @version M2021-08-22
+ * @license MIT Louis A. de Fouquières 2016-2022
+ * Inquiries: https://github.com/Louis-Aime
+ */
+// Character set is UTF-8
+/* - Contents: -
+ * Cbcce (ex Chronos): a class that implements the Cycle-Based Calendrical Computations Engine to convert a timestamp to or from a date.
+ * WeekClock: a class that yields week figures for a specified week structure.
+ * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
 */
-/* Version	M2021-08-22: time units transferred to another module
+/* Version
+	M2022-01-22: JSDocs
+	M2021-08-22: time units transferred to another module
 	M2021-07-23	
 		Compute a date stamp from week fields
 		Class Chronos changed to Cbcce
@@ -58,53 +63,51 @@ or the use or other dealings in the software.
 Inquiries: www.calendriermilesien.org
 */
 "use strict";
-/** Instantiate Cbcce for calendar specific computations. Class parameter is a single object that represent the calendar's cycle structure.
- * @param (Object)	calendRule:  the cycle structure and intercalation rules of the calendar. Example hereunder:
-	 * Example = {
-	 *	timeepoch : #, // origin date or time stamp in elementary units (days, milliseconds...) to be used for the decomposition, with respect to instant 0
-	 *	coeff : [ // Array of coefficients used to decompose a time stamp into time cycles like eras, quadrisaeculae, centuries, ... down to the elementary unit.
-	 * 		{cyclelength : #, 	// length of the cycle, in elementary units.
-	 *		ceiling : #, 		// Infinity, or the maximum number of cycles of this size minus one in the upper cycle; 
-	 *							// the last cycle may hold an intercalation remainder up to the next level,
-	 *							// example: this level is year of 365 days, upper level is 1461 days i.e. the last year holds more than 365 days.
-	 *		subCycleShift : #, 	// number (-1, 0 or +1) to add to the ceiling of the cycle of the next level when the ceiling is reached at this level;
-	 *							// to be used for common/embolismic years in a Meton cycle, or for 128-years cycles of 4 or 5 years elementary cycles.
-	 *		multiplier : #, 	// multiplies the number of cycles of this level to convert into target units.
-	 *		target : #, 		// the unit (e.g. "year") of the decomposition element at this level. 
-	 *		notify : #, 		// optional, the field (e.g. "leapyear") where to indicate that the element's length is "singular" (i.e. not "common"). 
-	 *		} ,					// end of cycle description
-	 *		{ 		// similar elements at a lower cycle level 
-	 *		} 		// end of cycle description
-	 *	], // End of this array, but not end of object
-	 *	canvas : [ // this last array is the canvas of the decomposition , e.g. "year", "month", "day", with suitable properties at each level.
-	 *		{ name : #,	// the name of the property at this level, which must match one target property of the coeff component,
-	 *		init : #, 	// value of this component at epoch, which is the lowest value (except for the first component), 
-	 *					// e.g. 0 or 1 for month, 1 for date, 0 for hours, minutes, seconds.
-	 *		} // End of array element (only two properties)
-	 *	] // End of second array
-	 * }	// End of object.
+/** Structure of the calendar rule parameter that describes a calendar's computation rules and that is passed to a Cbcce class constructor.
  * Non checked constraints: 
  *	1. 	The cycles and the canvas elements shall be defined from the largest to the smallest
  *		e.g. four-century, then century, then four-year, then year, etc.
  *	2. 	The same names shall be used for the "coeff" and the "canvas" properties, otherwise functions shall give erroneous results.
  *	3.	canvas.month.init is defined, it is the number of the first month in the year (0 with Date, 1 with Temporal)
+ * @typedef {Object} calendarRule
+ * @property {Number} timeepoch - origin date or time stamp in elementary units (days, milliseconds...) to be used for the decomposition, with respect to instant 0 of used timestamp.
+ * @property {Array} coeff - Array of coefficients used to decompose a time stamp into time cycles like eras, quadrisaeculae, centuries, ... down to the elementary unit.
+ * @property {Number} coeff[].cyclelength 	- length of the cycle, in elementary units.
+ * @property {Number} coeff[].ceiling 		- Infinity, or the maximum number of cycles of this size minus one in the upper cycle; 
+	* the last cycle may hold an intercalation remainder up to the next level,
+	* example: this level is year of 365 days, upper level is 1461 days i.e. the last year holds more than 365 days.
+ * @property {Number} coeff[].subCycleShift - number (-1, 0 or +1) to add to the ceiling of the cycle of the next level when the ceiling is reached at this level;
+	* to be used for common/embolismic years in a Meton cycle, or for 128-years cycles of 4 or 5 years elementary cycles.
+ * @property {Number} coeff[].multiplier	- multiplies the number of cycles of this level to convert into target units.
+ * @property {String} coeff[].target 		- the unit (e.g. "year") of the decomposition element at this level. 
+ * @property {Number} coeff[].notify 		- optional, the field (e.g. "leapyear") where to indicate that the element's length is "singular" (i.e. not "common"). 
+ * @property {Array} canvas - Canvas of the decomposition , e.g. "year", "month", "day", with suitable properties at each level.
+ * @property {String} canvas[].name 	- the name of the property at this level, which must match one target property of the coeff component,
+ * @property {Number} canvas[].init 	- value of this component at epoch, which is the lowest value (except for the first component), 
+	 * e.g. 0 or 1 for month, 1 for date, 0 for hours, minutes, seconds.
 */
+/** The Cycle Based Calendar Computation Engine (Cbcce)
+ * @class
+ * @param {calendarRule} calendRule - The object that describes the rules of the calendar to be implemented
+ */
 export class Cbcce 	{	// Essential calendrical computations tools, including the Cycle Based Calendrical Computation Engine (CBCCE)
 	constructor (calendRule) {
 		this.calendRule = calendRule;
 	}
-	/** modulo function for calendrical computations. It is recommended to use only integer arguments
-	 * @param (number) a: dividend, integer.
-	 * @param (number) d: divisor, integer. If 0, result shall be NaN
-	 * @return (number) modulo of a divided by d, with 0 <= modulo < d or d < modulo <= 0
-	*/
+	/** The Modulo function for calendrical computations
+	 * @static
+	 * @param {number} a - dividend, may be positive, null or negative.
+	 * @param {number} d - divisor, shall be non-zero
+	 * @return {number} modulo of a divided by d, with 0 <= modulo < d or d < modulo <= 0, e.g. -2 mod 3 is +1, not -2.
+	 */
 	static mod (a, d) {		
 		return ( a*Math.sign(d) >= 0 ? a % d : (a % d + +d) % d)
 	}
-	/** division with modulo for calendrical computations
-	 * @param (number) a: dividend; integer recommended.
-	 * @param (number) d: divisor; integer recommended.
-	 * @return (Array) [quotient, modulo] with 0 <= modulo < d or d < modulo <= 0.
+	/** Division with modulo for calendrical computations
+	 * @static 
+	 * @param {number} a - dividend; integer recommended.
+	 * @param {number} d - divisor; integer recommended.
+	 * @return {number[]} - [quotient, modulo] with 0 <= modulo < d or d < modulo <= 0.
 	*/
 	static divmod (a, d) {	
 		if (d >=0) {
@@ -116,12 +119,13 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	}
 	/** Cycle start shifting, keeping phase measure. Example : (20, 1) shifted by 2 in a 12-cycle with base 1 yields (19, 13), but (20, 6) yields (20, 6)
 		This operation is used for calendrical computations on Julian-Gregorian calendars (shift year start to March), but also for computations on weeks.
-	 * @param (number) cycle: the rank of cycle, which is increased by 1 each time 'phase' reaches (mod (cycleBase, period))
-	 * @param (number) phase: indicates the phase within the cycle, e.g. for the month or the day of week. (phase == cycleBase) means the start of a new cycle.
-	 * @param (number) period: the cycle's period, typically 12 or 7 for calendrical computations, but may also be the moon's month mean duration in milliseconds.
-	 * @param (number) shift: the number of units for shifting. After shifting, cycleBase is cycleBase + shift.
-	 * @param (number) cycleBase: which phase is that of a new cycle, in the parameter [cycle, phase] representation. O by default (like month representation with Date objects).
-	 * @return (Array) [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
+	 * @static 
+	 * @param {number} cycle	- the rank of cycle, which is increased by 1 each time 'phase' reaches (mod (cycleBase, period))
+	 * @param {number} phase	- indicates the phase within the cycle, e.g. for the month or the day of week. (phase == cycleBase) means the start of a new cycle.
+	 * @param {number} period	- the cycle's period, typically 12 or 7 for calendrical computations, but may also be the moon's month mean duration in milliseconds.
+	 * @param {number} shift	- the number of units for shifting. After shifting, cycleBase is cycleBase + shift.
+	 * @param {number} cycleBase	- which phase is that of a new cycle, in the parameter [cycle, phase] representation. O by default (like month representation with Date objects).
+	 * @return {Array} [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
 	*/
 	static shiftCycle (cycle, phase, period, shift, cycleBase=0) {
 		// if (Array.from(arguments).some(isNaN)) throw new TypeError ("Non numeric value among arguments: " + Array.from(arguments).toString()); 
@@ -131,21 +135,24 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 				((value, index) => (index == 1 ? value + cycleBase + shift : value) )
 	}
 	/** Whether a year is a leap year in the Julian calendar, with the year origin Anno Domini as defined by Dionysius Exiguus in the 6th century. 
-	 * @param (number) a signed integer number representing the year. 0 means 1 B.C. and so on. Leap years, either positive or negative, are divisible by 4.
-	 * @return (boolean) true if year is a leap year i.e. there is a 29 February in this year.
+	 * @static
+	 * @param {number} a signed integer number representing the year. 0 means 1 B.C. and so on. Leap years, either positive or negative, are divisible by 4.
+	 * @return {boolean} true if year is a leap year i.e. there is a 29 February in this year.
 	 */
 	static isJulianLeapYear (year) {
 		return Cbcce.mod (year, 4) == 0
 	}
 	/** Whether a year is a leap year in the Gregorian calendar, with the year origin Anno Domini as defined by Dionysius Exiguus in the 6th century. 
-	 * @param (number) a signed integer number representing the year. 0 means 1 B.C. Leap years, are either not divisible by 100 but by 4, or divisible by 400.
-	 * @return (boolean) true if year is a leap year i.e. there is a 29 February in this year.
+	 * @static
+	 * @param {number} a signed integer number representing the year. 0 means 1 B.C. Leap years, are either not divisible by 100 but by 4, or divisible by 400.
+	 * @return {boolean} true if year is a leap year i.e. there is a 29 February in this year.
 	 */
 	static isGregorianLeapYear (year) {
 		return Cbcce.mod (year, 4) == 0 && (Cbcce.mod(year, 100) != 0 || Cbcce.mod(year, 400) ==0)
 	}
 	/** Build a compound object from a time stamp holding the elements as required by a given cycle hierarchy model.
-	 * @param {number} askedNumber: a time stamp representing the date to convert.
+	 * @static
+	 * @param {number} askedNumber	- a time stamp representing the date to convert.
 	 * @returns {Object} the calendar elements in the structure that calendRule prescribes.
 	*/
 	getObject (askedNumber) {
@@ -174,8 +181,9 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	  return result;
 }
 	/** Compute the time stamp from the element of a date in a given calendar.
-	 * @param {Object} askedObject: the numeric elements of the date, collected in an object containing the elements that calendRule prescribes.
-	 * @param {Object} this.calendRule: the representation of the calendar structure and its connection to the time stamp.
+	 * @static
+	 * @param {Object} askedObject	- the numeric elements of the date, collected in an object containing the elements that calendRule prescribes.
+	 * @param {Object} this.calendRule	- the representation of the calendar structure and its connection to the time stamp.
 	 * @returns {number} the time stamp
 	*/
 	getNumber (askedObject) { // from an object askedObject structured as calendRule.canvas, compute the chronological number
@@ -209,31 +217,35 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 		return quantity ;
 	}
 } // end of Cbcce class
-/**Week clock: get week figures using different reckoning sytems for weeks
- * @param (Object)	weekdayRule: set of parameters for the computation of week elements
-	 * (number, required) originWeekday: weekday number of day index 0. Value is renormalised to 0..weekLength-1.
-	 * (function, required) daysInYear: function (year), number of days in year. year is specified as "fullyear" (unambiguous). 
-		With solar calendars, result is 365 or 366.
-	 * (function, required) characDayIndex: function (year): the day index of one day of characWeekNumber of year.
-		if weekReset is true, this day shall be the first day of the week charcWeekNumber. If not, all weeks are of same length.
-	 * (number) startOfWeek: number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. 
-		Value is renormalised to 0..weekLength-1.
-	 * (number) characWeekNumber: number of the week of the characDayIndex. Default is 1.
-	 * (number) dayBase: number of the first day in any week. May differ from startOfWeek. Used for displaying result. Default is 1.
-	 * (number) weekBase: number of the first week in any year. May differ from characWeekNumber. Default is 1.
-	 * (number) weekLength: minimum number of days in one week. Default is 7.
-	 * (boolean) weekReset: whether weekday is forced to a constant value at beginning of year. Default is false.
-	 * (Array) uncappedWeeks: an array of the numbers of the week that have one or more day above weekLength. Possible cases:
-		 undefined (and set to null): all weeks have always the same duration, weekLength.
-		 .length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength
-		 .length > 1: each week indentified is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days.
-		 e.g. for French revolutionary calendar: [36], and the days are indexed indexed 10 to 15 (index of Décadi is 9);
-		 whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
-		 These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.
+/** Structure of the weekDayRule parameter passed to WeekClock that describes the structure of the week. 
  * Non checked constraints: 
  * 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.
  * 2. weekLength shall be > 0
+ * @typedef {Object} weekDayRule 	-  set of parameters for the computation of week elements
+ * @property {Number} originWeekday - weekday number of day index 0. Value is renormalised to 0..weekLength-1.
+ * @property {Function} daysInYear	- function (year), number of days in year. year is specified as "fullyear" (unambiguous); 
+	* with solar calendars, result is 365 or 366.
+ * @property {Function} characDayIndex	- function (year): the day index of one day of characWeekNumber of year.
+	* if weekReset is true, this day shall be the first day of the week charcWeekNumber. If not, all weeks are of same length.
+ * @property {Number} [startOfWeek=1]	- number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. 
+		Value is renormalised to 0..weekLength-1.
+ * @property {Number} [characWeekNumber=1]	- number of the week of the characDayIndex. Default is 1.
+ * @property {Number} [dayBase=1]		- number of the first day in any week. May differ from startOfWeek. Used for displaying result. Default is 1.
+ * @property {Number} [weekBase=1]		- number of the first week in any year. May differ from characWeekNumber. Default is 1.
+ * @property {Number} [weekLength=7]	- minimum number of days in one week. Default is 7.
+ * @property {Number} [weekReset=false]	- whether weekday is forced to a constant value at beginning of year. Default is false.
+ * @property {Number[]} [uncappedWeeks=null]	- an array of the numbers of the week that have one or more day above weekLength. Possible cases:
+	* undefined (and set to null): all weeks have always the same duration, weekLength;
+	* .length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength;
+	* .length > 1: each week indentified is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;
+	* e.g. for French revolutionary calendar: [36], and the days are indexed indexed 10 to 15 (index of Décadi is 9);
+	* whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
+	* These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.
 */
+/** Get week figures using different reckoning sytems for weeks
+ * @class
+ * @param {weekDayRule} weekDayRule - the description of the week
+ */
 export class WeekClock {
 	constructor (weekdayRule) {
 		this.originWeekday = weekdayRule.originWeekday;
@@ -248,14 +260,14 @@ export class WeekClock {
 		this.uncappedWeeks = weekdayRule.uncappedWeeks != undefined ? weekdayRule.uncappedWeeks : null;
 	}
 	/**	Compute week figures in the defined week structure
-	 * @param (number) dayIndex : day stamp, in day unit, of the day whose figures are computed
-	 * @param (number) characDayIndex : day stamp of the characteristic day, the day that belongs to week number characWeekNumber in same year
-	 * @param (number) year : the relative year the dayIndex date belongs to
-	 * @return (Array) 
-		0 : week number
-		1 : week day number, depending on dayBase. Modulo this.weekLength value is always : 0 (or this.weekLength) for Sunday of first day, 1 for Monday etc.
-		2 : year offset: -1 if week belongs to last week year, 0 if in same year, 1 if in next year.
-		3 : weeks in year: number of weeks for the week year the date belongs to. This is not always the number of the last week (check this.weekBase)!
+	 * @static
+	 * @param {number} dayIndex 	- day stamp, in day unit, of the day whose figures are computed
+	 * @param {number} year 		- the relative year the dayIndex date belongs to
+	 * @return {Array} 
+		* [0] : week number;
+		* [1] : week day number, depending on dayBase. Modulo this.weekLength value is always : 0 (or this.weekLength) for Sunday of first day, 1 for Monday etc.
+		* [2] : year offset: -1 if week belongs to last week year, 0 if in same year, 1 if in next year.
+		* [3] : weeks in year: number of weeks for the week year the date belongs to. This is not always the number of the last week (check this.weekBase)!
 	*/
 	getWeekFigures (dayIndex, year) {	// (dayIndex, characDayIndex, year)
 		let cDayIndex = this.characDayIndex (year),
@@ -291,10 +303,12 @@ export class WeekClock {
 		return result;
 	}
 	/**	Compute day index from week figures in the defined week structure
-	 * @param (number) year : the year (full year, a relative integer) of the week figures. There may be 1 year difference with the year of the calendar's date.
-	 * @param (number) weekNumber : the number of the week, that follows the rules.
-	 * @param (number) dayOfWeek : the number day of the week, following the weekdayRule parameter set.
-	 * @return (number) dayIndex : day stamp, in day unit (not in milliseconds or other), of the day that corresponds to the week figures.
+	 * @static
+	 * @param {number} weekYear 	- the year (full year, a relative integer) of the week figures. There may be 1 year difference with the year of the calendar's date.
+	 * @param {number} [weekNumber] - the number of the week; if not specified, this.weekBase.
+	 * @param {number} [dayOfWeek] 	- the number day of the week, following the weekdayRule parameter set; if not specified: this.dayBase.
+	 * @param {boolean} [check] 	- whether a consitency check is done.
+	 * @return {number} day index, in day units (not in milliseconds or other), of the day that corresponds to the week figures.
 	*/
 	getNumberFromWeek (weekYear, weekNumber = this.weekBase, dayOfWeek = this.dayBase, check = false) {
 		if (weekNumber < this.weekBase) throw new RangeError ('Week number too low: ' + weekNumber);
@@ -314,10 +328,11 @@ export class WeekClock {
 	}
 }
 /** Convert number of days since epoch to or from a date expressed after ISO 8601.
-* @param (number) the epoch year in ISO, a signed integer, default: 1970 for the Unix epoch.
-* @param (number) the epoch month in ISO, a number in range 1..12, default: 1.
-* @param (number) the epoch day of the month in ISO, a number in range 1..31, default: 1. If this day does not exist in this month, date is balanced to next month.
-*/
+	* @class
+	* @param {number} [originYear=1970]	- the epoch year in ISO, a signed integer, default: 1970 for the Unix epoch.
+	* @param {number} [originMonth=1]	- the epoch month in ISO, a number in range 1..12, default: 1.
+	* @param {number} [originDay=1]		- the epoch day of the month in ISO, a number in range 1..31, default: 1. If this day does not exist in this month, date is balanced to next month.
+	*/
 export class IsoCounter { 
 	constructor (originYear=1970, originMonth=1, originDay=1) {
 		const 
@@ -349,9 +364,11 @@ export class IsoCounter {
 			})
 	}
 	/** Compute day counter, an integer number for the date specified under ISO 8601.
-	 * @param (Object): fields isoYear, isoMonth and isoDay must be specified as integer. isoMonth must lay in range 1..12 
+	 * @function
+	 * @static
+	 * @param {Object} isoFields 	- fields isoYear, isoMonth and isoDay must be specified as integer. isoMonth must lay in range 1..12 
 		if day is out of range of valid days for the month, date is balanced to the number of days out of the range.
-	 * @return (number): the counter, an integer number representing the date with the day counter.
+	 * @return {number} the counter, an integer number representing the date with the day counter.
 	*/
 	toCounter = function ( isoFields ) {
 		let myFields = {...isoFields};
@@ -360,8 +377,10 @@ export class IsoCounter {
 		return this.clockwork.getNumber (myFields)
 	}
 	/** Compute ISO8601 date figures from a number of days since epoch.
-	 * @param (number): the day counter, a counter representing a date. If not integer, the floor value is taken.
-	 * @return (Object): fields isoYear, isoMonth and isoDay specify the date in ISO8601 calendar.
+	 * @function
+	 * @static
+	 * @param {number} counter	- the day counter, a counter representing a date; if not integer, the floor value is taken.
+	 * @return {Object} fields isoYear, isoMonth and isoDay specify the date in ISO8601 calendar.
 	*/
 	toIsoFields = function ( counter ) {
 		let myFields = this.clockwork.getObject (Math.floor (counter));
