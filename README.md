@@ -76,7 +76,7 @@ The default exported class **ExtDateTimeFormat** extends the Intl.DateTimeFormat
 * Time options (hour, minute, second) handled "numeric" and "2-digit" in different ways.
 * You can use instantiated objects with  built-in or custom calendars.
 
-## Extra and custome calendars
+## Extra and custom calendars
 
 With Chronos.Cbcce for the calendrical computations, ExtDate for embedding in ordinary code, and ExtDateTimeFormat for a better control of display options, 
 you can define custom calendars in a few lines. 
