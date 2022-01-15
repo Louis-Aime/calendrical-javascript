@@ -1,4 +1,32 @@
-/** Extension of Intl.DateTimeFormat objects, to handle custom calendars.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: extdatetimeformat.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: extdatetimeformat.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** Extension of Intl.DateTimeFormat objects, to handle custom calendars.
  * this module is linked to module:extdate.js, but could also be used with Temporal
  * @module {ESS2015} ExtDateTimeFormat
  * @version M2021-09-18
@@ -64,17 +92,17 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		// Resolve case where no field is asked for display : if none of weekday, year, month, day, hour, minute, second is asked, set a standard suite
 		if (this.options == undefined) this.options = {};
 		if (this.options.weekday == undefined
-			&& this.options.year == undefined
-			&& this.options.month == undefined
-			&& this.options.day == undefined
-			&& this.options.hour == undefined
-			&& this.options.minute == undefined
-			&& this.options.second == undefined
-			&& this.options.dateStyle == undefined
-			&& this.options.timeStyle == undefined) this.options.year = this.options.month = this.options.day = "numeric";
+			&amp;&amp; this.options.year == undefined
+			&amp;&amp; this.options.month == undefined
+			&amp;&amp; this.options.day == undefined
+			&amp;&amp; this.options.hour == undefined
+			&amp;&amp; this.options.minute == undefined
+			&amp;&amp; this.options.second == undefined
+			&amp;&amp; this.options.dateStyle == undefined
+			&amp;&amp; this.options.timeStyle == undefined) this.options.year = this.options.month = this.options.day = "numeric";
 		this.DTFOptions = super.resolvedOptions();	// should hold all locale resolved information in DTFOptions.locale
 		this.options.locale = this.DTFOptions.locale;
-		this.options.calendar = (this.calendar != undefined && this.calendar.canvas != undefined) ? this.calendar.canvas : this.DTFOptions.calendar; 
+		this.options.calendar = (this.calendar != undefined &amp;&amp; this.calendar.canvas != undefined) ? this.calendar.canvas : this.DTFOptions.calendar; 
 		// set calendar option for standard DTF after calendar.canvas if specified, and re-compute DTF resolved options
 		if (this.options.calendar != this.DTFOptions.calendar) { 
 			this.DTFOptions.calendar = this.options.calendar 
@@ -95,7 +123,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			case "never": break;
 			default: throw new RangeError ("Unknown option for displaying era: " + this.options.eraDisplay);
 		}
-		if (this.options.eraDisplay == "auto" && this.DTFOptions.year == undefined) this.options.eraDisplay = "never";
+		if (this.options.eraDisplay == "auto" &amp;&amp; this.DTFOptions.year == undefined) this.options.eraDisplay = "never";
 		if (this.calendar != undefined) {
 			if (this.calendar.stringFormat == undefined) this.calendar.stringFormat = "auto";
 			switch (this.calendar.stringFormat) {
@@ -134,12 +162,12 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			delete this.options.dateStyle;
 		}
 		// Resolve numeric options for date and time elements: day or hour elements' 2-digit options overwrite other numeric options of other date resp. time elements.
-		if (this.options.day == "2-digit" && this.options.month != undefined && this.options.month == "numeric") this.options.month = "2-digit";
-		if (this.options.hour == "2-digit" && this.options.minute != undefined) this.options.minute = "2-digit";
-		if (this.options.minute == "2-digit" && this.options.second != undefined) this.options.second = "2-digit";
+		if (this.options.day == "2-digit" &amp;&amp; this.options.month != undefined &amp;&amp; this.options.month == "numeric") this.options.month = "2-digit";
+		if (this.options.hour == "2-digit" &amp;&amp; this.options.minute != undefined) this.options.minute = "2-digit";
+		if (this.options.minute == "2-digit" &amp;&amp; this.options.second != undefined) this.options.second = "2-digit";
 		// Special options for month
 		this.monthContext =  // the context for month may be 'format' or 'stand-alone'
-				(this.options.day == null && this.options.year == null) ? 'stand-alone' : 'format';
+				(this.options.day == null &amp;&amp; this.options.year == null) ? 'stand-alone' : 'format';
 		if (this.options.month != undefined) {
 			this.monthWidth = "";
 			switch (this.options.month) {	// analyse month asked option, deduct month display option
@@ -150,9 +178,9 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			}
 		}
 		// Special options for days of week
-		this.dayContext = (this.options.day == null && this.options.month == null && this.options.year == null) ? 'stand-alone' : 'format';
+		this.dayContext = (this.options.day == null &amp;&amp; this.options.month == null &amp;&amp; this.options.year == null) ? 'stand-alone' : 'format';
 		// stringFormat "fields" option is only possible with a calendar that uses Roman months
-		if (this.calendar != undefined && this.calendar.stringFormat == "fields") switch (this.calendar.canvas) {
+		if (this.calendar != undefined &amp;&amp; this.calendar.stringFormat == "fields") switch (this.calendar.canvas) {
 			case "iso8601": case "gregory": case "buddhist": case "japanese": case "roc": break;
 			default : throw new RangeError ("Canvas formatting implemented only from gregory-like built-in calendars: " + this.calendar.canvas);
 		}
@@ -187,10 +215,10 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		let date = new ExtDate(this.calendar, aDate.valueOf());
 		switch (this.options.eraDisplay) {
 			case "never" : return false;
-			case "always": if (this.calendar != undefined && this.calendar.eras == null) { return false } else return true;	// if custom calendar has no era, return false
+			case "always": if (this.calendar != undefined &amp;&amp; this.calendar.eras == null) { return false } else return true;	// if custom calendar has no era, return false
 			case "auto":
-				if ((this.options.year == null && this.options.era == null)	// Neither year option nor era option set
-					|| (this.calendar != undefined && this.calendar.eras == null))		// this calendar has no era whatsoever
+				if ((this.options.year == null &amp;&amp; this.options.era == null)	// Neither year option nor era option set
+					|| (this.calendar != undefined &amp;&amp; this.calendar.eras == null))		// this calendar has no era whatsoever
 					return false;
 				var today = new ExtDate(this.calendar);
 				if (this.calendar == undefined) {	// a built-in calendar, let us just compare with a particular formatting - with Temporal, this part of code is cancelled
@@ -200,7 +228,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 						todaysParts = eraFormat.formatToParts(today),
 						eraIndex = dateParts.findIndex(item => item.type == "era"),
 						todayEraIndex = todaysParts.findIndex(item => item.type == "era");	// those indexes may be different !
-					if (eraIndex >= 0) { return todayEraIndex < 0 ? true : (dateParts[eraIndex].value !== todaysParts[todayEraIndex].value) }
+					if (eraIndex >= 0) { return todayEraIndex &lt; 0 ? true : (dateParts[eraIndex].value !== todaysParts[todayEraIndex].value) }
 					else return false; // no era part found in date to be displayed, do not atempt to display 
 				}
 				else 	// a custom calendar with era, simplier to use
@@ -298,7 +326,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			}
 			catch (e) {}	// week fields may not have been implemented. 
 		}
-		if (this.calendar != undefined && this.calendar.stringFormat == "fields") {	// order of parts is OK, but parts should be computed from fields. Week is considered OK. canvas calendar is Roman.
+		if (this.calendar != undefined &amp;&amp; this.calendar.stringFormat == "fields") {	// order of parts is OK, but parts should be computed from fields. Week is considered OK. canvas calendar is Roman.
 			options.timeZone = "UTC";
 			let myCanvasFields = {...myDateFields};
 			let shiftDate = new Date (myAbsoluteDate.valueOf());
@@ -315,7 +343,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			//if (myParts.findIndex( (item) => item.type == "era") >=0 ) myParts.find( (item) => item.type == "era").value = ""+(myDateFields.era); // the coded era
 			
 		}
-		if (this.calendar != undefined && this.calendar.partsFormat != undefined) {
+		if (this.calendar != undefined &amp;&amp; this.calendar.partsFormat != undefined) {
 			// some ICU computations have to be anticipated here
 			myParts.forEach( function (item, i) { 
 				if (this.calendar.partsFormat[item.type] != undefined ) switch (this.calendar.partsFormat[item.type].mode){
@@ -410,13 +438,13 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		// This operation is only done if language is not right-to-left written.
 		if (!["ar","fa","he","ji","ug","ur","yi"].some (item => item == this.options.locale.substring(0,2),this)) {
 			myParts.forEach ( function (item, i) {
-				if (options[item.type] != undefined && options[item.type] == "numeric")	{	// Intl.DateTimeFormat often converts to 2-digit and inserts literals
+				if (options[item.type] != undefined &amp;&amp; options[item.type] == "numeric")	{	// Intl.DateTimeFormat often converts to 2-digit and inserts literals
 					if (!isNaN(myParts[i].value)) myParts[i].value = this.figure1.format(item.value);
 					switch (item.type) {
-						// case "month" : case "day" : if (i+1 < myParts.length && myParts[i+1].value != ' ') myParts[i+1].value = ' '; break; // pb with month before year
-						case "hour" : case "minute" : if (i+1 < myParts.length && [":","."].includes(myParts[i+1].value)) 
+						// case "month" : case "day" : if (i+1 &lt; myParts.length &amp;&amp; myParts[i+1].value != ' ') myParts[i+1].value = ' '; break; // pb with month before year
+						case "hour" : case "minute" : if (i+1 &lt; myParts.length &amp;&amp; [":","."].includes(myParts[i+1].value)) 
 															myParts[i+1].value = item.type == "hour" ? " h " : " min "; break;
-						case "second" : if (i+1 < myParts.length) { if (myParts[i+1].value == " ") myParts[i+1].value = " s " }
+						case "second" : if (i+1 &lt; myParts.length) { if (myParts[i+1].value == " ") myParts[i+1].value = " s " }
 										else myParts.push({ type : "literal", value : " s"} );
 					}
 				}
@@ -442,3 +470,26 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		return parts.map(({type, value}) => {return value;}).reduce((buf, part)=> buf + part, "");
 	}
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jan 15 2022 13:46:49 GMT+0100 (heure normale d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

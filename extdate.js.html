@@ -1,4 +1,32 @@
-/** ExtDate, a class that extends the legacy Date object with custom calendars capabilities
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: extdate.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: extdate.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** ExtDate, a class that extends the legacy Date object with custom calendars capabilities
  * @module {ESS2015} ExtDate
  * @version M2021-08-28
  * @license MIT Louis A. de Fouquières 2016-2022
@@ -149,12 +177,12 @@ export default class ExtDate extends Date {
 			if (myCalendar == "iso8601" || myCalendar == "gregory") { // First arguments are a year and a month. Year is alwasy full, month is always based 1.
 				dateArguments[1]--;		// month argument decremented for the legacy Date
 				super (...dateArguments);
-				if (dateArguments[0] < 100 && dateArguments[0] >= 0) this.setFullYear(dateArguments[0]); 
+				if (dateArguments[0] &lt; 100 &amp;&amp; dateArguments[0] >= 0) this.setFullYear(dateArguments[0]); 
 				} 
 			else {	// analyse fields in terms of the specified custom calendar
 				let fields = new Object;
-				for (let i = 0; i < ExtDate.numericFields().length; i++) {
-					if (i < dateArguments.length) {
+				for (let i = 0; i &lt; ExtDate.numericFields().length; i++) {
+					if (i &lt; dateArguments.length) {
 						if (!Number.isInteger(dateArguments[i])) throw new TypeError 
 							('Argument ' + ExtDate.numericFields()[i].name + ' is not integer: ' + dateArguments[i]);
 						fields[ExtDate.numericFields()[i].name] = dateArguments[i];
@@ -198,7 +226,7 @@ export default class ExtDate extends Date {
 	static fullUTC (fullYear=0, month=1, day=1, hours=0, minutes=0, seconds=0, milliseconds=0) {
 		arguments[1]--;		// From base 1 month to month of legacy Date
 		let myDate = new Date(Date.UTC(...arguments));	// Date.UTC requires at least one argument, which is always the UTC year, shifted to 1900-1999 if specified 0..99
-		if (fullYear <100 && fullYear >=0) myDate.setUTCFullYear(fullYear);
+		if (fullYear &lt;100 &amp;&amp; fullYear >=0) myDate.setUTCFullYear(fullYear);
 		return myDate.valueOf()
 	}
 	/** Compute the system time zone offset at this date, or the time zone offset of a named time zone in ms.
@@ -271,7 +299,7 @@ export default class ExtDate extends Date {
 							seconds : shiftDate.getUTCSeconds(),
 							milliseconds : shiftDate.getUTCMilliseconds()
 						};
-					if (this.calendar == "gregory") [result.era, result.year] = result.fullYear <= 0 ? ["ERA0",1-result.fullYear] : ["ERA1", result.fullYear]
+					if (this.calendar == "gregory") [result.era, result.year] = result.fullYear &lt;= 0 ? ["ERA0",1-result.fullYear] : ["ERA1", result.fullYear]
 					else result.year = result.fullYear;
 					break;
 				default : throw new RangeError ("Only iso8601 and gregory built-in calendars enable getFields method: " + this.calendar);
@@ -374,7 +402,7 @@ export default class ExtDate extends Date {
 			fzs = Intl.DateTimeFormat(undefined, {hour: "2-digit", minute: "2-digit", second:"2-digit", timeZoneName : "short"}),
 			compound = this.getFields (TZ);
 		return "[" + this.calendar.id + "]" + ( compound.era == undefined ? "" : "(" + compound.era + ")" )
-				+ (compound.year < 10000 && compound.year > 0 ? fn4.format(compound.year) : fn6.format(compound.year)) + "-"
+				+ (compound.year &lt; 10000 &amp;&amp; compound.year > 0 ? fn4.format(compound.year) : fn6.format(compound.year)) + "-"
 				+ fn2.format(compound.month) + "-"+fn2.format(compound.day) 
 				+ "T" + (TZ == undefined || TZ == "" ? fzs.format (this) 
 					: fn2.format(compound.hours)+":"+fn2.format(compound.minutes)+":"+fn2.format(compound.seconds)+"."+fn3.format(compound.milliseconds) + "Z")
@@ -503,4 +531,26 @@ export default class ExtDate extends Date {
 			default : throw new RangeError ('Only "UTC" or blank value is possible for TZ parameter: ' + TZ);
 		}
 	}
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jan 15 2022 13:46:49 GMT+0100 (heure normale d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

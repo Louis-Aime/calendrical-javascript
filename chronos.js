@@ -9,13 +9,7 @@
  * Inquiries: https://github.com/Louis-Aime
  */
 // Character set is UTF-8
-/* - Contents: -
- * Cbcce (ex Chronos): a class that implements the Cycle-Based Calendrical Computations Engine to convert a timestamp to or from a date.
- * WeekClock: a class that yields week figures for a specified week structure.
- * IsoCounter: a class for converting an ISO 8601 date to or from any integer or decimal day counter, whose zero value is the ISO date specified at instantiation.
-*/
-/* Version
-	M2022-01-22: JSDocs
+/* Version	M2022-01-24: JSDocs
 	M2021-08-22: time units transferred to another module
 	M2021-07-23	
 		Compute a date stamp from week fields
@@ -41,7 +35,7 @@
 		Suppress shiftYearStart as method, shiftCycle is enough
 		Add const JulianDayIso: convert ISO dates from and to integer Julian Day
 */
-/* Copyright Miletus 2016-2021 - Louis A. de Fouquières
+/* Copyright Miletus 2016-2022 - Louis A. de Fouquières
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -107,7 +101,7 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	 * @static 
 	 * @param {number} a - dividend; integer recommended.
 	 * @param {number} d - divisor; integer recommended.
-	 * @return {number[]} - [quotient, modulo] with 0 <= modulo < d or d < modulo <= 0.
+	 * @return {number[]} [quotient, modulo] with 0 <= modulo < d or d < modulo <= 0.
 	*/
 	static divmod (a, d) {	
 		if (d >=0) {
@@ -125,7 +119,7 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	 * @param {number} period	- the cycle's period, typically 12 or 7 for calendrical computations, but may also be the moon's month mean duration in milliseconds.
 	 * @param {number} shift	- the number of units for shifting. After shifting, cycleBase is cycleBase + shift.
 	 * @param {number} cycleBase	- which phase is that of a new cycle, in the parameter [cycle, phase] representation. O by default (like month representation with Date objects).
-	 * @return {Array} [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
+	 * @return {number[]} [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
 	*/
 	static shiftCycle (cycle, phase, period, shift, cycleBase=0) {
 		// if (Array.from(arguments).some(isNaN)) throw new TypeError ("Non numeric value among arguments: " + Array.from(arguments).toString()); 
@@ -151,7 +145,6 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 		return Cbcce.mod (year, 4) == 0 && (Cbcce.mod(year, 100) != 0 || Cbcce.mod(year, 400) ==0)
 	}
 	/** Build a compound object from a time stamp holding the elements as required by a given cycle hierarchy model.
-	 * @static
 	 * @param {number} askedNumber	- a time stamp representing the date to convert.
 	 * @returns {Object} the calendar elements in the structure that calendRule prescribes.
 	*/
@@ -181,7 +174,6 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	  return result;
 }
 	/** Compute the time stamp from the element of a date in a given calendar.
-	 * @static
 	 * @param {Object} askedObject	- the numeric elements of the date, collected in an object containing the elements that calendRule prescribes.
 	 * @param {Object} this.calendRule	- the representation of the calendar structure and its connection to the time stamp.
 	 * @returns {number} the time stamp
@@ -260,7 +252,6 @@ export class WeekClock {
 		this.uncappedWeeks = weekdayRule.uncappedWeeks != undefined ? weekdayRule.uncappedWeeks : null;
 	}
 	/**	Compute week figures in the defined week structure
-	 * @static
 	 * @param {number} dayIndex 	- day stamp, in day unit, of the day whose figures are computed
 	 * @param {number} year 		- the relative year the dayIndex date belongs to
 	 * @return {Array} 
@@ -303,7 +294,6 @@ export class WeekClock {
 		return result;
 	}
 	/**	Compute day index from week figures in the defined week structure
-	 * @static
 	 * @param {number} weekYear 	- the year (full year, a relative integer) of the week figures. There may be 1 year difference with the year of the calendar's date.
 	 * @param {number} [weekNumber] - the number of the week; if not specified, this.weekBase.
 	 * @param {number} [dayOfWeek] 	- the number day of the week, following the weekdayRule parameter set; if not specified: this.dayBase.
@@ -365,7 +355,6 @@ export class IsoCounter {
 	}
 	/** Compute day counter, an integer number for the date specified under ISO 8601.
 	 * @function
-	 * @static
 	 * @param {Object} isoFields 	- fields isoYear, isoMonth and isoDay must be specified as integer. isoMonth must lay in range 1..12 
 		if day is out of range of valid days for the month, date is balanced to the number of days out of the range.
 	 * @return {number} the counter, an integer number representing the date with the day counter.
@@ -378,7 +367,6 @@ export class IsoCounter {
 	}
 	/** Compute ISO8601 date figures from a number of days since epoch.
 	 * @function
-	 * @static
 	 * @param {number} counter	- the day counter, a counter representing a date; if not integer, the floor value is taken.
 	 * @return {Object} fields isoYear, isoMonth and isoDay specify the date in ISO8601 calendar.
 	*/
