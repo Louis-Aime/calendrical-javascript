@@ -53,54 +53,6 @@ tort or otherwise, arising from, out of or in connection with the software
 or the use or other dealings in the software.
 Inquiries: www.calendriermilesien.org
 */
-/**	Class model for custom calendar classes or objects, inspired by Temporal but adapted to Date Object
- * @typedef {Object} Customcalendar 
- * @property {string} id 	- a specific name for this calendar, for the ExtDate.toCalString method
- * @property {string} canvas 	- the name of a built-in calendar that provides the initial structure, and possible the names of months, weekdays etc. for the target calendar.
- * @property {access} pldr 	- the "private locale data register" Document Object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.
- * @property {string[]} eras	- array of the string codes for the eras for this calendar, if eras used.
- * @property {string} stringFormat	- a field expressing how date string is computed. Possible values are:
-	* "built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then modify each part as stated by "partsFormat" object;
-	* "fields" : general structure of string as stated from options, but values changed following fields of this calendar, and modified as stated by "partsFormat";
-	* currently, this option only works with Roman-like calendars;
-	* "auto" (default): means "built-in".
- * @property {object} partsFormat	- an Object, that specify how to format each part corresponding to each date field. Each tag is the name of a part to display (e.g. "era").
- * @property {object} partsFormat.current	- 'current' is the name of a date field, like year, month, day etc.
- * @property {string} partsFormat.current.mode	- how to find the value: 
-	* "cldr" : leave value set by standard FormatToParts (equivalent to no object for this part name).
-	* "field": put field as is; if undefined, put "". For test and debug, and for void fields.
-	* "list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found in "codes".
-	* "pldr" : values to be found in calendar.pldr, a DOM which represents a "private locale data register" designated with its URI/URL or identifier.
- * @property {access} partsFormat.current.source 	- the reference to the values, if mode == "list" or "pldr".
- * @property {string[]} partsFormat.current.codes 	- if (mode == "list" ) and for a non-numeric field, the array of codes to search for.
- * @property {function} key	partsFormat.current.	- with "cldr" or "pldr", this function with one parameter, the field index, gives the "key" to be inserted for searching in the base. 
- * @todo	maybe we could just put "source" and test typeof source.
- * @property {function}	fieldsFromCounter	- function (number), from a date stamp deemed UTC, give date and hour fields. Date fields shall be as follows: 
-	*	The fields in the numericFields list: fullYear, month, day. 
-	*	year, as it should be displayed. 
-	*	era, to be displayed. If era is not in fields, year is fullYear. 
-	*	month is 1-based. 
-	*	return {fields}. if (fields.era = undefined), year (if existing) is fullYear. Otherwhise a fullYear() method is provided. You may always get fullYear. 
- * @property {function}	counterFromFields	- function (fields),  from a compound object that expresses the date in calendar (with month in base 1), create the Posix Value for the date (UTC); 
-	*	return (number).
- * @property {function}	weekFieldsFromCounter	- function (timeStamp), the week fields, from a timestamp deemed UTC.
-	* return the following object {
-	*		weekYearOffset: number to add to current fullYear to get fullYear the week belongs to.
-	*		weekYear : year for the week coordinates (civil full year + weekYearOffset).
-	*		weekNumber : number of the week in the year.
-	*		weekday : number of the day in the week, 0..6 for Sunday..Saturday or 1..7, depending on the calendar.
-	*		weeksInYear : number of weeks in the weekYear the week belongs to.
- * @property {function} counterFromWeekFields 	- function(fields), from a compound object that expresses the date in week coordinates for the calendar, compute the time stamp.
-	* required entry fields are weekYear, weekNumber, weekday
-	* return (timeStamp)
- * @property {function} solveAskedFields 	- function (fields), from a set of fields, solve any ambiguity between year, era, fullYear, month, monthCode, before merging.
-	*	return (fields)
-	}
- * @property {function}	fullYear 	 function(fields), the signed integer number that unambigously represents the year in the calendar. If in regressive era, the year is translated into a negative or null number.
- * @property {function}	era	function (date) : the era code
- * @property {function}	year	function (date) : the year displayed with the era (if existing), or the unambiguous year .
- * @property {function}	inLeapYear 	function (fields) is this date a leap year
- */
 "use strict";
 /** Compute the system time zone offset at this date, in ms. This extension is not exported, nor documented
  * rationale: with Chrome (and others ?), the TZOffset returned value losses the seconds. 
@@ -123,8 +75,9 @@ Date.prototype.getRealTZmsOffset = function () { // this prototype extension nec
  * @class
  * @param {string|object} calendar 
 	* the calendar object that describes the custom calendar,
-	* or a string that refers to a built-in calendar; however computations are not implemented in this version, except for "iso8601" (default) and "gregory".
-	* or undefined : deemed to be "iso8601"
+	* or a string that refers to a built-in calendar (however computations are not implemented in this version, except for "iso8601" (default) and "gregory"); 
+	* if undefined, set to "iso8601".
+	* The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
  * @param {string|number[]} [dateArguments]	- same parameter list as could be passed to the legacy Date
 	*	empty -> now
 	*	one numerical argument: Posix counter in milliseconds, as for Date.

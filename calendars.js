@@ -1,8 +1,7 @@
-/** A set of custom (non-Unicode) calendars using chronos.js and extdate.js.
+/** A set of custom (non-Unicode) calendar classes following the customcalendarmodel.js specification.
 	* Parameters data shall be integer numbers unless otherwhise specified. No special check is performed. 
 	* Passing non numeric values will yield NaN results.
 	* Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
-	* Custom calendar classes conform to structure as defined in module:extdate.js
  * @module
  * @version M2021-08-28
  * @requires module:time-units.js

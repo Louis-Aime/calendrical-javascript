@@ -51,6 +51,7 @@ import ExtDate from './extdate.js';
 		*	If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options. 
 		*	If specified as a custom calendar and if a Private Locale Data Repository is given, this will be used for calendar's entity names. 
 		*	If no pldr is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.
+		*	Note: The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
  	*/
 export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	constructor (locale, options, calendar) { // options should not be set to null, not accepted by Unicode
