@@ -1,6 +1,6 @@
 /** 
  * @file Example of initialiser for calendrical-javascript usage.
- * This aynschronous function initialises the user modules of calendrical-javascript for a web page environment.
+ * This asynchronous function initialises the user modules of calendrical-javascript for a web page environment.
  * This is to be customised.
  * @version M2021-08-29
  * @license MIT Louis A. de Fouquières 2016-2022

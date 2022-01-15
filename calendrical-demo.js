@@ -1,7 +1,7 @@
 /** 
  * @file Demonstrator for calendar-javascript.
  * To be used with suitable calendrical-demo-**.html file.
- * contents: animtation routines for the html page.
+ * contents: animation routines for the html page.
  * Required objects initiated by calendrical-init or equivalent. loadCalendrical: promise that modules are imported. Calendrical: prefix name for imported modules.
  * @version M2021-08-29
  * @license MIT Louis A. de Fouquières 2016-2022
