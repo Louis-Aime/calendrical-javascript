@@ -58,6 +58,7 @@ Inquiries: www.calendriermilesien.org
  * rationale: with Chrome (and others ?), the TZOffset returned value losses the seconds. 
  * @static
  * @function Date.getRealTZmsOffset
+ * @extends Date
  * @return {number} the time zone offset in milliseconds: UTC - local (same sign as TimezoneOffset)
 */
 Date.prototype.getRealTZmsOffset = function () { // this prototype extension necessary prior to extending Date, and this method is redefined and enlarged within ExtDate.
@@ -71,14 +72,15 @@ Date.prototype.getRealTZmsOffset = function () { // this prototype extension nec
 	localDate.setUTCHours (localCoord.hours, localCoord.minutes, localCoord.seconds, localCoord.milliseconds);
 	return this.valueOf() - localDate.valueOf()
 }
-/** Extend Date object to cater with custom calendars, before Temporal is available
+/** Extend Date object to cater with custom calendars, before until is available
  * @class
+ * @extends Date
  * @param {string|object} calendar 
 	* the calendar object that describes the custom calendar,
 	* or a string that refers to a built-in calendar (however computations are not implemented in this version, except for "iso8601" (default) and "gregory"); 
 	* if undefined, set to "iso8601".
 	* The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
- * @param {string|number[]} [dateArguments]	- same parameter list as could be passed to the legacy Date
+ * @param {string|number[]} [dateArguments]	- same parameter list as could be passed to the legacy Date.
 	*	empty -> now
 	*	one numerical argument: Posix counter in milliseconds, as for Date.
 	*	one string argument: an ISO string for the date, passed to Date.

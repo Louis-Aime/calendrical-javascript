@@ -43,6 +43,7 @@ Inquiries: www.calendriermilesien.org
 import ExtDate from './extdate.js';
 	/** Extend and customise capacities to display dates in different calendars
 	 * @class
+	 * @extends Intl.DateTimeFormat
 	 * @param {string} locale	- as for Intl.DateTimeFormat
 	 * @param {Object} options	- same as for Intl.DateTimeFormat + this field
 		* eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ?
