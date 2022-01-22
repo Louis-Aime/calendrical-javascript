@@ -4,8 +4,8 @@
  * This file does not contain any JS code, only specifications. 
  * Contents may be read from the Global section of the JSDoc generated doclet.
  * @version M2022-01-26
- * @license MIT Louis A. de Fouquières 2016-2022
- * Inquiries: https://github.com/Louis-Aime
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022
 */
 /**	Class model for custom calendar classes or objects, inspired by Temporal but adapted to Date Object
  * @typedef {Object} Customcalendar 

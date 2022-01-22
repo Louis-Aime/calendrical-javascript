@@ -1,8 +1,8 @@
 /** ExtDate, a class that extends the legacy Date object with custom calendars capabilities
- * @module {ESS2015} ExtDate
+ * @module ExtDate
  * @version M2021-08-28
- * @license MIT Louis A. de Fouquières 2016-2022
- * Inquiries: https://github.com/Louis-Aime
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022
  */
 // Character set is UTF-8
 /*	Version	M2022-01-26	JSdoc
@@ -32,7 +32,7 @@
 	M2020-10 : works in progress
 	Sources: display function for the Julian and the Milesian calendars
 */
-/* Copyright Louis A. de Fouquières 2020-2022
+/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -51,7 +51,6 @@ In no event shall the authors of copyright holders be liable for any
 claim, damages or other liability, whether in an action of contract,
 tort or otherwise, arising from, out of or in connection with the software
 or the use or other dealings in the software.
-Inquiries: www.calendriermilesien.org
 */
 "use strict";
 /** Compute the system time zone offset at this date, in ms. This extension is not exported, nor documented

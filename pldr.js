@@ -1,8 +1,8 @@
 /** a Private Locale Data Register stored as a string, with its DOM parser
- * @module {ESS2015} pldr
+ * @module
  * @version M2021-02-13
- * @license MIT Louis A. de Fouquières 2016-2022
- * Inquiries: https://github.com/Louis-Aime
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022
  */
 // Charset UTF-8. This file contains non-ANSI characters.
 /*Version	M2022-01-19 Enhance JSdoc comments

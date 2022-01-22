@@ -1,8 +1,8 @@
 /** Fetch an XML resource as a Document Object (DOM).
- * @module {ESS2015} fetchdom
+ * @module
  * @version M2021-08-21
- * @license MIT Louis A. de Fouquières 2016-2022
- * Inquiries: https://github.com/Louis-Aime
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022
  */
 // Charset UTF-8.
 /* Version	M2022-01-19	Enhance JSdoc comments
