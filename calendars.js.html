@@ -35,15 +35,15 @@
  * @requires module:time-units.js
  * @requires module:chronos.js
  * @requires module:extdate.js
- * @license MIT Louis A. de Fouquières 2016-2022
- * Inquiries: https://github.com/Louis-Aime
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022
 //	Character set is UTF-8
 */
 /* Versions:	M2022-01-26 JSdoc
 	M2021-08-30	French rev days and months in PLDR
 See details on GitHub
 */ 
-/* Copyright Miletus 2016-2021 - Louis A. de FOUQUIERES
+/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -62,12 +62,12 @@ In no event shall the authors of copyright holders be liable for any
 claim, damages or other liability, whether in an action of contract,
 tort or otherwise, arising from, out of or in connection with the software
 or the use or other dealings in the software.
-Inquiries: www.calendriermilesien.org
 */
 "use strict";
 import {Cbcce, WeekClock} from "./chronos.js";
 import Milliseconds from "./time-units.js";
 import ExtDate from "./extdate.js";
+
 	/** Generic Milesian calendar
 	 * @class
 	 * @param {string} id	- the calendar identifier.
@@ -172,6 +172,7 @@ export class MilesianCalendar {
 		return Cbcce.isGregorianLeapYear ( fields.year + 1 )
 	}
 }
+
 	/** Generic Gregorian proleptic calendar, with no era. Years are relative numbers.
 	 * this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.
 	 * @class
@@ -249,7 +250,7 @@ export class GregorianCalendar {
 	}
 }
 
-	/** Generic Julian calendar, with era "BC" and "AD".
+	/** Generic Julian calendar, with eras. The numbering rules for weeks are those of ISO8601.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	 * @param {Object} pldr	- a Document Object, with the specific names for the instantied Julian calendar, e.g. kabyle.
@@ -287,7 +288,7 @@ export class JulianCalendar  {
 		}) // end of calendRule
 	julianWeek = new WeekClock (
 		{	// ISO8601 rule applied to Julian calendar
-			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
+			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of ISO 1970-01-01 is Thursday
 			daysInYear: (year) => (Cbcce.isJulianLeapYear( year ) ? 366 : 365),		// leap year rule for this calendar
 			characDayIndex: (year) => ( Math.floor(this.counterFromFields({fullYear : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 1,		// week start with 1 (Monday)
@@ -297,7 +298,7 @@ export class JulianCalendar  {
 			weekLength : 7			
 		}
 	)
-	/* Basic errors, data and conversion methods
+	/** Era codes: "BC" for backwards counted years before year 1, "AD" (Anno Domini) for years since Dionysos era.
 	*/
 	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
 	canvas = "gregory"
@@ -379,9 +380,9 @@ export class JulianCalendar  {
 	/** Generic Historical calendar for the countries of Western Europe, where a switch from Julian to Gregorian reckoning system took place at some date.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
-	 * @param {number|string} switchingDate	- 	- first date where Gregorien calendar was used; switchingDate may be an ISO string or a Posix timestamp.
+	 * @param {number|string} switchingDate	- first date where Gregorien calendar was used; switchingDate may be an ISO string or a Posix timestamp.
 	*/
-export class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
+export class WesternCalendar {
 	constructor (id, switchingDate) {
 		this.id = id;
 		this.switchingDate = new Date(switchingDate);	// first date where Gregorien calendar is used. switchingDate may be an ISO string
@@ -389,8 +390,7 @@ export class WesternCalendar { // Framework for calendars of European countries,
 		if (this.switchingDate.valueOf() &lt; Date.parse ("1582-10-15T00:00:00Z")) 
 			throw new RangeError ("Switching date to Gregorian shall be not earlier than 1582-10-15: " + this.switchingDate.toISOString());
 	}
-	/** Base properties and methods
-	 
+	/** Era codes: "BC" for backwards counted years before year 1, "AS" (Ancien Style) for years since Dionysos era in Julian, "NS" (New Style) fot years in Gregorian.
 	*/
 	eras = ["BC", "AS", "NS"]	// define before partsFormat in order to refer to it.
 	canvas = "gregory"
@@ -491,6 +491,8 @@ export class FrenchRevCalendar {
 		"jour de la Vertu", "jour du Génie", "jour du Travail", "jour de l'Opinion", "jour des Récompenses", "jour de la Révolution"]
 	monthNames = ["vendémiaire", "brumaire", "frimaire", "nivôse", "pluviôse", "ventôse", "germinal", "floréal", "prairial", "messidor", "thermidor", "fructidor","sans-culottides"]
 	eraNames = ["ère des Français"]
+	*/
+	/** One era code, "ef" for "ère des Français"
 	*/
 	eras = ["ef"]	// list of code values for eras; one single era here.
 	partsFormat = {
@@ -600,7 +602,7 @@ export class FrenchRevCalendar {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Jan 15 2022 16:25:01 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jan 25 2022 09:01:17 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
