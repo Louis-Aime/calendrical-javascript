@@ -39,6 +39,7 @@ or the use or other dealings in the software.
 import {Cbcce, WeekClock} from "./chronos.js";
 import Milliseconds from "./time-units.js";
 import ExtDate from "./extdate.js";
+
 	/** Generic Milesian calendar
 	 * @class
 	 * @param {string} id	- the calendar identifier.
@@ -143,6 +144,7 @@ export class MilesianCalendar {
 		return Cbcce.isGregorianLeapYear ( fields.year + 1 )
 	}
 }
+
 	/** Generic Gregorian proleptic calendar, with no era. Years are relative numbers.
 	 * this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.
 	 * @class
@@ -220,7 +222,7 @@ export class GregorianCalendar {
 	}
 }
 
-	/** Generic Julian calendar, with era "BC" and "AD".
+	/** Generic Julian calendar, with eras. The numbering rules for weeks are those of ISO8601.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	 * @param {Object} pldr	- a Document Object, with the specific names for the instantied Julian calendar, e.g. kabyle.
@@ -258,7 +260,7 @@ export class JulianCalendar  {
 		}) // end of calendRule
 	julianWeek = new WeekClock (
 		{	// ISO8601 rule applied to Julian calendar
-			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
+			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of ISO 1970-01-01 is Thursday
 			daysInYear: (year) => (Cbcce.isJulianLeapYear( year ) ? 366 : 365),		// leap year rule for this calendar
 			characDayIndex: (year) => ( Math.floor(this.counterFromFields({fullYear : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 1,		// week start with 1 (Monday)
@@ -268,7 +270,7 @@ export class JulianCalendar  {
 			weekLength : 7			
 		}
 	)
-	/* Basic errors, data and conversion methods
+	/** Era codes: "BC" for backwards counted years before year 1, "AD" (Anno Domini) for years since Dionysos era.
 	*/
 	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
 	canvas = "gregory"
@@ -350,9 +352,9 @@ export class JulianCalendar  {
 	/** Generic Historical calendar for the countries of Western Europe, where a switch from Julian to Gregorian reckoning system took place at some date.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
-	 * @param {number|string} switchingDate	- 	- first date where Gregorien calendar was used; switchingDate may be an ISO string or a Posix timestamp.
+	 * @param {number|string} switchingDate	- first date where Gregorien calendar was used; switchingDate may be an ISO string or a Posix timestamp.
 	*/
-export class WesternCalendar { // Framework for calendars of European countries, first Julian calendar, then switching to Gregorian at a specified date.
+export class WesternCalendar {
 	constructor (id, switchingDate) {
 		this.id = id;
 		this.switchingDate = new Date(switchingDate);	// first date where Gregorien calendar is used. switchingDate may be an ISO string
@@ -360,8 +362,7 @@ export class WesternCalendar { // Framework for calendars of European countries,
 		if (this.switchingDate.valueOf() < Date.parse ("1582-10-15T00:00:00Z")) 
 			throw new RangeError ("Switching date to Gregorian shall be not earlier than 1582-10-15: " + this.switchingDate.toISOString());
 	}
-	/** Base properties and methods
-	 
+	/** Era codes: "BC" for backwards counted years before year 1, "AS" (Ancien Style) for years since Dionysos era in Julian, "NS" (New Style) fot years in Gregorian.
 	*/
 	eras = ["BC", "AS", "NS"]	// define before partsFormat in order to refer to it.
 	canvas = "gregory"
@@ -462,6 +463,8 @@ export class FrenchRevCalendar {
 		"jour de la Vertu", "jour du Génie", "jour du Travail", "jour de l'Opinion", "jour des Récompenses", "jour de la Révolution"]
 	monthNames = ["vendémiaire", "brumaire", "frimaire", "nivôse", "pluviôse", "ventôse", "germinal", "floréal", "prairial", "messidor", "thermidor", "fructidor","sans-culottides"]
 	eraNames = ["ère des Français"]
+	*/
+	/** One era code, "ef" for "ère des Français"
 	*/
 	eras = ["ef"]	// list of code values for eras; one single era here.
 	partsFormat = {
