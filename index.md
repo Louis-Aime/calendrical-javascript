@@ -10,8 +10,8 @@ The date projected are displayed in the last panels.
 The first panel also shows the week figures, with which you can specify a date.
 
 ## Links to the demonstrators
- * [Calendrical demonstrator, French](https://louis-aime.github.io/calendrical-javascript/calendrical-demo-fr)
- * [Calendrical demonstrator, English](https://louis-aime.github.io/calendrical-javascript/calendrical-demo-en)
+ * [Calendrical demonstrator, French](./calendrical-demo-fr)
+ * [Calendrical demonstrator, English](./calendrical-demo-en)
  
 ## Comments and proposal
  Use this repository's [issues](https://github.com/Louis-Aime/calendrical-javascript/issues).
