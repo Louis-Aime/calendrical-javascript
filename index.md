@@ -2,6 +2,8 @@ From this site (https://louis-aime.github.io/calendrical-javascript/) you can:
 * launch the  demonstrators to the calendrical-javascript routines,
 * read the JSDoc generated documentation.
 
+## [Link to main GitHub repository](https://github.com/Louis-Aime/calendrical-javascript)
+
 ## Demonstrator usage
 With the first panel, choose a custom calendar, then enter a date in this calendar. 
 If you use the "historic" calendar, you can specify the switching day to Gregorian.
