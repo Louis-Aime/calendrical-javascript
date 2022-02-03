@@ -5,7 +5,7 @@
  * @license MIT 2016-2022
  */
 // Character set is UTF-8
-/*	Version	M2022-01-26	JSdoc
+/*	Version	M2022-02-16	JSdoc
 	M2021-08-28	Static objects are only methods
 	M2021-07-28 introduce solveAskedFields
 	M2021-07-25 : 
@@ -71,18 +71,21 @@ Date.prototype.getRealTZmsOffset = function () { // this prototype extension nec
 	localDate.setUTCHours (localCoord.hours, localCoord.minutes, localCoord.seconds, localCoord.milliseconds);
 	return this.valueOf() - localDate.valueOf()
 }
-/** Extend Date object to cater with custom calendars, before until is available
+/** Extends the Date object with the flavour of Temporal proposal, using custom calendars. 
+ * All methods of the Date object are also available. 
+ * However, with the built-in methods, the figure that represents the month begins with 0, with the extended ones, it begins with 1.
  * @class
  * @extends Date
- * @param {string|object} calendar 
+ * @param {string|object} [calendar] 
 	* the calendar object that describes the custom calendar,
-	* or a string that refers to a built-in calendar (however computations are not implemented in this version, except for "iso8601" (default) and "gregory"); 
+	* or a string that refers to a built-in calendar.
 	* if undefined, set to "iso8601".
+	* In thie version, the string for a built-in calendar may only be "iso8601" (default) or "gregory". 
 	* The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
- * @param {string|number[]} [dateArguments]	- same parameter list as could be passed to the legacy Date.
-	*	empty -> now
-	*	one numerical argument: Posix counter in milliseconds, as for Date.
-	*	one string argument: an ISO string for the date, passed to Date.
+ * @param {string|number[]} [dateArguments]	- same parameter list as would be passed to the legacy Date:
+	*	empty -> now; 
+	*	one numerical argument: Posix counter in milliseconds, as for Date;
+	*	one string argument: an ISO string for the date, passed to Date;
 	*	several numerical arguments: the arguments of Date constructor, as would be passed to Date, but
 	*		year is full year, e.g. year 1 is 0001, not 1901,
 	*		first month is always 1, not 0,
