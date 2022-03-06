@@ -1,3 +1,6 @@
+# Calendrical routines in javascript
+A set of basic routines javascript for computations on calendars.
+
 From this site (https://louis-aime.github.io/calendrical-javascript/) you can:
 * launch the  demonstrators to the calendrical-javascript routines,
 * read the JSDoc generated documentation.
