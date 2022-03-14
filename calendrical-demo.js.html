@@ -29,9 +29,9 @@
             <pre class="prettyprint source linenums"><code>/** 
  * @file Demonstrator for calendar-javascript.
  * To be used with suitable calendrical-demo-**.html file.
- * contents: animation routines for the html page.
+ * contents: global variables and animation routines for the html page.
  * Required objects initiated by calendrical-init or equivalent. loadCalendrical: promise that modules are imported. Calendrical: prefix name for imported modules.
- * @version M2021-08-29
+ * @version M2022-02-22
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
 */
@@ -41,7 +41,8 @@
 	The event listeners are designed as to follow forms value. A "refresh" action will set to value in forms. 
 	Control are done as to avoid changes to illegal values in forms (except dates that cab be balanced).
 */
-/* Version:	M2022-01-26	JSdoc
+/* Version:	M2022-03-22 today's date is in TZ specified time zone.
+	M2022-01-26	JSdoc
 	M2022-01-15	Purge historical comments
 	M2021-08-29	French Rev calendar with pldr
 	see details on GitHub
@@ -71,15 +72,31 @@ or the use or other dealings in the software.
 // global var calendrical is initiated as prefix name for user modules.
 // global const loadComplete is Promise object that all modules and data are imported.
 
+	/** The first date where the Gregorian calendar was enforced, as set by the user.
+	*/ 
 var 
 	switchingDate = { day : 15, month : 10, year : 1582 },
-	calendars = [],	// an array (pointers to) calendar objects
-	customCalIndex = 0,	// initialised and later changed.
-	targetDate = new Date(0), 	// An initial date
+	/** Array of available custom calendars.
+	*/
+	calendars = [],
+	/**	Index of custom calendar currently used.
+	*/ 
+	customCalIndex = 0,
+	/** The date (instant) to be displayed, initially now. 
+	*/
+	targetDate = new Date(0),
+	/** Time zone selector, blank means "system time zone", "UTC" means UTC. These are the only recognised values.
+	*/
 	TZ = "",
+	/**	Computed (real) time zone offset, result may differ from Date.prototype.TZOffset().
+	*/ 
 	TZOffset = 0,
+	/** current display options (Intl.DateTimeFormat or ExtDateTimeFormat objects).
+	*/
 	askedOptions, usedOptions, extAskedOptions, extUsedOptions, cusAskedOptions; 
 
+/**	Recompute and display all date elements and parameters after a change.
+*/
 function setDisplay () { // Considering that targetDate time has been set to the desired date, this routines updates all form fields.
 	// Set time zone offset at asked date, display parameters
 	TZOffset = targetDate.getRealTZmsOffset().valueOf();
@@ -144,6 +161,8 @@ function setDisplay () { // Considering that targetDate time has been set to the
 		document.yeartype.leapyear.value = targetDate.inLeapYear(TZ);
 }
 
+/** Recompute all Intl.DateTimeFormat and ExtDateTimeFormat object after a change in display parameters
+*/
 function compLocalePresentationCalendar() { // Compute new formatting objects
 
 	let 
@@ -251,12 +270,15 @@ function compLocalePresentationCalendar() { // Compute new formatting objects
 	document.timeOptions.XAmPm.value = extUsedOptions.dayPeriod;
 
 }
-
-function setCalend() {	// set current custom calend to new value and compute fields
+/** Set current custom calend to new value and compute fields
+*/
+function setCalend() {
 	customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);  // change custom calendar
 	targetDate = new calendrical.ExtDate(calendars[customCalIndex], targetDate.valueOf());	// set custom calendar if changed, and set date.
 	compLocalePresentationCalendar(); // necessary to recompute formatters
 }
+/** Compute date from field values of current custom calendar
+*/
 function calcCustom() {
 	var 
 	 day =  Math.round (document.custom.day.value),
@@ -281,6 +303,8 @@ function calcCustom() {
 		targetDate = new calendrical.ExtDate(calendars[customCalIndex], testDate.valueOf());	// set custom calendar if changed, and set date.
 		}
 }
+/** Compute date from week field values of current custom calendar
+*/
 function calcWeek() {
 	var myFields = {
 			weekYear : Math.round (document.week.weekyear.value),
@@ -316,10 +340,11 @@ function calcWeek() {
 		targetDate = new calendrical.ExtDate(calendars[customCalIndex], testDate.valueOf());	// set custom calendar if changed, and set date.
 		}
 }
-
+/** The quantum of decimal days to add or subtract by clicking */
 var 
-	dayOffset = 1; // Days (decimal) to add or substract
+	dayOffset = 1; 
 // no setDateToToday
+/** Change value of dayOffset */
 function changeDayOffset () { 
 	let days = +document.control.shift.value;
 	if (isNaN(days) || days &lt; 0) {
@@ -331,6 +356,9 @@ function changeDayOffset () {
 		document.control.shift.value = days; // Confirm changed value
 	}
 }
+/** Add or subtract a quantum of days to targetDate
+ @param {Number} sign 	- add if > 1, subtract if -1, erroneous if other values
+*/
 function setDayOffset (sign=1) {
 	changeDayOffset();	// Force a valid value in field
 	let testDate = new Date(targetDate.valueOf());
@@ -342,6 +370,7 @@ function setDayOffset (sign=1) {
 		targetDate.setTime( testDate.valueOf() );
 	}
 }
+/** Set local or UTC time, after global TZ, in same day */
 function calcTime() { // Here the hours are deemed local hours
 	var hours = Math.round (document.time.hours.value), mins = Math.round (document.time.mins.value), 
 		secs = Math.round (document.time.secs.value), ms = Math.round (document.time.ms.value);
@@ -356,7 +385,9 @@ function calcTime() { // Here the hours are deemed local hours
 	}
 	
 }
-var addedTime = 60000; //Global variable, time to add or substract, in milliseconds.
+/** The quantum of milliseconds to add or subtract by clicking */
+var addedTime = 60000; 
+/** Change value of addedTime */ 
 function changeAddTime() {
 	let msecs = +document.timeShift.shift.value; 
 	if (isNaN(msecs) || msecs &lt;= 0) 
@@ -367,7 +398,9 @@ function changeAddTime() {
 		document.timeShift.shift.value = msecs; // Confirm changed value
 		}
 	}
-
+/** Add or subtract a quantum of time to targetDate
+ @param {Number} sign 	- add if > 1, subtract if -1, erroneous if other values
+*/
 function addTime (sign = 1) { // addedTime ms is added or subtracted to or from the Timestamp.
 	changeAddTime();	// Force a valid value in field
 	let testDate = new Date(targetDate.valueOf());
@@ -377,27 +410,30 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 		targetDate.setTime( testDate.valueOf() );
 	}
 }
+/** Initiate TZ variable (time zone mode) after value in HTML document */
 function getMode() {
-	// Initiate Time zone mode for the "local" time from main display
 	TZ = document.TZmode.TZcontrol.value;
 	// TZDisplay = TZ == "UTC" ? "UTC" : "";
 	/** TZOffset is JS time zone offset in milliseconds (UTC - local time)
 	 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
 	*/
 }
+/** Set a simple UTC hour at same date. The date is computed after TZ value. */
 function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 	if (typeof UTChours == undefined)  UTChours = document.UTCset.Compute.value;
-	let testDate = new Date (targetDate.valueOf());
+	let testDate = new Date (targetDate.valueOf() - targetDate.getRealTZmsOffset(TZ));
 	testDate.setUTCHours(UTChours, 0, 0, 0);
 	if (isNaN(testDate.valueOf())) alert ("Out of range")
 	else {
 		targetDate.setTime (testDate.valueOf());
 	}
 }
-function setDateToNow(){ // Self explanatory
+/** Set date to present instant */
+function setDateToNow(){
 	targetDate = new calendrical.ExtDate(calendars[customCalIndex]); // set new Date object.
 }
-/* Events handlers
+/** Events handlers
+ * @function
 */
 window.onload = function () {
 	// Initial values are taken from forms in page
@@ -528,13 +564,13 @@ window.onload = function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Mar 06 2022 17:14:06 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Mar 13 2022 17:20:58 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
