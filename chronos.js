@@ -4,36 +4,12 @@
 	Non-integer parameter will yield erroneous non-integer values.
 	Default parameters assume that computations are done using 1 for the first month of any calendar.
  * @module chronos
- * @version M2021-08-22
+ * @version M2021-07-16
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Character set is UTF-8
-/* Version	M2022-01-24: JSDocs
-	M2021-08-22: time units transferred to another module
-	M2021-07-23	
-		Compute a date stamp from week fields
-		Class Chronos changed to Cbcce
-		Add control of missing or invalid fields in Cbcce
-	M2021-05-13	Errors are defined in-line, not as generic objects; Suppress numeric type error check.
-	M2021-05-22	Use built-in operator for div and modulo
-	M2021-01-19	fix Reference Error in IsoCounter.toIsoFields
-	M2021-01-09, new version with no backward compatibility
-		Collect conversion coefficients in a separate Milliseconds object
-		Collect week computations in a separate class, fix a bug for non-regular week system
-		Design a class for conversion between ISO and day counter since any epoch
-		First month of ISO fields is always 1
-		Comment line at end of file for module version
-	M2020-12-27 no export to facilitate scripting
-	M2020-12-08 use export
-	M2020-11-24 add two cases of irregular week cycles, add notification of special cycle e.g. leap year etc. in Cycle Base Calendrical Computation Engine
-	M2020-11-22 enhance comments
-	M2020-11-12 enhance week rules
-	M2020-11-09 enhance
-	M2020-11-03 first established as a class
-	Sources: Miletus CBCCE 2017-2020 (define the main algorithm, still unchanged)
-		Suppress shiftYearStart as method, shiftCycle is enough
-		Add const JulianDayIso: convert ISO dates from and to integer Julian Day
+/* Version	M2022-07-16: Update JSDoc comment and suppress versions list
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -59,12 +35,12 @@ or the use or other dealings in the software.
 /** Structure of the calendar rule parameter that describes a calendar's computation rules and that is passed to a Cbcce class constructor.
  * Non checked constraints: 
  *	1. 	The cycles and the canvas elements shall be defined from the largest to the smallest
- *		e.g. four-century, then century, then four-year, then year, etc.
+ *		e.g. four-centuries cycle, then century, then four-year cycle, then year, etc.
  *	2. 	The same names shall be used for the "coeff" and the "canvas" properties, otherwise functions shall give erroneous results.
  *	3.	canvas.month.init is defined, it is the number of the first month in the year (0 with Date, 1 with Temporal)
  * @typedef {Object} calendarRule
- * @property {Number} timeepoch - origin date or time stamp in elementary units (days, milliseconds...) to be used for the decomposition, with respect to instant 0 of used timestamp.
- * @property {Array} coeff - Array of coefficients used to decompose a time stamp into time cycles like eras, quadrisaeculae, centuries, ... down to the elementary unit.
+ * @property {Number} timeepoch - origin date or timestamp in elementary units (days, milliseconds...) to be used for the decomposition, with respect to instant 0 of used timestamp.
+ * @property {Array} coeff - Array of coefficients used to decompose a timestamp into time cycles like eras, quadrisaeculae, centuries, ... down to the elementary unit.
  * @property {Number} coeff[].cyclelength 	- length of the cycle, in elementary units.
  * @property {Number} coeff[].ceiling 		- Infinity, or the maximum number of cycles of this size minus one in the upper cycle; 
 	* the last cycle may hold an intercalation remainder up to the next level,
@@ -73,7 +49,7 @@ or the use or other dealings in the software.
 	* to be used for common/embolismic years in a Meton cycle, or for 128-years cycles of 4 or 5 years elementary cycles.
  * @property {Number} coeff[].multiplier	- multiplies the number of cycles of this level to convert into target units.
  * @property {String} coeff[].target 		- the unit (e.g. "year") of the decomposition element at this level. 
- * @property {Number} coeff[].notify 		- optional, the field (e.g. "leapyear") where to indicate that the element's length is "singular" (i.e. not "common"). 
+ * @property {String} coeff[].notify 		- optional, the boolean field (e.g. "leapyear") where to indicate that the element's length is "singular" (i.e. not "common"). 
  * @property {Array} canvas - Canvas of the decomposition , e.g. "year", "month", "day", with suitable properties at each level.
  * @property {String} canvas[].name 	- the name of the property at this level, which must match one target property of the coeff component,
  * @property {Number} canvas[].init 	- value of this component at epoch, which is the lowest value (except for the first component), 
@@ -143,8 +119,8 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	static isGregorianLeapYear (year) {
 		return Cbcce.mod (year, 4) == 0 && (Cbcce.mod(year, 100) != 0 || Cbcce.mod(year, 400) ==0)
 	}
-	/** Build a compound object from a time stamp holding the elements as required by a given cycle hierarchy model.
-	 * @param {number} askedNumber	- a time stamp representing the date to convert.
+	/** Build a compound object from a timestamp holding the elements as required by a given cycle hierarchy model.
+	 * @param {number} askedNumber	- a timestamp representing the date to convert.
 	 * @returns {Object} the calendar elements in the structure that calendRule prescribes.
 	*/
 	getObject (askedNumber) {
@@ -155,7 +131,7 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	  let addCycle = 0; 	// flag that upper cycle has one element more or less (i.e. a 5 years franciade or 13 months luni-solar year)
 	  for (let i = 0; i < this.calendRule.coeff.length; ++i) {	// Perform decomposition by dividing by the successive cycle length
 		if (isNaN(quantity)) 
-			result[this.calendRule.coeff[i].target] = NaN	// Case where time stamp is not a number, e.g. out of bounds.
+			result[this.calendRule.coeff[i].target] = NaN	// Case where timestamp is not a number, e.g. out of bounds.
 		else {	// Here we make the suitable Euclidian division, with ceiling.
 			let ceiling = this.calendRule.coeff[i].ceiling + addCycle,
 				[q, m] = Cbcce.divmod (quantity, this.calendRule.coeff[i].cyclelength);
@@ -172,10 +148,10 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	  }	
 	  return result;
 }
-	/** Compute the time stamp from the element of a date in a given calendar.
+	/** Compute the timestamp from the element of a date in a given calendar.
 	 * @param {Object} askedObject	- the numeric elements of the date, collected in an object containing the elements that calendRule prescribes.
-	 * @param {Object} this.calendRule	- the representation of the calendar structure and its connection to the time stamp.
-	 * @returns {number} the time stamp
+	 * @param {Object} this.calendRule	- the representation of the calendar structure and its connection to the timestamp.
+	 * @returns {number} the timestamp
 	*/
 	getNumber (askedObject) { // from an object askedObject structured as calendRule.canvas, compute the chronological number
 		var cells = {...askedObject}, quantity = this.calendRule.timeepoch; // initialise Unix quantity to computation epoch
@@ -213,7 +189,7 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
  * 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.
  * 2. weekLength shall be > 0
  * @typedef {Object} weekDayRule 	-  set of parameters for the computation of week elements
- * @property {Number} originWeekday - weekday number of day index 0. Value is renormalised to 0..weekLength-1.
+ * @property {Number} originWeekday - weekday number of day 0. Value is renormalised to 0..weekLength-1.
  * @property {Function} daysInYear	- function (year), number of days in year. year is specified as "fullyear" (unambiguous); 
 	* with solar calendars, result is 365 or 366.
  * @property {Function} characDayIndex	- function (year): the day index of one day of characWeekNumber of year.
@@ -251,7 +227,7 @@ export class WeekClock {
 		this.uncappedWeeks = weekdayRule.uncappedWeeks != undefined ? weekdayRule.uncappedWeeks : null;
 	}
 	/**	Compute week figures in the defined week structure
-	 * @param {number} dayIndex 	- day stamp, in day unit, of the day whose figures are computed
+	 * @param {number} dayIndex 	- date stamp, in day unit, of the day whose figures are computed
 	 * @param {number} year 		- the relative year the dayIndex date belongs to
 	 * @return {Array} 
 		* [0] : week number;
