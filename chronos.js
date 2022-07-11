@@ -9,7 +9,7 @@
  * @license MIT 2016-2022
  */
 // Character set is UTF-8
-/* Version	M2022-07-16: Update JSDoc comment and suppress versions list
+/* Version	M2022-07-20: Minor updates of comments.
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -93,7 +93,7 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	 * @param {number} phase	- indicates the phase within the cycle, e.g. for the month or the day of week. (phase == cycleBase) means the start of a new cycle.
 	 * @param {number} period	- the cycle's period, typically 12 or 7 for calendrical computations, but may also be the moon's month mean duration in milliseconds.
 	 * @param {number} shift	- the number of units for shifting. After shifting, cycleBase is cycleBase + shift.
-	 * @param {number} cycleBase	- which phase is that of a new cycle, in the parameter [cycle, phase] representation. O by default (like month representation with Date objects).
+	 * @param {number} cycleBase	- which phase is that of a new cycle, in the parameter [cycle, phase] representation. 0 by default (like month representation with Date objects).
 	 * @return {number[]} [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
 	*/
 	static shiftCycle (cycle, phase, period, shift, cycleBase=0) {
@@ -150,7 +150,6 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 }
 	/** Compute the timestamp from the element of a date in a given calendar.
 	 * @param {Object} askedObject	- the numeric elements of the date, collected in an object containing the elements that calendRule prescribes.
-	 * @param {Object} this.calendRule	- the representation of the calendar structure and its connection to the timestamp.
 	 * @returns {number} the timestamp
 	*/
 	getNumber (askedObject) { // from an object askedObject structured as calendRule.canvas, compute the chronological number
