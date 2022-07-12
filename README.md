@@ -39,8 +39,7 @@ Cbcce (Cycle Based Calendrical Computation Engine) exported class, offers common
  * Basic div and mod computations for calendrical purposes.
  * Basic computation of leap years for Julian and Gregorian calendars.
  * A cycle shifting routine, to facilitate shifting beginning of year in March instead of January, and also to facilitate computations on weeks.
- * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendars defined by an algorithm, including
- * Julian,  Gregorian, Coptic, Ethiopic, Meton-cycle implied with the Hebrew calendar, etc.
+ * The Cycle Based Calendar Computation Engine: a general framework that enables you to deal will most calendars defined by an algorithm, including Julian,  Gregorian, Coptic, Ethiopic, Meton-cycle implied with the Hebrew calendar, etc.
 
 #### WeekClock
 Exported class that computes week figures: day of week, week number, number of weeks in year, week year that includes a date.
