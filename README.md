@@ -17,7 +17,7 @@ Basic routines in javascript for computations on calendars, including
 
 This package  anticipates some features of the Temporal initiative of Ecma TC39.
 
-The calendrical-\*.js and calendrical.demo\*.html files are for test and demonstrating purposes. 
+The calendrical-\*.js and calendrical-demo\*.html files are for test and demonstrating purposes. 
 The demo is available from GitHub Pages.
 All other \*.html files are JSDoc generated files.
 
