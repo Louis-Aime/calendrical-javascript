@@ -5,7 +5,8 @@ From this site (https://louis-aime.github.io/calendrical-javascript/) you can:
 * launch the  demonstrators to the calendrical-javascript routines,
 * read the JSDoc generated documentation.
 
-## [Link to main GitHub repository](https://github.com/Louis-Aime/calendrical-javascript)
+## Main GitHub repository
+[Link to the calendrical-javascript GitHub repository](https://github.com/Louis-Aime/calendrical-javascript)
 
 ## Demonstrator usage
 With the first panel, choose a custom calendar, then enter a date in this calendar. 
@@ -18,6 +19,12 @@ The first panel also shows the week figures, with which you can specify a date.
  * [Calendrical demonstrator, French](./calendrical-demo-fr)
  * [Calendrical demonstrator, English](./calendrical-demo-en)
  
+## JSDoc reader's guide
+The modules and the classes within the modules are described under the *Modules* and *Classes* JSDoc pages. 
+The *Global* page describes scripts of the demonstrator, not parts of this packages. 
+However the structure of a custom calendar is described in the *Global* section, generated from *customcalendarmodel.js*, 
+you may reach it from the last menu object of *Global*.
+
 ## Comments and proposal
  Use this repository's [issues](https://github.com/Louis-Aime/calendrical-javascript/issues).
 

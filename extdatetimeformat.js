@@ -14,8 +14,7 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2022-01-24	JSdoc
-	M2021-09-18	When asked partFormat.mode is "field", numeric field follows locale numeration
+/*	Version	M2022-07-21	JSdoc update
 	See history on GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -40,12 +39,15 @@ or the use or other dealings in the software.
 */
 "use strict";
 import ExtDate from './extdate.js';
-	/** Extend and customise capacities to display dates in different calendars
+	/** Extends the Intl.DateTimeFormat object for custom calendars, and offers new functionalities. 
+	 * All method of the Intl.DateTimeFormat object are available, however formatToParts, format, and resolvedOptions are enhanced.
 	 * @class
-	 * @extends Intl.DateTimeFormat
-	 * @param {string} locale	- as for Intl.DateTimeFormat
-	 * @param {Object} options	- same as for Intl.DateTimeFormat + this field
-		* eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ?
+	 * @extends Intl.DateTimeFormat.
+	 * @param {string} locale	- as for Intl.DateTimeFormat.
+	 * @param {Object} options	- same as for Intl.DateTimeFormat + option 
+		* eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ? 
+		* if "auto", era is displayed if year is displayed and era of now is not equal to era of formatted date.
+		* if era option is not specified, "short" is assumed whenever necessary.
 	 * @param {Object} calendar	- a calendar used to format the date.
 		*	If this parameter is not specified, the calendar resolved with locale and options will be used. 
 		*	If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options. 
@@ -168,7 +170,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	 * @return {string[]} the names of the minimum fields necessary for an unambiguous date.
 	*/
 	static dateFieldNames () { return ["era", "year", "month", "day"] }
-	/** The universal keys for the weekdays of the standard 7-days week, used in CLDR and to be used with a Private Locale Data Register
+	/** The universal keys for the weekdays of the standard 7-days week, used in CLDR and to be used with a Private Locale Data Register.
 	* @static
 	* @param {number} index 0 to 6.
 	* @return {string} a three-character string for the weekday.
@@ -181,8 +183,8 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		return this.options
 	}
 	/** Should era be displayed for a given date in reference calendar ? manage eraDisplay option.
-	* @param {Object} aDate	- the given date with its calendar and options
-	* @return {Boolean}	whether era should be displayed
+	* @param {Object} aDate	- the given date with its calendar and options.
+	* @return {Boolean}	whether era should be displayed.
 	*/
 	displayEra (aDate) {	// Should era be displayed for this date, with these calendar and options ?
 		let date = new ExtDate(this.calendar, aDate.valueOf());
@@ -209,11 +211,11 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 						!== this.calendar.fieldsFromCounter(today.toResolvedLocalDate (this.options.timeZone).valueOf()).era ;
 		}
 	}
-	/** Fetch a value from a Private Locale Date Repository (pldr)
-	 * @param {string} name		- name of the date field (era / month / dayofweek)
-	 * @param {string} option	- asked format option fot this field 
-	 * @param {number|string} value	- field value for the date field in ExtDate "bag"
-	 * @return {string} the string value for this date field after the current options
+	/** Fetch a value from a Private Locale Date Repository (pldr).
+	 * @param {string} name		- name of the date field (era / month / dayofweek).
+	 * @param {string} option	- asked format option fot this field.
+	 * @param {number|string} value	- field value for the date field in ExtDate "bag".
+	 * @return {string} the string value for this date field after the current options.
 	*/
 	pldrFetch (name,options,value) {	// return string value to insert to Parts
 		let selector = "", Xpath1 = "", node = {}, result = "";
@@ -274,8 +276,12 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		}
 	}
 	/** Extended FormatToParts method.
-	 * @param {Object} aDate	- the date to be displayed
-	 * @return {Object[]} like the Intl.DateTimeFormat, but enhanced
+	 * The custom calendar is used for display. 
+	 * The eraDisplay option controls whether the era field is displayed.
+	 * Field asked as "numeric" are not changed to "2-digit".
+	 * In left-to-right languages, the "numeric" option fot time fields implies the " h ", " min " and " s " marks instead of ":".
+	 * @param {Object} aDate	- the date to be displayed.
+	 * @return {Object[]} like the Intl.DateTimeFormat, but enhanced.
 	*/
 	formatToParts (aDate) {	
 		// Prepare parameters
@@ -434,9 +440,9 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		}
 	return myParts
 	}
-	/** format, from computed parts, using extended FormatToParts
-	 * @param {Object} date		- the date to display
-	 * @return {string} the string to display
+	/** format, from computed parts, using extended FormatToParts.
+	 * @param {Object} date		- the date to display.
+	 * @return {string} the string to display.
 	*/
 	format (date) {
 		let parts = this.formatToParts (date); // Compute components
