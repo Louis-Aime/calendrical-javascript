@@ -1,5 +1,21 @@
 # calendrical-javascript
-Basic routines in javascript for computations on calendars, including
+Basic routines in javascript for calendrical computations.
+## Purpose
+### `ExtDate` object
+This object extends the built-in `Date` object, making it possible to specify dates in custom-made calendars. 
+This foreshadows some functionalities of `Temporal`.
+| Purpose | `Date` | `ExtDate` |
+|:--- |:---:|:---:|
+|Create date from now|+|+|
+|Create date from timestamp|+|+|
+|Create date from ISO 8601 date expression|+|+|
+|Create date from ISO 8601 date fields | Except in 1st century | All dates |
+|Specify date from date fields of another calendar |0|+|
+|Obtain date fields of another calendar |0|+|
+|Handle week figures|0|+|
+
+### Etc
+
  * basic duration units,
  * the Cycle Based Calendar Computation Engine,
  * a week computation engine that emcompasses any architecture of weeks and week numbering, including ISO 8601,
