@@ -41,7 +41,7 @@ may easily be specified and used.
 |:--- |:---:|:---:|
 |ISO 8601 with algebraic year|0|+|
 |Julian calendar|0|+|
-|Historical Julio-gregorian calendars||0|+|
+|Historical Julio-gregorian calendars|0|+|
 |Historical French revolutionary calendar|0|+|
 |Tentative Milesian calendar|0|+|
 

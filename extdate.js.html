@@ -33,7 +33,7 @@
  * @license MIT 2016-2022
  */
 // Character set is UTF-8
-/*	Version	M2022-07-18	Update JSDoc comments and suppress versions list
+/*	Version	M2022-07-22	Update JSDoc comments
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -83,16 +83,18 @@ Date.prototype.getRealTZmsOffset = function () { // this prototype extension nec
 	* the calendar object that describes the custom calendar,
 	* or a string that refers to a built-in calendar.
 	* if undefined, set to "iso8601".
-	* In thie version, the string for a built-in calendar may only be "iso8601" (default) or "gregory". 
+	* In this version, the string for a built-in calendar may only be "iso8601" (default) or "gregory". 
 	* The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
- * @param {string|number[]} [dateArguments]	- same parameter list as would be passed to the legacy Date:
+ * @param {string|number[]} [dateArguments]	- same parameter list as would be passed to the legacy Date object:
 	*	empty -> now; 
 	*	one numerical argument: Posix counter in milliseconds, as for Date;
 	*	one string argument: an ISO string for the date, passed to Date;
 	*	several numerical arguments: the arguments of Date constructor, as would be passed to Date, but
-	*		year is full year, e.g. year 1 is 0001, not 1901,
+	*		year is an algebraic full year, e.g. 1 means year 0001, not year 1901, and negative numbers may be used.
 	*		first month is always 1, not 0,
-	*		the date elements are those of the target calendar, not of gregory neither iso8601; year is always a full year, not era dependant.
+	*		default day is 1, default time elements are 0,
+	*		the date elements are those of the target calendar, which may differ from ISO 8601;
+	*	the date elements passed are considered those of the local date, i.e. of the terminal's time zone.
  */
 export default class ExtDate extends Date {
 	constructor (calendar, ...dateArguments) {
@@ -130,30 +132,32 @@ export default class ExtDate extends Date {
 	}
 	/* Basic data
 	*/
-	/** Give the list of numeric fields in a date object
+	/** Give the list of numeric fields in a date object, and of their respective default values.
 	* @static
-	* @return {Object} ( name_of_field : field value )
+	* @return {Object} ( name_of_field : field default value )
 	*/
 	static numericFields() { return [ {name : "fullYear", value : 0}, {name : "month", value : 1}, {name : "day", value : 1},
 		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] }
 		// names of numeric date elements
-	/** Give the list of numeric fields in a week day date object
+	/** Give the list of numeric fields in a week day date object, and of their respective default values.
 	* @static
-	* @return {Object} ( name_of_field : field value )
+	* @return {Object} ( name_of_field : field default value )
 	*/
 	static numericWeekFields() { return [ {name : "weekYear", value : 0}, {name : "weekNumber", value : 1}, {name : "weekday", value : 1},
 		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] }
 		// names of numeric week figures elements
-	/** Basic utility fonction: get UTC date from ISO fields in UTC, including full year i.e. 79 means year 79 AD, when Pompeii was buried under volcano ashes.
+	/** Basic utility fonction: get UTC date from ISO 8601 UTC date figures in UTC, 
+	* including full year i.e. 2-digit year is a year of the first century.
+	* Please notice the slight differences with the legacy Date.UTC() function.
 	* @static
 	* @param {number} [fullYear=0]	The year expressed as a relative unambiguous number. 
 	* @param {number} [month=1]	 The month number, 1 to 12.
 	* @param {number} [day=1]	The day number in the month.
-	* @param {number} [hours=0]	The hour
-	* @param {number} [minutes=0]	The minutes
-	* @param {number} [seconds=0]	The seconds
-	* @param {number} [milliseconds=0]	The milliseconds
-	* @return {number} the Posix timestamp corresponding to date specified through the parameters
+	* @param {number} [hours=0]	The UTC hour
+	* @param {number} [minutes=0]	The UTC minutes
+	* @param {number} [seconds=0]	The UTC seconds
+	* @param {number} [milliseconds=0]	The UTC milliseconds
+	* @return {number} the Posix timestamp corresponding to the specified date.
 	*/
 	static fullUTC (fullYear=0, month=1, day=1, hours=0, minutes=0, seconds=0, milliseconds=0) {
 		arguments[1]--;		// From base 1 month to month of legacy Date
@@ -162,9 +166,12 @@ export default class ExtDate extends Date {
 		return myDate.valueOf()
 	}
 	/** Compute the system time zone offset at this date, or the time zone offset of a named time zone in ms.
-	 * Rationale: with Chrome (and others ?), the TZOffset returned value losses the seconds. 
-	 * @param {string} [TZ]	- the named time zone. If undefined or "", system timezone.
-	 * @return {number} the time zone offset in milliseconds: UTC - local (same sign as TimezoneOffset)
+	 * This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, 
+	 * when used for date before 1847 in UK or even later in most other countries.
+	 * As there were no time zones, the real offset is computed to the second, but the legacy method may round to minutes, 
+	 * depending on the navigator.
+	 * @param {string} [TZ]	- the named time zone. If undefined or "", system timezone. "UTC" is always accepted.
+	 * @return {number} the time zone offset in milliseconds: UTC - local (same sign as TimezoneOffset).
 	*/
 	getRealTZmsOffset (TZ) {	// 2 functions in one: if TZ == undefined, compute real offset between system TZ offset at this time. if TZ = "UTC", 0. 
 								// if TZ is a named zone, use toResolvedLocalDate in order to compute offset in ms.
@@ -185,7 +192,7 @@ export default class ExtDate extends Date {
 	/** Construct a date that represents the "best fit" value of the given date shifted as UTC to the named time zone. 
 	 * The computation of the time zone is that of Unicode, or of the standard TZOffset if Unicode's is not available.
 	 * @method
-	 * @param {string} [TZ]	- the named time zone. If undefined or "", system timezone.
+	 * @param {string} [TZ]	- the named time zone. If undefined or "", system timezone. "UTC" is always accepted.
 	 * @return {Date} the best possible result given by the navigator.
 	 */
 	toResolvedLocalDate = function (TZ) { // This routine assumes that Intl.DateTimeFormat works. If not, exception is thrown.
@@ -210,7 +217,7 @@ export default class ExtDate extends Date {
 			localTime.getUTCMilliseconds())); // We can't obtain milliseconds from DateTimeFormat, but they always remain the same while changing time zone.
 	}
 	/** calendar date fields generator method from Date.valueOf(), local or UTC. Month in range 1..12
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
      * @return {Object} object with date fields { (era if applicable), year, month (range 1..12), day, hours, minutes, seconds, milliseconds}
 	*/
 	getFields(TZ) {
@@ -242,8 +249,8 @@ export default class ExtDate extends Date {
 			return this.calendar.fieldsFromCounter (this.valueOf() - offset);
 	}
 	/**	ISO fields at UTC, like for Temporal.PlainDate
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
-     * @return {Object} UTC Date as Isofield object:  isoYear, isoMonth (range 1..12), isoDay, hours, minutes, seconds, milliseconds
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+     * @return {Object} Date at TZ as Isofield object:  isoYear, isoMonth (range 1..12), isoDay, hours, minutes, seconds, milliseconds
 	*/
 	getISOFields(TZ) {	// Fields with same name as in Temporal.
 		var 
@@ -259,8 +266,8 @@ export default class ExtDate extends Date {
 		}
 	}
 	/** week fields generator method from Date.valueOf(), local or UTC.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
-	 * @return {Object} object with week fields { weekNumber: number (1..53) of the week. weekday : number (1..7, 1 = Monday) of the weekday,
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @return {Object} object with week fields for the date at TZ, { weekNumber: number (1..53) of the week. weekday : number (1..7, 1 = Monday) of the weekday,
 		weekYearOffset : -1/0/1 shift fullYear by one to obtain the year the week belongs to, weeksInYear: number of weeks in the year the week belons to }
 	*/
 	getWeekFields(TZ) {
@@ -271,7 +278,7 @@ export default class ExtDate extends Date {
 	
 	/** setter method, from fields representing partially a date or time in the target calendar, change date and computie timestamp.
 	 * @param {Object} fields that change from presently held date, i.e. undefined fields are extracted from present date with same TZ (system (blank) or 'UTC')
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If 'UTC', UTC date and time.
+	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If 'UTC', UTC date and time. No other value possible.
 	 * @return {number} a new timeStamp
 	*/
 	setFromFields( myFields, TZ ) { 
@@ -279,7 +286,7 @@ export default class ExtDate extends Date {
 		var askedFields = this.calendar.solveAskedFields (myFields),	// askedFields is not ambiguous. 
 			fields = this.getFields(TZ);
 		fields = Object.assign (fields, askedFields);
-/*		This part seems unnecessary since fields already exist.
+/*		This part seems unnecessary since fields already exist, held as an example.
 	// 3. Now field should be complete
 		if (ExtDate.numericFields().some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
 			throw new TypeError 
@@ -295,7 +302,7 @@ export default class ExtDate extends Date {
 	}
 	/** setter method, from the fields representing the date in the target WEEK calendar, comput timestamp
 	 * @param {Object} week fields that change from presently held date, i.e. undefined week fields are extracted from present date with same TZ. 
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - If "" or undefined (default value), local date and time. If "UTC", UTC date and time. No other value possible.
 	 * @return {number} same as Date.setTime
 	*/
 	setFromWeekFields( myFields, TZ ) { 
@@ -303,18 +310,13 @@ export default class ExtDate extends Date {
 		var timeFields = this.getFields (TZ),	// interesting fields are time fields.
 			weekFields = this.getWeekFields (TZ);
 		weekFields = Object.assign (weekFields, myFields);	// add date expressed in week coordinates.
-/*	This part seems unnecessary since fields already exist.
-		if (ExtDate.numericWeekFields().some ( (item) =>  fields[item.name] == undefined ? false : !Number.isInteger(fields[item.name] ) ) ) 
-			throw new TypeError 
-				(ExtDate.numericWeekFields().map(({name, value}) => {return (name + ':' + value);}).reduce((buf, part)=> buf + " " + part, "Missing or non integer element in week date: "));
-*/
 		let dateFields = {}; ExtDate.numericWeekFields().slice(0,3).forEach ( (item) => {dateFields[item.name] = weekFields[item.name]} );
 		this.setTime(this.calendar.counterFromWeekFields (dateFields));
 		// finally set time to this date from TZ, using setFullTime
 		return this.setFullTime (TZ, timeFields.hours, timeFields.minutes, timeFields.seconds, timeFields.milliseconds);
 	}
 	/** is this date in a leap year of the calendar ? 
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {Boolean} whether the associated date's year is a leap year.
 	*/
 	inLeapYear ( TZ ) {
@@ -322,7 +324,7 @@ export default class ExtDate extends Date {
 		return this.calendar.inLeapYear( this.getFields (TZ) );
 	}
 	/** extract a simple string with the calendar name, then era code (if applicable), then the figures for year, month, day, and time components.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {string} the current date as a string
 	*/
 	toCalString( TZ ) {
@@ -340,7 +342,7 @@ export default class ExtDate extends Date {
 					: fn2.format(compound.hours)+":"+fn2.format(compound.minutes)+":"+fn2.format(compound.seconds)+"."+fn3.format(compound.milliseconds) + "Z")
 	}
 	/**	Get year as an unambiguous signed integer.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} year, unambiguous signed integer.
 	*/
 	fullYear (TZ) {
@@ -348,7 +350,7 @@ export default class ExtDate extends Date {
 		return fields.fullYear;
 	}
 	/**	Get era code, if existing for this calendar.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {string} era code.
 	*/
 	era (TZ) {
@@ -356,7 +358,7 @@ export default class ExtDate extends Date {
 		return fields.era
 	}
 	/**	Get year; may be ambiguous if era is not known.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} year; era may be necessary for disambiguation.
 	*/
 	year (TZ) {
@@ -372,7 +374,7 @@ export default class ExtDate extends Date {
 		return fields.month
 	}
 	/**	Get day number in month.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} day number, first day of month is 1.
 	*/
 	day (TZ) {
@@ -380,7 +382,7 @@ export default class ExtDate extends Date {
 		return fields.day
 	}
 	/**	Get weekday number, under rules specified in weekRule.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} weekday number.
 	*/
 	weekday (TZ) {
@@ -388,7 +390,7 @@ export default class ExtDate extends Date {
 		return fields.weekday
 	}
 	/**	Get week number in year, under rules specified in weekRule.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} week number.
 	*/
 	weekNumber (TZ) {
@@ -396,7 +398,7 @@ export default class ExtDate extends Date {
 		return fields.weekNumber
 	}
 	/**	Get number of weeks in this week calendar year, under rules specified in weekRule.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} number of weeks.
 	*/
 	weeksInYear (TZ) {
@@ -404,7 +406,7 @@ export default class ExtDate extends Date {
 		return fields.weeksInYear
 	}
 	/**	Get year after the week calendar, under rules specified in weekRule.
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} year in the week calendar, unambiguous number (fullyear).
 	*/
 	weekYear (TZ) {		// unambiguous number of the year the numbered week belongs to
@@ -412,7 +414,7 @@ export default class ExtDate extends Date {
 		return fields.weekYear
 	}
 	/**	Get hour in the day, in TZ
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} hour 0 to 23.
 	*/
 	hours (TZ) {
@@ -420,7 +422,7 @@ export default class ExtDate extends Date {
 		return fields.hours
 	}
 	/**	Get minutes of the hour in the day, in TZ
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} minutes 0 to 59.
 	*/
 	minutes (TZ) {
@@ -436,15 +438,15 @@ export default class ExtDate extends Date {
 		return fields.seconds
 	}
 	/**	Get milliseconds of the hour in the day, in TZ
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
 	 * @return {number} milliseconds 0 to 999.
 	*/
 	milliseconds (TZ) {
 		let fields = this.getFields (TZ);
 		return fields.milliseconds
 	}
-	/**	Set time of the day in same day, after TZ
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If "UTC", UTC date and time.
+	/**	Set time of the day in same day, local or UTC, using legacy setHours or setUTCHours.
+	 * @param {string} [TZ] - If "" or undefined (default value), set local time at same local date. If "UTC", set UTC time at same UTC date. No other value possible.
 	 * @param {number} hours 	- the hours setting
 	 * @param {number} [minutes=current value] 	- the minutes setting
 	 * @param {number} [seconds=current value] 	- the seconds setting
@@ -479,7 +481,7 @@ export default class ExtDate extends Date {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jul 11 2022 23:23:18 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 13 2022 20:45:23 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

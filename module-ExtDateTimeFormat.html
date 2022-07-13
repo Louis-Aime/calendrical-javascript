@@ -30,7 +30,7 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>module:ExtDateTimeFormat<span class="signature">(locale, options, calendar)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Extend and customise capacities to display dates in different calendars</div>
+            <div class="class-description">Extends the Intl.DateTimeFormat object for custom calendars, and offers new functionalities. All method of the Intl.DateTimeFormat object are available, however formatToParts, format, and resolvedOptions are enhanced.</div>
         
     
 </header>
@@ -101,7 +101,7 @@
 
             
 
-            <td class="description last">as for Intl.DateTimeFormat</td>
+            <td class="description last">as for Intl.DateTimeFormat.</td>
         </tr>
 
     
@@ -124,7 +124,7 @@
 
             
 
-            <td class="description last">same as for Intl.DateTimeFormat + this fielderaDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ?</td>
+            <td class="description last">same as for Intl.DateTimeFormat + option eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ? if "auto", era is displayed if year is displayed and era of now is not equal to era of formatted date.if era option is not specified, "short" is assumed whenever necessary. Note: date and time fields option values "2-digit" and "numeric" yield different effects, unlike legacy Intl.DateTimeFormat.</td>
         </tr>
 
     
@@ -147,7 +147,7 @@
 
             
 
-            <td class="description last">a calendar used to format the date.	If this parameter is not specified, the calendar resolved with locale and options will be used. 	If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options. 	If specified as a custom calendar and if a Private Locale Data Repository is given, this will be used for calendar's entity names. 	If no pldr is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.	Note: The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.</td>
+            <td class="description last">a calendar used to format the date.	If this parameter is not specified, the calendar resolved with locale and options will be used. 	If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options. 	If specified as a custom calendar and if a Private Locale Data Repository (PLDR) is given, this will be used for calendar's entity names. 	If no PLDR is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.	Note: The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.</td>
         </tr>
 
     
@@ -188,7 +188,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line56">line 56</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -228,7 +228,7 @@
 
 
     <ul>
-        <li>Intl.DateTimeFormat</li>
+        <li>Intl.DateTimeFormat.</li>
     </ul>
 
 
@@ -307,7 +307,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line170">line 170</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line173">line 173</a>
     </li></ul></dd>
     
 
@@ -373,7 +373,7 @@
 
 
 <div class="description">
-    The universal keys for the weekdays of the standard 7-days week, used in CLDR and to be used with a Private Locale Data Register
+    The universal keys for the weekdays of the standard 7-days week, used in CLDR and to be used with a Private Locale Data Repository.
 </div>
 
 
@@ -466,7 +466,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line176">line 176</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line179">line 179</a>
     </li></ul></dd>
     
 
@@ -532,7 +532,7 @@
 
 
 <div class="description">
-    Should era be displayed for a given date in reference calendar ? manage eraDisplay option.
+    Private function, should era be displayed for a given date in reference calendar ? Manages eraDisplay option.
 </div>
 
 
@@ -584,7 +584,7 @@
 
             
 
-            <td class="description last">the given date with its calendar and options</td>
+            <td class="description last">the given date with its calendar and options.</td>
         </tr>
 
     
@@ -625,7 +625,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line187">line 187</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line190">line 190</a>
     </li></ul></dd>
     
 
@@ -654,7 +654,7 @@
 
         
 <div class="param-desc">
-    whether era should be displayed
+    whether era should be displayed.
 </div>
 
 
@@ -691,7 +691,7 @@
 
 
 <div class="description">
-    format, from computed parts, using extended FormatToParts
+    format, from computed parts, using extended FormatToParts.
 </div>
 
 
@@ -743,7 +743,7 @@
 
             
 
-            <td class="description last">the date to display</td>
+            <td class="description last">the date to display.</td>
         </tr>
 
     
@@ -784,7 +784,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line441">line 441</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line448">line 448</a>
     </li></ul></dd>
     
 
@@ -813,7 +813,7 @@
 
         
 <div class="param-desc">
-    the string to display
+    the string to display.
 </div>
 
 
@@ -850,7 +850,7 @@
 
 
 <div class="description">
-    Extended FormatToParts method.
+    Extended FormatToParts method.The custom calendar is used for display. The eraDisplay option controls whether the era field is displayed.Field asked as "numeric" are not changed to "2-digit".In left-to-right languages, the "numeric" option fot time fields implies the " h ", " min " and " s " marks instead of ":".
 </div>
 
 
@@ -902,7 +902,7 @@
 
             
 
-            <td class="description last">the date to be displayed</td>
+            <td class="description last">the date to be displayed.</td>
         </tr>
 
     
@@ -943,7 +943,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line280">line 280</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line287">line 287</a>
     </li></ul></dd>
     
 
@@ -972,7 +972,7 @@
 
         
 <div class="param-desc">
-    like the Intl.DateTimeFormat, but enhanced
+    like the Intl.DateTimeFormat, but enhanced.
 </div>
 
 
@@ -1009,7 +1009,7 @@
 
 
 <div class="description">
-    Fetch a value from a Private Locale Date Repository (pldr)
+    Private function, fetch a value from a Private Locale Date Repository (PLDR).
 </div>
 
 
@@ -1061,7 +1061,7 @@
 
             
 
-            <td class="description last">name of the date field (era / month / dayofweek)</td>
+            <td class="description last">name of the date field (era / month / dayofweek).</td>
         </tr>
 
     
@@ -1084,7 +1084,7 @@
 
             
 
-            <td class="description last">asked format option fot this field</td>
+            <td class="description last">asked format option fot this field.</td>
         </tr>
 
     
@@ -1110,7 +1110,7 @@
 
             
 
-            <td class="description last">field value for the date field in ExtDate "bag"</td>
+            <td class="description last">field value for the date field in ExtDate "bag".</td>
         </tr>
 
     
@@ -1151,7 +1151,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line218">line 218</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line221">line 221</a>
     </li></ul></dd>
     
 
@@ -1180,7 +1180,7 @@
 
         
 <div class="param-desc">
-    the string value for this date field after the current options
+    the string value for this date field after the current options.
 </div>
 
 
@@ -1261,7 +1261,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line180">line 180</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line183">line 183</a>
     </li></ul></dd>
     
 
@@ -1335,7 +1335,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jul 11 2022 23:23:18 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 13 2022 20:45:23 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
