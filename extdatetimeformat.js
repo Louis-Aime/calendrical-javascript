@@ -14,7 +14,7 @@ Contents
 	Description of Custom calendar objects
 	ExtDateTimeFormat: extension of Intl.DateTimeFormat
 */
-/*	Version	M2022-07-21	JSdoc update
+/*	Version	M2022-07-22	JSdoc update
 	See history on GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -170,7 +170,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	 * @return {string[]} the names of the minimum fields necessary for an unambiguous date.
 	*/
 	static dateFieldNames () { return ["era", "year", "month", "day"] }
-	/** The universal keys for the weekdays of the standard 7-days week, used in CLDR and to be used with a Private Locale Data Register.
+	/** The universal keys for the weekdays of the standard 7-days week, used in CLDR and to be used with a Private Locale Data Repository.
 	* @static
 	* @param {number} index 0 to 6.
 	* @return {string} a three-character string for the weekday.

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- definition of private calendar elements 
-All elements in <pldr> (Private Locale Data Registry)
+All elements in <pldr> (Private Locale Data Repository)
 Non language-specific section is <ldmlBCP47>
-Language-specifif is <ldml>
+Language-specific section is <ldml>
 -->
 <!-- <!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->
 <pldr>

@@ -1,23 +1,11 @@
-/** a Private Locale Data Register stored as a string, with its DOM parser
+/** a Private Locale Data Repository stored as a string, with its DOM parser.
  * @module
- * @version M2021-02-13
+ * @version M2022-07-22
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Charset UTF-8. This file contains non-ANSI characters.
-/*Version	M2022-01-19 Enhance JSdoc comments
-	M2021-07-22	update names, fix typo errors
-	M2021-02-13: A fallback function if the complete pldr is not available
-	M2020-12-08: use export
-	M2020-11-18:	No "numeric" monthWidth in stand-alone monthContext, formatToParts shall build 1 or 2 digit numbers
-	M2020-10-28: adapted and names changed for the new packaged version of calendar routines
-	M2020-01-12: strict mode
-	M2019-07-24: Control bidirectionnal issues by inserting Unicode FSI & PDI characters
-	M2018-11-11: Enhance comments, put JSDoc comments.
-	M2018-06-04
-		Build an original narrow type
-		type format monthWidth numeric differs from type stand-alone.
-	M2017: Build month names in Latin (default), fr, en, de, es, pt (see XML file)
+/* Version	M2022-07-22 Enhance JSdoc comments
 */
 "use strict";
 /** Stringified XML base, consisting in 2 blocks: 
@@ -29,7 +17,7 @@ const pldrstring =
 '<?xml version="1.0" encoding="UTF-8" ?>\
 <!-- Milesian month names definition - non language-specific section  -->\
 <!-- <!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->\
-<pldr> <!-- Private locale data registry - for moke-up -->\
+<pldr> <!-- Private Locale Data Repository - custom calendars -->\
 <ldmlBCP47>\
 <calendar type="milesian"> <!-- name will have to be registred -->\
 	<months>\
@@ -176,7 +164,7 @@ const pldrstring =
 
 /** build a document object from the pldrstring object of this file.
  * @function getPldrDOM
- * @return the link to the document object that holds the private locale data register.
+ * @return the link to the document object that holds the private locale data repository's data.
  * @static
 */
 export default function getPldrDOM () { return new DOMParser().parseFromString(pldrstring, "application/xml")};
