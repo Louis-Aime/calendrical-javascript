@@ -20,7 +20,7 @@ This foreshadows some features of `Temporal` initiative of Ecma TC39.
 |Specify date from date fields of another calendar |0|+|
 |Obtain date fields of another calendar |0|+|
 |Handle week figures|0|+|
-|Obtain real time zone offset in ms||0|+|
+|Obtain real time zone offset in ms|0|+|
 ### `ExtDateTimeFormat` object
 Extends `Intl.DateTimeFormat`. Enables usage of calendars that are not defined in Unicode, and foreshadows some proposed enhancements. 
 `ExtDateTimeFormat` is called with the same parameters as `Intl.DateTimeFormat`, plus a calendar object or calendar name. 
@@ -28,9 +28,9 @@ The methods have the same names, but yield more focused results.
 An additional option `eraDisplay` is available.
 | Purpose | `Intl.DateTimeFormat` | `ExtDateTimeFormat` |
 |:--- |:---:|:---:|
-|Display or hide era automatically||0|+|
+|Display or hide era automatically|0|+|
 |Use variants to Unicode's CLDR (using a PLDR)|0|+|
-|Diffentiate `2-digit` from `numeric` for time representation|0|+|
+|Differentiate `2-digit` from `numeric` for time representation|0|+|
 ### Custom calendars
 The general structure of a custom calendar is documented in `customcalendarmodel.js`, 
 and also in the *Global* section of the JSDoc documentation, as a type.
