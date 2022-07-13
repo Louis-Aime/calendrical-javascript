@@ -11,9 +11,7 @@
  * @license MIT 2016-2022
 //	Character set is UTF-8
 */
-/* Versions:	M2022-01-26 JSdoc
-	M2021-08-30	French rev days and months in PLDR
-See details on GitHub
+/* Versions:	M2022-07-22 JSdoc
 */ 
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -40,7 +38,14 @@ import {Cbcce, WeekClock} from "./chronos.js";
 import Milliseconds from "./time-units.js";
 import ExtDate from "./extdate.js";
 
-	/** Generic Milesian calendar
+	/** Generic Milesian calendar. The Milesian calendar is defined in www.calendriermilesien.org. 
+	 * This web site is in French, but a short presentation in English is available from the welcome page.
+	 * The Milesian calendar reorganises the months of the ISO 8601 year. 
+	 * The year begins on Dec. 21 (Dec. 22 before a leap year), and months have regular lengths: 30 and 31 days alternatively.
+	 * Months have unambiguous notation and names: 1m, 2m, etc. to 12m, said Firstem, Secondem, Thirdem... Twelfthem.
+	 * The intercalation day is the last day of the year: 12m 31, which always fall on Dec. 21.
+	 * There is no era: year are always algebraic integer numbers.
+	 * Since this calendar uses new month names, a private local data repository is necessary in order to display dates.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	 * @param {Object} pldr	- a Document Object, with the specific names for the Milesian calendar (after languages, countries etc.).
@@ -222,10 +227,10 @@ export class GregorianCalendar {
 	}
 }
 
-	/** Generic Julian calendar, with eras. The numbering rules for weeks are those of ISO8601.
+	/** Generic Julian calendar, with eras (BC/AD). The numbering rules for weeks are those of ISO8601.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
-	 * @param {Object} pldr	- a Document Object, with the specific names for the instantied Julian calendar, e.g. kabyle.
+	 * @param {Object} pldr	- an optional Document Object, if specific names are used for months, e.g. for the kabyle calendar.
 	*/
 export class JulianCalendar  {
 	constructor (id, pldr) { // specific name, possible pldr for kabyle or so
@@ -270,7 +275,7 @@ export class JulianCalendar  {
 			weekLength : 7			
 		}
 	)
-	/** Era codes: "BC" for backwards counted years before year 1, "AD" (Anno Domini) for years since Dionysos era.
+	/** Era codes: "BC" for backwards counted years before year 1, "AD" (Anno Domini) for years counted after Dionysos' specification.
 	*/
 	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
 	canvas = "gregory"
@@ -349,7 +354,7 @@ export class JulianCalendar  {
 	}
 } // end of calendar class
 
-	/** Generic Historical calendar for the countries of Western Europe, where a switch from Julian to Gregorian reckoning system took place at some date.
+	/** Generic calendar for the countries of Western Europe, where a switch from Julian to Gregorian reckoning system took place at some date.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	 * @param {number|string} switchingDate	- first date where Gregorien calendar was used; switchingDate may be an ISO string or a Posix timestamp.
@@ -358,7 +363,7 @@ export class WesternCalendar {
 	constructor (id, switchingDate) {
 		this.id = id;
 		this.switchingDate = new Date(switchingDate);	// first date where Gregorien calendar is used. switchingDate may be an ISO string
-		this.switchingDate.setUTCHours (0,0,0,0);		// set to Oh UTC at switching date
+		this.switchingDate.setUTCHours (0,0,0,0);		// set to 00:00 UTC at switching date
 		if (this.switchingDate.valueOf() < Date.parse ("1582-10-15T00:00:00Z")) 
 			throw new RangeError ("Switching date to Gregorian shall be not earlier than 1582-10-15: " + this.switchingDate.toISOString());
 	}
@@ -444,7 +449,14 @@ export class WesternCalendar {
 	}
 } // end of calendar class
 
-	/** Generic French revolution calendar
+	/** Generic French revolution calendar. This calendar was defined and enforced in France in 1993, and cancelled in Januray 1806. 
+	 * Strictly speaking, it is not an algorithmic calendar. The new year is supposed to fall on the autumnal equinox as observed in Paris.
+	 * This algorithmic implementation is based on a 128-year cycle comprising 31 leap years. 
+	 * A leap years occur most often 4 years after the last one, and sometimes 5 years after.
+	 * This algorithm gives exact results for the period 1992-1806, and also for 1870 where the calendar was briefly enforced under the Commune de Paris.
+	 * Only one new year does not match the initial definition during the first 128-years cycle: 
+	 * the equinox occurred at 23:44 on the 6 ss day of 81 Ere des Français, 82 should have been a sextile year instead of 81.
+	 * A PLDR is necessary to display this calendar's date expression, however names are given in comments, as a simple implementation is also possible.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	 * @param {Object} pldr	- a Document Object, with the specific names for the French revolution calendar in several languages, for several countries etc.
@@ -466,7 +478,7 @@ export class FrenchRevCalendar {
 	*/
 	/** One era code, "ef" for "ère des Français"
 	*/
-	eras = ["ef"]	// list of code values for eras; one single era here.
+	eras = ["ef"]	// list of code values for eras; one single era here, "ef" for "ère des Français"
 	partsFormat = {
 		// weekday: {mode : "list", source : this.dayNames}
 		weekday : { mode : "pldr", 

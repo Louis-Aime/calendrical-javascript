@@ -44,15 +44,16 @@ import ExtDate from './extdate.js';
 	 * @class
 	 * @extends Intl.DateTimeFormat.
 	 * @param {string} locale	- as for Intl.DateTimeFormat.
-	 * @param {Object} options	- same as for Intl.DateTimeFormat + option 
-		* eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ? 
+	 * @param {Object} options	- same as for Intl.DateTimeFormat 
+		* + option eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ? 
 		* if "auto", era is displayed if year is displayed and era of now is not equal to era of formatted date.
-		* if era option is not specified, "short" is assumed whenever necessary.
+		* if era option is not specified, "short" is assumed whenever necessary. 
+		* Note: date and time fields option values "2-digit" and "numeric" yield different effects, unlike legacy Intl.DateTimeFormat.
 	 * @param {Object} calendar	- a calendar used to format the date.
 		*	If this parameter is not specified, the calendar resolved with locale and options will be used. 
 		*	If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options. 
-		*	If specified as a custom calendar and if a Private Locale Data Repository is given, this will be used for calendar's entity names. 
-		*	If no pldr is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.
+		*	If specified as a custom calendar and if a Private Locale Data Repository (PLDR) is given, this will be used for calendar's entity names. 
+		*	If no PLDR is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.
 		*	Note: The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
  	*/
 export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
@@ -182,11 +183,11 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	resolvedOptions() { 
 		return this.options
 	}
-	/** Should era be displayed for a given date in reference calendar ? manage eraDisplay option.
+	/** Private function, should era be displayed for a given date in reference calendar ? Manages eraDisplay option.
 	* @param {Object} aDate	- the given date with its calendar and options.
 	* @return {Boolean}	whether era should be displayed.
 	*/
-	displayEra (aDate) {	// Should era be displayed for this date, with these calendar and options ?
+	displayEra (aDate) {
 		let date = new ExtDate(this.calendar, aDate.valueOf());
 		switch (this.options.eraDisplay) {
 			case "never" : return false;
@@ -211,13 +212,13 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 						!== this.calendar.fieldsFromCounter(today.toResolvedLocalDate (this.options.timeZone).valueOf()).era ;
 		}
 	}
-	/** Fetch a value from a Private Locale Date Repository (pldr).
+	/** Private function, fetch a value from a Private Locale Date Repository (PLDR).
 	 * @param {string} name		- name of the date field (era / month / dayofweek).
 	 * @param {string} option	- asked format option fot this field.
 	 * @param {number|string} value	- field value for the date field in ExtDate "bag".
 	 * @return {string} the string value for this date field after the current options.
 	*/
-	pldrFetch (name,options,value) {	// return string value to insert to Parts
+	pldrFetch (name,options,value) {
 		let selector = "", Xpath1 = "", node = {}, result = "";
 		switch (name) {
 			case "era" :	// analyse era options here since at construction it is not known whether era shall be displayed
