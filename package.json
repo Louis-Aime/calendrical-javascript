@@ -1,11 +1,8 @@
 {
   "name": "calendrical-javascript",
   "version": "5.6.1",
-  "description": "Basic routines in javascript for computations on calendars, including \r  * the Cycle Based Calendar Computation Engine,\r  * ExtDate and ExtDateTimeFormat, that extend Date and Intl.DateTimeFormat respectively,\r  * fetchdom, a function that fetches an XML file and makes a DOM object from it,\r * pldr, a \"private locale data register\" that extends Unicode's CLDR for display of dates in calendars,\r  * a set of non-Unicode calendars reckoning function.\r The software object anticipate the Temporal initiative of ECMA TC39.",
+  "description": "Routines for computations on calendars. Extend Date and Intl.DateTimeFormat. Allow custom calendars. Add historical gregorian calendars with custom switching date. Specify date in custom calendar. Helps creating calendars for Ecma TC39's Temporal. Handle week figures. Enhance Intl.DateTimeFormat. Extend Unicode CLDR and ICUs.",
   "main": "calendars.js",
-  "directories": {
-    "example": "aggregate.js"
-  },
   "scripts": {
     "test": "echo \"Test and demo page available at https://louis-aime.github.io/calendrical-javascript/ \" && exit 1"
   },
@@ -15,13 +12,17 @@
   },
   "keywords": [
     "calendar",
-    "calendrical",
+	"custom calendars",
+    "calendrical computations",
     "Date",
+	"Intl",
     "Intl.DateTimeFormat",
-    "Cycle Base Calendrical Computation Engine",
-    "Calendar with switching from Julian to Gregorian"
-  ],
-  "author": "Louis-Aimé de Fouquières, Miletus",
+	"date-format",
+	"temporal",
+	"icu4j",
+	"gregorian calendar"
+   ],
+  "author": "Louis-Aimé de Fouquières",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Louis-Aime/calendrical-javascript/issues"
