@@ -1,7 +1,9 @@
-# files of the demo are not part of package
+# files of the demo and JSDoc files are not part of package
 index.md
 _config.yml
 favicon.ico
-calendrical-demo-en.html
-calendrical-demo-fr.html
+*.css
+*.html
+/*
 calendrical-demo.js
+calendrical-init.js
