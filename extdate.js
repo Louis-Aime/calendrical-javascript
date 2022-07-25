@@ -1,11 +1,8 @@
-/** ExtDate, a class that extends the legacy Date object with custom calendars capabilities
- * @module ExtDate
- * @version M2021-08-28
- * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+/** ExtDate
+ * @module
  */
 // Character set is UTF-8
-/*	Version	M2022-07-22	Update JSDoc comments
+/*	Version	M2022-08-03	Handle monthCode.
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -28,8 +25,9 @@ tort or otherwise, arising from, out of or in connection with the software
 or the use or other dealings in the software.
 */
 "use strict";
-/** Compute the system time zone offset at this date, in ms. This extension is not exported, nor documented
- * rationale: with Chrome (and others ?), the TZOffset returned value losses the seconds. 
+/** Compute the system time zone offset at this date, in milliseconds. 
+ * This extension is not exported. JSDoc is not generated.
+ * Rationale: with Chrome (and others ?), the TZOffset returned value, in min, losses the seconds. 
  * @static
  * @function Date.getRealTZmsOffset
  * @extends Date
@@ -49,8 +47,14 @@ Date.prototype.getRealTZmsOffset = function () { // this prototype extension nec
 /** Extends the Date object with the flavour of Temporal proposal, using custom calendars. 
  * All methods of the Date object are also available. 
  * However, with the built-in methods, the figure that represents the month begins with 0, with the extended ones, it begins with 1.
+ * @version M2022-08-04
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022
+ * @see {@link customcalendarmodel.js}
+ * @extends Date.
+ * @requires chronos.js
+ * @requires time-units.js
  * @class
- * @extends Date
  * @param {string|object} [calendar] 
 	* the calendar object that describes the custom calendar,
 	* or a string that refers to a built-in calendar.
@@ -109,27 +113,27 @@ export default class ExtDate extends Date {
 	* @return {Object} ( name_of_field : field default value )
 	*/
 	static numericFields() { return [ {name : "fullYear", value : 0}, {name : "month", value : 1}, {name : "day", value : 1},
-		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] }
-		// names of numeric date elements
+		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] 
+		}
 	/** Give the list of numeric fields in a week day date object, and of their respective default values.
 	* @static
 	* @return {Object} ( name_of_field : field default value )
 	*/
 	static numericWeekFields() { return [ {name : "weekYear", value : 0}, {name : "weekNumber", value : 1}, {name : "weekday", value : 1},
-		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] }
-		// names of numeric week figures elements
-	/** Basic utility fonction: get UTC date from ISO 8601 UTC date figures in UTC, 
-	* including full year i.e. 2-digit year is a year of the first century.
+		{name : "hours", value : 0}, {name : "minutes", value : 0}, {name : "seconds", value : 0}, {name : "milliseconds", value : 0} ] 
+		}
+	/** Basic utility fonction: get UTC date from ISO 8601 UTC date figures, 
+	* including full year, i.e. 2-digit year is a year of the first century.
 	* Please notice the slight differences with the legacy Date.UTC() function.
 	* @static
-	* @param {number} [fullYear=0]	The year expressed as a relative unambiguous number. 
-	* @param {number} [month=1]	 The month number, 1 to 12.
+	* @param {number} [fullYear=0]	The year expressed as an algebraic unambiguous number, as specified by ISO 8601.
+	* @param {number} [month=1]	 The month number, 1 to 12 for Jan. to Dec.
 	* @param {number} [day=1]	The day number in the month.
 	* @param {number} [hours=0]	The UTC hour
 	* @param {number} [minutes=0]	The UTC minutes
 	* @param {number} [seconds=0]	The UTC seconds
 	* @param {number} [milliseconds=0]	The UTC milliseconds
-	* @return {number} the Posix timestamp corresponding to the specified date.
+	* @return {number} the Posix timestamp corresponding to the specified UTC date.
 	*/
 	static fullUTC (fullYear=0, month=1, day=1, hours=0, minutes=0, seconds=0, milliseconds=0) {
 		arguments[1]--;		// From base 1 month to month of legacy Date
@@ -138,16 +142,15 @@ export default class ExtDate extends Date {
 		return myDate.valueOf()
 	}
 	/** Compute the system time zone offset at this date, or the time zone offset of a named time zone in ms.
-	 * This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, 
+	 * This method is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, 
 	 * when used for date before 1847 in UK or even later in most other countries.
 	 * As there were no time zones, the real offset is computed to the second, but the legacy method may round to minutes, 
 	 * depending on the navigator.
-	 * @param {string} [TZ]	- the named time zone. If undefined or "", system timezone. "UTC" is always accepted.
-	 * @return {number} the time zone offset in milliseconds: UTC - local (same sign as TimezoneOffset).
+	 * @param {string} [TZ]		- the named time zone. If undefined or "", system timezone. "UTC" is always accepted.
+	 * @return {number} 		the time zone offset in milliseconds: UTC - local (same sign as TimezoneOffset).
 	*/
-	getRealTZmsOffset (TZ) {	// 2 functions in one: if TZ == undefined, compute real offset between system TZ offset at this time. if TZ = "UTC", 0. 
-								// if TZ is a named zone, use toResolvedLocalDate in order to compute offset in ms.
-		if (TZ == "UTC") return 0;		// avoid complex computation for a trivial and frequent case
+	getRealTZmsOffset (TZ) {
+		if (TZ == "UTC") return 0;		// avoid complex computation for a trivial case.
 		if (TZ == undefined || TZ == "") {	// system time zone
 		// Gregorian coordinates of the system local date
 			let localCoord = 
@@ -244,14 +247,14 @@ export default class ExtDate extends Date {
 	*/
 	getWeekFields(TZ) {
 		if (typeof this.calendar == "string") 
-			throw new RangeError ("getWeekFields method not available for built-in calendars.")
+			throw new RangeError ('getWeekFields method not available for built-in calendars: ' + this.calendar)
 		else return this.calendar.weekFieldsFromCounter (this.valueOf() - this.getRealTZmsOffset(TZ))
 	}
 	
 	/** setter method, from fields representing partially a date or time in the target calendar, change date and computie timestamp.
 	 * @param {Object} fields that change from presently held date, i.e. undefined fields are extracted from present date with same TZ (system (blank) or 'UTC')
-	 * @param {string} [TZ] - if "" or undefined (default value), local date and time. If 'UTC', UTC date and time. No other value possible.
-	 * @return {number} a new timeStamp
+	 * @param {String} [TZ] - if "" or undefined (default value), local date and time. If 'UTC', UTC date and time. No other value possible.
+	 * @return {number} a new timestamp
 	*/
 	setFromFields( myFields, TZ ) { 
 		if (typeof this.calendar == "string") throw new TypeError ('setFromFields does not work with built-in calendars: ' + this.calendar);
@@ -344,6 +347,10 @@ export default class ExtDate extends Date {
 	month (TZ) {
 		let fields = this.getFields(TZ);
 		return fields.month
+	}
+	monthCode (TZ) {
+		let fields = this.getFields(TZ);
+		return fields.monthCode == undefined ? String (fields.month) : fields.monthCode
 	}
 	/**	Get day number in month.
 	 * @param {string} [TZ] - Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.
