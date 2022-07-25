@@ -1,20 +1,8 @@
-/** Extension of Intl.DateTimeFormat objects, to handle custom calendars.
- * this module is linked to module:extdate.js, but could also be used with Temporal
- * @module ExtDateTimeFormat
- * @version M2021-09-18
- * @requires module:extdate.js
- * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+/** Extension of Intl.DateTimeFormat object. 
+ @module
  */
 // Character set is UTF-8
-/* Purpose
-	Handle custom calendars
-	New functionnalities for Intl.DateTimeFormat
-Contents
-	Description of Custom calendar objects
-	ExtDateTimeFormat: extension of Intl.DateTimeFormat
-*/
-/*	Version	M2022-07-22	JSdoc update
+/*	Version	M2022-08-04	handle intercalary months as coded in CLDR for 'hebrew'
 	See history on GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -39,17 +27,27 @@ or the use or other dealings in the software.
 */
 "use strict";
 import ExtDate from './extdate.js';
-	/** Extends the Intl.DateTimeFormat object for custom calendars, and offers new functionalities. 
-	 * All method of the Intl.DateTimeFormat object are available, however formatToParts, format, and resolvedOptions are enhanced.
+/** Extension of Intl.DateTimeFormat object. 
+ * JSDoc calls extdatetimeformat the default exported class ExtDateTimeFormat.
+ * Handle built-in or custom calendars.
+ * Handle Private Locale Data Repositories, with same structure as Unicode's CLDR.
+ * Handle the eraDisplay option.
+ * Handle "2-digit" and "numeric" options value in a different way.
+ * Requires module:extdate.js, which could be substituted by Temporal.
+ * @version M2022-08-04
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022	 
+ * @see {@link customcalendarmodel.js}
+ * @requires extdate.js
+ * @extends Intl.DateTimeFormat.
 	 * @class
-	 * @extends Intl.DateTimeFormat.
-	 * @param {string} locale	- as for Intl.DateTimeFormat.
-	 * @param {Object} options	- same as for Intl.DateTimeFormat 
+	 * @param {string} [locale]	- as for Intl.DateTimeFormat.
+	 * @param {Object} [options]	- same as for Intl.DateTimeFormat 
 		* + option eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ? 
 		* if "auto", era is displayed if year is displayed and era of now is not equal to era of formatted date.
 		* if era option is not specified, "short" is assumed whenever necessary. 
 		* Note: date and time fields option values "2-digit" and "numeric" yield different effects, unlike legacy Intl.DateTimeFormat.
-	 * @param {Object} calendar	- a calendar used to format the date.
+	 * @param {Object} [calendar]	- a calendar used to format the date.
 		*	If this parameter is not specified, the calendar resolved with locale and options will be used. 
 		*	If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options. 
 		*	If specified as a custom calendar and if a Private Locale Data Repository (PLDR) is given, this will be used for calendar's entity names. 
@@ -183,7 +181,8 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	resolvedOptions() { 
 		return this.options
 	}
-	/** Private function, should era be displayed for a given date in reference calendar ? Manages eraDisplay option.
+	/** Should era be displayed for a given date in reference calendar ? Manage eraDisplay option.
+	* @private
 	* @param {Object} aDate	- the given date with its calendar and options.
 	* @return {Boolean}	whether era should be displayed.
 	*/
@@ -212,17 +211,19 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 						!== this.calendar.fieldsFromCounter(today.toResolvedLocalDate (this.options.timeZone).valueOf()).era ;
 		}
 	}
-	/** Private function, fetch a value from a Private Locale Date Repository (PLDR).
+	/** Fetch a value from a Private Locale Date Repository (PLDR).
+	 * @private
 	 * @param {string} name		- name of the date field (era / month / dayofweek).
-	 * @param {string} option	- asked format option fot this field.
+	 * @param {string} fieldOption	- specific field option that depend on the context and may differ from 'this.options'.
 	 * @param {number|string} value	- field value for the date field in ExtDate "bag".
-	 * @return {string} the string value for this date field after the current options.
+	 * @param {string}	variant		- "leap" for the name of an intercalary month used with a luni-solar calendar.
+	 * @return {string} the string value for this date field.
 	*/
-	pldrFetch (name,options,value) {
+	pldrFetch (name, fieldOption, value, variant='') {
 		let selector = "", Xpath1 = "", node = {}, result = "";
 		switch (name) {
 			case "era" :	// analyse era options here since at construction it is not known whether era shall be displayed
-				switch (options) { 
+				switch (fieldOption) { 
 					case "long" : selector = "eraNames"; break;
 					case "short": selector = "eraAbbr"; break;
 					case "narrow":selector = "eraNarrow"; break;
@@ -241,7 +242,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			case "month": 	// this.monthWidth may be initiated with month being numeric.
 				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+this.calendar.id+"']/months/monthContext[@type='"+this.monthContext
 					+"']/monthWidth[@type='" + this.monthWidth
-					+"']/month[@type="+ value + "]";
+					+"']/month[@type="+ value + (variant == "" ? "]" : "][@yeartype='" + variant + "']");
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				result = node.stringValue;
 				// Search if a language specific name exists
@@ -252,11 +253,11 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				if (node.stringValue != "") result = node.stringValue; // If found, replace international name with language specific one.
 				if (result == "")		// no result obtained, give a number, or a 2-digit number if this option is set.
-					result = options == "2-digit" ? this.figure2.format(value) : this.figure1.format(value);
+					result = fieldOption == "2-digit" ? this.figure2.format(value) : this.figure1.format(value);
 				return result;
 				break;
 			case "weekday": 
-				switch (options) {
+				switch (fieldOption) {
 					case "long" : selector = this.dayContext == "format" ? "wide" : "wide"; break;
 					case "short": selector = this.dayContext == "format" ? "abbreviated" : "short"; break;
 					case "narrow":selector = this.dayContext == "format" ? "short" : "narrow"; break;
@@ -295,12 +296,13 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 
 		// Determine the date fields (the Temporal Date numeric + era code elements) using UTC representation of expected date
 		let myAbsoluteDate = new ExtDate (this.calendar,date.toResolvedLocalDate (options.timeZone).valueOf()), // this the absolute date to print in UTC.
-			myDateFields,
+			myDateFields, myDisplayFields,
 			myParts = new Intl.DateTimeFormat(options.locale, options).formatToParts(date), // first try, in desired language and timeZone
 			myPartsTZ = myParts.find (item => (item.type == "timeZoneName")),
 			myTZ = (myPartsTZ != undefined) ? myPartsTZ.value : null;	// Remember Time zone name since we compute on UTC date values.
 		if (this.calendar != undefined) {
 			myDateFields = this.calendar.fieldsFromCounter (myAbsoluteDate.valueOf()); // the fields of the date in the calendar, not TZ-dependant.
+			if (this.calendar.displayFields != undefined) {myDisplayFields = this.calendar.displayFields(myDateFields)} else {myDisplayFields = {...myDateFields}};
 			try {
 				Object.assign(myDateFields, this.calendar.weekFieldsFromCounter (myAbsoluteDate.valueOf()));	// Add week-related fields, including "weekday".
 			}
@@ -350,7 +352,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 						case "month": switch (options.month) {
 							case "2-digit" : myParts[i].value = this.figure2.format(myDateFields.month); break;
 							case "numeric" : myParts[i].value = this.figure1.format(myDateFields.month); break;
-							default : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]
+							default : myParts[i].value = this.calendar.partsFormat[item.type].source[myDisplayFields[item.type]-1] // here the displayField (month number) is considered a valid index, with values for months that change their name in leap years.
 						} break;
 						case "weekday" : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]; break;
 						default : // other fields are numeric, not subject to lists;
@@ -368,8 +370,14 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 								case "numeric" : myParts[i].value = this.figure1.format(myDateFields.year); 
 								}
 								break;
-							case "month" : 
-								myParts[i].value = this.pldrFetch ("month", options.month, (myDateFields.month)); 
+							case "month" : switch (options.month) {	// like with CLDR, displayed month number may differ from type corresponding to month name.
+								case "numeric" : case "2-digit": // here the month number is displayed
+									myParts[i].value = this.pldrFetch ("month", options.month, myDateFields.month); 
+									break; 
+								default :	// here the month name shall be computed
+									myParts[i].value = this.pldrFetch ("month", options.month, myDisplayFields.month, myDisplayFields.leapMonth); 
+									break;
+								}
 								break;
 							case "day": switch (options.day) {
 								case "2-digit" : myParts[i].value = this.figure2.format(myDateFields.day); break;
