@@ -1,22 +1,14 @@
 /** 
  * @file Demonstrator for calendar-javascript.
  * To be used with suitable calendrical-demo-**.html file.
- * contents: global variables and animation routines for the html page.
- * Required objects initiated by calendrical-init or equivalent. loadCalendrical: promise that modules are imported. Calendrical: prefix name for imported modules.
- * @version M2022-02-22
+ * contents: global variables, animation routines for the html page, event listeners to follow forms.
+ * @requires module:calendrical-init.js
+ * @version M2022-08-02
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
 */
 // Character set is UTF-8
-/* Version notes
-	This file is associated with calendrical-demo-**.html files.
-	The event listeners are designed as to follow forms value. A "refresh" action will set to value in forms. 
-	Control are done as to avoid changes to illegal values in forms (except dates that cab be balanced).
-*/
-/* Version:	M2022-03-22 today's date is in TZ specified time zone.
-	M2022-01-26	JSdoc
-	M2022-01-15	Purge historical comments
-	M2021-08-29	French Rev calendar with pldr
+/* Version:	M2022-08-02 	Review comments.
 	see details on GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -41,36 +33,36 @@ or the use or other dealings in the software.
 */
 "use strict";
 
-// global var calendrical is initiated as prefix name for user modules.
+// global const calendrical is initiated as prefix name for user modules.
 // global const loadComplete is Promise object that all modules and data are imported.
 
-	/** The first date where the Gregorian calendar was enforced, as set by the user.
-	*/ 
+	/** The first date where the Gregorian calendar was enforced, as set by the user. */ 
 var 
 	switchingDate = { day : 15, month : 10, year : 1582 },
-	/** Array of available custom calendars.
-	*/
+	/** Array of available custom calendars. */
 	calendars = [],
-	/**	Index of custom calendar currently used.
-	*/ 
+	/**	Index of custom calendar currently used. */ 
 	customCalIndex = 0,
-	/** The date (instant) to be displayed, initially now. 
-	*/
+	/** The date (instant) to be displayed, initially now. */
 	targetDate = new Date(0),
-	/** Time zone selector, blank means "system time zone", "UTC" means UTC. These are the only recognised values.
-	*/
+	/** Time zone selector, blank means "system time zone", "UTC" means UTC. These are the only recognised values. */
 	TZ = "",
-	/**	Computed (real) time zone offset, result may differ from Date.prototype.TZOffset().
-	*/ 
+	/**	Computed (real) time zone offset in ms, result may differ from Date.prototype.TZOffset() (in min). */ 
 	TZOffset = 0,
-	/** current display options (Intl.DateTimeFormat or ExtDateTimeFormat objects).
-	*/
-	askedOptions, usedOptions, extAskedOptions, extUsedOptions, cusAskedOptions; 
+	/** asked display options for Intl.DateTimeFormat. */
+	askedOptions, 
+	/** resolved display options for Intl.DateTimeFormat. */
+	usedOptions, 
+	/** asked display options for ExtDateTimeFormat. */
+	extAskedOptions, 
+	/** resolved display options for ExtDateTimeFormat. */
+	extUsedOptions, 
+	/** resolved display options for ExtDateTimeFormat, with the calendar specified by the user. */
+	cusAskedOptions; 
 
-/**	Recompute and display all date elements and parameters after a change.
-*/
-function setDisplay () { // Considering that targetDate time has been set to the desired date, this routines updates all form fields.
-	// Set time zone offset at asked date, display parameters
+/**	Recompute and display all date elements and parameters after a change of targetDate or of display parameters. */
+function setDisplay () {
+	// Set time zone offset at asked date, display parameters.
 	TZOffset = targetDate.getRealTZmsOffset().valueOf();
 	let myElement = document.getElementById("sysTZoffset");
 	myElement.innerHTML = new Intl.NumberFormat().format(targetDate.getTimezoneOffset());
@@ -85,7 +77,7 @@ function setDisplay () { // Considering that targetDate time has been set to the
 		case "" : 
 			document.querySelector("#realTZOffset").innerHTML = (systemSign == 1 ? "+ ":"- ") + absoluteTZmin + " min " + absoluteTZsec + " s";
 	}
-	// Initiate a representation of local date
+	// Initiate a representation of local date.
 	document.custom.calend.value = calendars[customCalIndex].id	;	
 	document.custom.year.value = targetDate.fullYear(TZ); // display fullYear, not just year. fields.year is displayed with era in date string.
 	document.custom.monthname.value = targetDate.month(TZ); // Display month value in 1..12 range.
@@ -133,9 +125,8 @@ function setDisplay () { // Considering that targetDate time has been set to the
 		document.yeartype.leapyear.value = targetDate.inLeapYear(TZ);
 }
 
-/** Recompute all Intl.DateTimeFormat and ExtDateTimeFormat object after a change in display parameters
-*/
-function compLocalePresentationCalendar() { // Compute new formatting objects
+/** Recompute all Intl.DateTimeFormat and ExtDateTimeFormat objects after a change in display parameters. */
+function compLocalePresentationCalendar() {
 
 	let 
 		Locale = document.Locale.Locale.value,
@@ -242,15 +233,13 @@ function compLocalePresentationCalendar() { // Compute new formatting objects
 	document.timeOptions.XAmPm.value = extUsedOptions.dayPeriod;
 
 }
-/** Set current custom calend to new value and compute fields
-*/
+/** Set current custom calendar to new value and compute fields. */
 function setCalend() {
 	customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);  // change custom calendar
 	targetDate = new calendrical.ExtDate(calendars[customCalIndex], targetDate.valueOf());	// set custom calendar if changed, and set date.
 	compLocalePresentationCalendar(); // necessary to recompute formatters
 }
-/** Compute date from field values of current custom calendar
-*/
+/** Compute date from field values of current custom calendar. */
 function calcCustom() {
 	var 
 	 day =  Math.round (document.custom.day.value),
@@ -275,8 +264,7 @@ function calcCustom() {
 		targetDate = new calendrical.ExtDate(calendars[customCalIndex], testDate.valueOf());	// set custom calendar if changed, and set date.
 		}
 }
-/** Compute date from week field values of current custom calendar
-*/
+/** Compute date from week field values of current custom calendar. */
 function calcWeek() {
 	var myFields = {
 			weekYear : Math.round (document.week.weekyear.value),
@@ -312,11 +300,11 @@ function calcWeek() {
 		targetDate = new calendrical.ExtDate(calendars[customCalIndex], testDate.valueOf());	// set custom calendar if changed, and set date.
 		}
 }
-/** The quantum of decimal days to add or subtract by clicking */
+/** The quantum of decimal days to add or subtract by clicking + or - button. */
 var 
 	dayOffset = 1; 
 // no setDateToToday
-/** Change value of dayOffset */
+/** Change value of dayOffset. */
 function changeDayOffset () { 
 	let days = +document.control.shift.value;
 	if (isNaN(days) || days < 0) {
@@ -328,8 +316,8 @@ function changeDayOffset () {
 		document.control.shift.value = days; // Confirm changed value
 	}
 }
-/** Add or subtract a quantum of days to targetDate
- @param {Number} sign 	- add if > 1, subtract if -1, erroneous if other values
+/** Add or subtract a quantum of days to targetDate.
+ @param {Number} sign 	- add if +1, subtract if -1, erroneous if other value.
 */
 function setDayOffset (sign=1) {
 	changeDayOffset();	// Force a valid value in field
@@ -342,7 +330,7 @@ function setDayOffset (sign=1) {
 		targetDate.setTime( testDate.valueOf() );
 	}
 }
-/** Set local or UTC time, after global TZ, in same day */
+/** Set local or UTC time, after global TZ, in same day. */
 function calcTime() { // Here the hours are deemed local hours
 	var hours = Math.round (document.time.hours.value), mins = Math.round (document.time.mins.value), 
 		secs = Math.round (document.time.secs.value), ms = Math.round (document.time.ms.value);
@@ -357,9 +345,9 @@ function calcTime() { // Here the hours are deemed local hours
 	}
 	
 }
-/** The quantum of milliseconds to add or subtract by clicking */
+/** The quantum of milliseconds to add or subtract by clicking + or - button. */
 var addedTime = 60000; 
-/** Change value of addedTime */ 
+/** Change value of addedTime. */ 
 function changeAddTime() {
 	let msecs = +document.timeShift.shift.value; 
 	if (isNaN(msecs) || msecs <= 0) 
@@ -370,8 +358,8 @@ function changeAddTime() {
 		document.timeShift.shift.value = msecs; // Confirm changed value
 		}
 	}
-/** Add or subtract a quantum of time to targetDate
- @param {Number} sign 	- add if > 1, subtract if -1, erroneous if other values
+/** Add or subtract a quantum of time to targetDate.
+ @param {Number} sign 	- add if +1, subtract if -1, erroneous if other value.
 */
 function addTime (sign = 1) { // addedTime ms is added or subtracted to or from the Timestamp.
 	changeAddTime();	// Force a valid value in field
@@ -382,13 +370,9 @@ function addTime (sign = 1) { // addedTime ms is added or subtracted to or from 
 		targetDate.setTime( testDate.valueOf() );
 	}
 }
-/** Initiate TZ variable (time zone mode) after value in HTML document */
+/** Initiate TZ variable (time zone mode) after value in HTML document. */
 function getMode() {
 	TZ = document.TZmode.TZcontrol.value;
-	// TZDisplay = TZ == "UTC" ? "UTC" : "";
-	/** TZOffset is JS time zone offset in milliseconds (UTC - local time)
-	 * Note that getTimezoneOffset sometimes gives an integer number of minutes where a decimal number is expected
-	*/
 }
 /** Set a simple UTC hour at same date. The date is computed after TZ value. */
 function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
@@ -400,12 +384,17 @@ function setUTCHoursFixed (UTChours=0) { // set UTC time to the hours specified.
 		targetDate.setTime (testDate.valueOf());
 	}
 }
-/** Set date to present instant */
+/** Set date to present instant, with the selected user calendar. */
 function setDateToNow(){
-	targetDate = new calendrical.ExtDate(calendars[customCalIndex]); // set new Date object.
+	targetDate = new calendrical.ExtDate(calendars[customCalIndex]); 
 }
-/** Events handlers
- * @function
+
+/**
+ @namespace window
+*/
+/** Initialisation function. After page is loaded, global variables are initialised, then event handlers are set.
+ *@function onload
+ *@memberof window
 */
 window.onload = function () {
 	// Initial values are taken from forms in page
