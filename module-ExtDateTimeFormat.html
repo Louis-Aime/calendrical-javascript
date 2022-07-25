@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: module:ExtDateTimeFormat</title>
+    <title>JSDoc: Class: module:extdatetimeformat</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: module:ExtDateTimeFormat</h1>
+    <h1 class="page-title">Class: module:extdatetimeformat</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>module:ExtDateTimeFormat<span class="signature">(locale, options, calendar)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>module:extdatetimeformat<span class="signature">(locale<span class="signature-attributes">opt</span>, options<span class="signature-attributes">opt</span>, calendar<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Extends the Intl.DateTimeFormat object for custom calendars, and offers new functionalities. All method of the Intl.DateTimeFormat object are available, however formatToParts, format, and resolvedOptions are enhanced.</div>
+            <div class="class-description">Extension of Intl.DateTimeFormat object. JSDoc calls extdatetimeformat the default exported class ExtDateTimeFormat.Handle built-in or custom calendars.Handle Private Locale Data Repositories, with same structure as Unicode's CLDR.Handle the eraDisplay option.Handle "2-digit" and "numeric" options value in a different way.Requires module:extdate.js, which could be substituted by Temporal.</div>
         
     
 </header>
@@ -45,7 +45,7 @@
     
 
     
-    <h4 class="name" id="module:ExtDateTimeFormat"><span class="type-signature"></span>new module:ExtDateTimeFormat<span class="signature">(locale, options, calendar)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="module:extdatetimeformat"><span class="type-signature"></span>new module:extdatetimeformat<span class="signature">(locale<span class="signature-attributes">opt</span>, options<span class="signature-attributes">opt</span>, calendar<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -73,6 +73,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -98,6 +100,16 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -120,6 +132,16 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -144,6 +166,16 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -162,7 +194,8 @@
 <dl class="details">
 
     
-
+    <dt class="tag-version">Version:</dt>
+    <dd class="tag-version"><ul class="dummy"><li>M2022-08-04</li></ul></dd>
     
 
     
@@ -180,7 +213,19 @@
     
 
     
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Louis A. de Fouquières https://github.com/Louis-Aime</li>
+        </ul>
+    </dd>
+    
 
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2022</li></ul></dd>
     
 
     
@@ -188,18 +233,30 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line59">line 59</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
     
 
     
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="customcalendarmodel.js.html">customcalendarmodel.js</a></li>
+        </ul>
+    </dd>
+    
 
     
 </dl>
 
 
+
+<h5>Requires:</h5>
+<ul>
+    <li>module:extdate.js</li>
+</ul>
 
 
 
@@ -234,6 +291,12 @@
 
     
 
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:extdate.js</li>
+        </ul>
     
 
     
@@ -307,7 +370,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line173">line 173</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -466,7 +529,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line179">line 179</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line177">line 177</a>
     </li></ul></dd>
     
 
@@ -507,165 +570,6 @@
     <dd>
         
 <span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="displayEra"><span class="type-signature"></span>displayEra<span class="signature">(aDate)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Private function, should era be displayed for a given date in reference calendar ? Manages eraDisplay option.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>aDate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the given date with its calendar and options.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line190">line 190</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    whether era should be displayed.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Boolean</span>
 
 
     </dd>
@@ -784,7 +688,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line448">line 448</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line456">line 456</a>
     </li></ul></dd>
     
 
@@ -943,7 +847,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line287">line 287</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line288">line 288</a>
     </li></ul></dd>
     
 
@@ -984,214 +888,6 @@
     <dd>
         
 <span class="param-type">Array.&lt;Object></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="pldrFetch"><span class="type-signature"></span>pldrFetch<span class="signature">(name, option, value)</span><span class="type-signature"> &rarr; {string}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Private function, fetch a value from a Private Locale Date Repository (PLDR).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">name of the date field (era / month / dayofweek).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>option</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">asked format option fot this field.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-|
-
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">field value for the date field in ExtDate "bag".</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line221">line 221</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    the string value for this date field after the current options.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
 
 
     </dd>
@@ -1261,7 +957,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line183">line 183</a>
+        <a href="extdatetimeformat.js.html">extdatetimeformat.js</a>, <a href="extdatetimeformat.js.html#line181">line 181</a>
     </li></ul></dd>
     
 
@@ -1329,13 +1025,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 13 2022 20:45:23 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jul 25 2022 12:10:36 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
