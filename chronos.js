@@ -4,12 +4,12 @@
 	Non-integer parameter will yield erroneous non-integer values.
 	Default parameters assume that computations are done using 1 for the first month of any calendar.
  * @module chronos
- * @version M2021-07-16
+ * @version M2022-08-03
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Character set is UTF-8
-/* Version	M2022-07-20: Minor updates of comments.
+/* Version	M2022-08-02: Update comments, change param name to calendarRule.
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -57,11 +57,11 @@ or the use or other dealings in the software.
 */
 /** The Cycle Based Calendar Computation Engine (Cbcce)
  * @class
- * @param {calendarRule} calendRule - The object that describes the rules of the calendar to be implemented
+ * @param {calendarRule} calendarRule - The object that describes the rules of the calendar to be implemented
  */
 export class Cbcce 	{	// Essential calendrical computations tools, including the Cycle Based Calendrical Computation Engine (CBCCE)
-	constructor (calendRule) {
-		this.calendRule = calendRule;
+	constructor (calendarRule) {
+		this.calendarRule = calendarRule;
 	}
 	/** The Modulo function for calendrical computations
 	 * @static
@@ -121,73 +121,73 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	}
 	/** Build a compound object from a timestamp holding the elements as required by a given cycle hierarchy model.
 	 * @param {number} askedNumber	- a timestamp representing the date to convert.
-	 * @returns {Object} the calendar elements in the structure that calendRule prescribes.
+	 * @returns {Object} the calendar elements in the structure that calendarRule prescribes.
 	*/
 	getObject (askedNumber) {
-	  let quantity = askedNumber - this.calendRule.timeepoch; // set at initial value the quantity to decompose into cycles.
+	  let quantity = askedNumber - this.calendarRule.timeepoch; // set at initial value the quantity to decompose into cycles.
 	  var result = new Object(); // Construct initial compound result 
-	  for (let i = 0; i < this.calendRule.canvas.length; i++) 	// Define property of result object (a date or date-time)
-		Object.defineProperty (result, this.calendRule.canvas[i].name, {enumerable : true, writable : true, value : this.calendRule.canvas[i].init}); 
+	  for (let i = 0; i < this.calendarRule.canvas.length; i++) 	// Define property of result object (a date or date-time)
+		Object.defineProperty (result, this.calendarRule.canvas[i].name, {enumerable : true, writable : true, value : this.calendarRule.canvas[i].init}); 
 	  let addCycle = 0; 	// flag that upper cycle has one element more or less (i.e. a 5 years franciade or 13 months luni-solar year)
-	  for (let i = 0; i < this.calendRule.coeff.length; ++i) {	// Perform decomposition by dividing by the successive cycle length
+	  for (let i = 0; i < this.calendarRule.coeff.length; ++i) {	// Perform decomposition by dividing by the successive cycle length
 		if (isNaN(quantity)) 
-			result[this.calendRule.coeff[i].target] = NaN	// Case where timestamp is not a number, e.g. out of bounds.
+			result[this.calendarRule.coeff[i].target] = NaN	// Case where timestamp is not a number, e.g. out of bounds.
 		else {	// Here we make the suitable Euclidian division, with ceiling.
-			let ceiling = this.calendRule.coeff[i].ceiling + addCycle,
-				[q, m] = Cbcce.divmod (quantity, this.calendRule.coeff[i].cyclelength);
+			let ceiling = this.calendarRule.coeff[i].ceiling + addCycle,
+				[q, m] = Cbcce.divmod (quantity, this.calendarRule.coeff[i].cyclelength);
 			if (q > ceiling) {
 				if ( q > ceiling + 1 ) throw new RangeError 
-					("Unsuitable quotient in ceiled division: " + quantity + " by " + this.calendRule.coeff[i].cyclelength + " ceiled with " + ceiling);
+					("Unsuitable quotient in ceiled division: " + quantity + " by " + this.calendarRule.coeff[i].cyclelength + " ceiled with " + ceiling);
 				--q;
 			}
-			quantity -= q * this.calendRule.coeff[i].cyclelength;
-			addCycle = (q == ceiling) ? this.calendRule.coeff[i].subCycleShift : 0; // if at last section of this cycle, add or subtract 1 to the ceiling of next cycle
-			if (this.calendRule.coeff[i].notify != undefined) result[this.calendRule.coeff[i].notify] = (q == ceiling); // notify special cycle, like leap year etc. 
-			result[this.calendRule.coeff[i].target] += q*this.calendRule.coeff[i].multiplier; // add result to suitable part of result array
+			quantity -= q * this.calendarRule.coeff[i].cyclelength;
+			addCycle = (q == ceiling) ? this.calendarRule.coeff[i].subCycleShift : 0; // if at last section of this cycle, add or subtract 1 to the ceiling of next cycle
+			if (this.calendarRule.coeff[i].notify != undefined) result[this.calendarRule.coeff[i].notify] = (q == ceiling); // notify special cycle, like leap year etc. 
+			result[this.calendarRule.coeff[i].target] += q*this.calendarRule.coeff[i].multiplier; // add result to suitable part of result array
 		}
 	  }	
 	  return result;
 }
 	/** Compute the timestamp from the element of a date in a given calendar.
-	 * @param {Object} askedObject	- the numeric elements of the date, collected in an object containing the elements that calendRule prescribes.
+	 * @param {Object} askedObject	- the numeric elements of the date, collected in an object containing the elements that calendarRule prescribes.
 	 * @returns {number} the timestamp
 	*/
-	getNumber (askedObject) { // from an object askedObject structured as calendRule.canvas, compute the chronological number
-		var cells = {...askedObject}, quantity = this.calendRule.timeepoch; // initialise Unix quantity to computation epoch
-		for (let i = 0; i < this.calendRule.canvas.length; i++) { // cells value shifted as to have all 0 if at epoch
-			cells[this.calendRule.canvas[i].name] -= this.calendRule.canvas[i].init;
-			if (isNaN (cells[this.calendRule.canvas[i].name])) throw new TypeError ('Missing or invalid expected field ' + this.calendRule.canvas[i].name);
+	getNumber (askedObject) { // from an object askedObject structured as calendarRule.canvas, compute the chronological number
+		var cells = {...askedObject}, quantity = this.calendarRule.timeepoch; // initialise Unix quantity to computation epoch
+		for (let i = 0; i < this.calendarRule.canvas.length; i++) { // cells value shifted as to have all 0 if at epoch
+			cells[this.calendarRule.canvas[i].name] -= this.calendarRule.canvas[i].init;
+			if (isNaN (cells[this.calendarRule.canvas[i].name])) throw new TypeError ('Missing or invalid expected field ' + this.calendarRule.canvas[i].name);
 		}
-		let currentTarget = this.calendRule.coeff[0].target; 	// Set to uppermost unit used for date (year, most often)
-		let currentCounter = cells[this.calendRule.coeff[0].target];	// This counter shall hold the successive remainders
+		let currentTarget = this.calendarRule.coeff[0].target; 	// Set to uppermost unit used for date (year, most often)
+		let currentCounter = cells[this.calendarRule.coeff[0].target];	// This counter shall hold the successive remainders
 		let addCycle = 0; 	// This flag says whether there is an additional period at end of cycle, e.g. a 5th year in the Franciade or a 13th month
-		for (let i = 0; i < this.calendRule.coeff.length; i++) {
-			if (currentTarget != this.calendRule.coeff[i].target) {	// If we go to the next level (e.g. year to month), reset variables
-				currentTarget = this.calendRule.coeff[i].target;
+		for (let i = 0; i < this.calendarRule.coeff.length; i++) {
+			if (currentTarget != this.calendarRule.coeff[i].target) {	// If we go to the next level (e.g. year to month), reset variables
+				currentTarget = this.calendarRule.coeff[i].target;
 				currentCounter = cells[currentTarget];
 			}
-			let ceiling = this.calendRule.coeff[i].ceiling + addCycle;	// Ceiling of this level may be increased 
+			let ceiling = this.calendarRule.coeff[i].ceiling + addCycle;	// Ceiling of this level may be increased 
 																// i.e. Franciade is 5 years if at end of upper cycle
-			let [f,m] = Cbcce.divmod (currentCounter,this.calendRule.coeff[i].multiplier);
+			let [f,m] = Cbcce.divmod (currentCounter,this.calendarRule.coeff[i].multiplier);
 			if (f > ceiling) {
 				if ( f > ceiling + 1 || m != 0 ) {
 					throw new RangeError 
-					("Unsuitable quotient in ceiled division: " + currentCounter + " by " + this.calendRule.coeff[i].multiplier + " ceiled with " + ceiling);
+					("Unsuitable quotient in ceiled division: " + currentCounter + " by " + this.calendarRule.coeff[i].multiplier + " ceiled with " + ceiling);
 					};
 				--f;
 			}
-			currentCounter -= f * this.calendRule.coeff[i].multiplier;
-			addCycle = (f == ceiling) ? this.calendRule.coeff[i].subCycleShift : 0;	// If at end of this cycle, the ceiling of the lower cycle may be increased or decreased.
-			quantity += f * this.calendRule.coeff[i].cyclelength;				// contribution to quantity at this level.
+			currentCounter -= f * this.calendarRule.coeff[i].multiplier;
+			addCycle = (f == ceiling) ? this.calendarRule.coeff[i].subCycleShift : 0;	// If at end of this cycle, the ceiling of the lower cycle may be increased or decreased.
+			quantity += f * this.calendarRule.coeff[i].cyclelength;				// contribution to quantity at this level.
 		}
 		return quantity ;
 	}
 } // end of Cbcce class
-/** Structure of the weekDayRule parameter passed to WeekClock that describes the structure of the week. 
+/** Structure of the weekRule parameter passed to WeekClock that describes the structure of the week. 
  * Non checked constraints: 
  * 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.
  * 2. weekLength shall be > 0
- * @typedef {Object} weekDayRule 	-  set of parameters for the computation of week elements
+ * @typedef {Object} weekRule 	-  set of parameters for the computation of week elements
  * @property {Number} originWeekday - weekday number of day 0. Value is renormalised to 0..weekLength-1.
  * @property {Function} daysInYear	- function (year), number of days in year. year is specified as "fullyear" (unambiguous); 
 	* with solar calendars, result is 365 or 366.
@@ -210,20 +210,20 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 */
 /** Get week figures using different reckoning sytems for weeks
  * @class
- * @param {weekDayRule} weekDayRule - the description of the week
+ * @param {weekRule} weekRule - the description of the week
  */
 export class WeekClock {
-	constructor (weekdayRule) {
-		this.originWeekday = weekdayRule.originWeekday;
-		this.daysInYear = weekdayRule.daysInYear;
-		this.characDayIndex = weekdayRule.characDayIndex; 
-		this.weekLength = weekdayRule.weekLength != undefined ? weekdayRule.weekLength : 7 ;
-		this.startOfWeek = weekdayRule.startOfWeek != undefined ? Cbcce.mod (weekdayRule.startOfWeek, this.weekLength) : 1 ;
-		this.characWeekNumber = weekdayRule.characWeekNumber != undefined ? weekdayRule.characWeekNumber : 1 ;
-		this.dayBase = weekdayRule.dayBase != undefined ? Cbcce.mod (weekdayRule.dayBase, this.weekLength) : 1 ;
-		this.weekBase = weekdayRule.weekBase != undefined ? weekdayRule.weekBase : 1; 
-		this.weekReset = weekdayRule.weekReset != undefined ? weekdayRule.weekReset : false;
-		this.uncappedWeeks = weekdayRule.uncappedWeeks != undefined ? weekdayRule.uncappedWeeks : null;
+	constructor (weekRule) {
+		this.originWeekday = weekRule.originWeekday;
+		this.daysInYear = weekRule.daysInYear;
+		this.characDayIndex = weekRule.characDayIndex; 
+		this.weekLength = weekRule.weekLength != undefined ? weekRule.weekLength : 7 ;
+		this.startOfWeek = weekRule.startOfWeek != undefined ? Cbcce.mod (weekRule.startOfWeek, this.weekLength) : 1 ;
+		this.characWeekNumber = weekRule.characWeekNumber != undefined ? weekRule.characWeekNumber : 1 ;
+		this.dayBase = weekRule.dayBase != undefined ? Cbcce.mod (weekRule.dayBase, this.weekLength) : 1 ;
+		this.weekBase = weekRule.weekBase != undefined ? weekRule.weekBase : 1; 
+		this.weekReset = weekRule.weekReset != undefined ? weekRule.weekReset : false;
+		this.uncappedWeeks = weekRule.uncappedWeeks != undefined ? weekRule.uncappedWeeks : null;
 	}
 	/**	Compute week figures in the defined week structure
 	 * @param {number} dayIndex 	- date stamp, in day unit, of the day whose figures are computed
@@ -270,7 +270,7 @@ export class WeekClock {
 	/**	Compute day index from week figures in the defined week structure
 	 * @param {number} weekYear 	- the year (full year, a relative integer) of the week figures. There may be 1 year difference with the year of the calendar's date.
 	 * @param {number} [weekNumber] - the number of the week; if not specified, this.weekBase.
-	 * @param {number} [dayOfWeek] 	- the number day of the week, following the weekdayRule parameter set; if not specified: this.dayBase.
+	 * @param {number} [dayOfWeek] 	- the number day of the week, following the weekRule parameter set; if not specified: this.dayBase.
 	 * @param {boolean} [check] 	- whether a consitency check is done.
 	 * @return {number} day index, in day units (not in milliseconds or other), of the day that corresponds to the week figures.
 	*/
