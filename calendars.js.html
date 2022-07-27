@@ -31,7 +31,7 @@
 	* Passing non numeric values will yield NaN results.
 	* Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
  * @module
- * @version M2021-08-28
+ * @version M2028-08-06
  * @requires module:time-units.js
  * @requires module:chronos.js
  * @requires module:extdate.js
@@ -39,7 +39,7 @@
  * @license MIT 2016-2022
 //	Character set is UTF-8
 */
-/* Versions:	M2022-07-22 JSdoc
+/* Versions:	M2022-08-06 Eras for Western calendar
 */ 
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -69,14 +69,14 @@ import ExtDate from "./extdate.js";
 	/** Generic Milesian calendar. The Milesian calendar is defined in www.calendriermilesien.org. 
 	 * This web site is in French, but a short presentation in English is available from the welcome page.
 	 * The Milesian calendar reorganises the months of the ISO 8601 year. 
-	 * The year begins on Dec. 21 (Dec. 22 before a leap year), and months have regular lengths: 30 and 31 days alternatively.
+	 * The year begins on Dec. 21 (Dec. 22 before a Gregorian leap year), and months have regular lengths: 30 and 31 days alternatively.
 	 * Months have unambiguous notation and names: 1m, 2m, etc. to 12m, said Firstem, Secondem, Thirdem... Twelfthem.
 	 * The intercalation day is the last day of the year: 12m 31, which always fall on Dec. 21.
-	 * There is no era: year are always algebraic integer numbers.
-	 * Since this calendar uses new month names, a private local data repository is necessary in order to display dates.
+	 * There is no era: years are always algebraic integer numbers.
+	 * Since this calendar uses new month names, a private local data repository (PLDR) is necessary in order to display month names.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
-	 * @param {Object} pldr	- a Document Object, with the specific names for the Milesian calendar (after languages, countries etc.).
+	 * @param {Object} pldr	- a document object, with the specific names for the Milesian calendar (after languages, countries etc.).
 	*/
 export class MilesianCalendar { 
 	constructor (id,pldr) {
@@ -90,10 +90,10 @@ export class MilesianCalendar {
 	partsFormat = {
 		era : {mode : "field"},
 		year : {mode : "pldr"},
-		month : {mode : "pldr"}
+		month : {mode : "pldr", calname : "milesian"}
 	}
 	milesianClockwork = new Cbcce ( 
-		{ 					//calendRule object, used with Posix epoch
+		{ 					//calendarRule object, used with Posix epoch
 		timeepoch : -62168083200000, // Unix timestamp of 1 1m 000 00h00 UTC in ms
 		coeff : [ 
 		  {cyclelength : 12622780800000, ceiling : Infinity, subCycleShift : 0, multiplier : 400, target : "year"},
@@ -117,7 +117,7 @@ export class MilesianCalendar {
 			{name : "seconds", init : 0},
 			{name : "milliseconds", init : 0},
 		]
-		})	// end of calendRule
+		})	// end of calendarRule
 	milesianWeek = new WeekClock (
 		{
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
@@ -178,7 +178,7 @@ export class MilesianCalendar {
 	}
 }
 
-	/** Generic Gregorian proleptic calendar, with no era. Years are relative numbers.
+	/** Generic Gregorian proleptic calendar, with no era. Years are algebraic numbers.
 	 * this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
@@ -265,7 +265,8 @@ export class JulianCalendar  {
 		this.id = id;
 		this.pldr = pldr;
 	}
-	/* Julian conversion mechanism, using the "shifted" julian calendar : year is full Year, a relative number; year begin in March, months counted from 3 to 14
+	/* Julian conversion mechanism, using the "shifted" julian calendar : 'year' is full year, an algebraic figure; 
+	* the year begins in March, the months are counted from 3 to 14.
 	*/
 	julianClockwork = new Cbcce ({ 
 		timeepoch : -62162208000000, // 1 March of year 0, Julian calendar, relative to Posix epoch
@@ -283,14 +284,14 @@ export class JulianCalendar  {
 		],
 		canvas : [ 
 			{name : "fullYear", init : 0},
-			{name : "month", init : 3}, // Shifted year begins with month number 3 (March) and goes to month 14 (February of next tradional year)
+			{name : "month", init : 3}, // The shifted year begins with month number 3 (March) and finishes with month 14 (February of next tradional year).
 			{name : "day", init : 1},
 			{name : "hours", init : 0},
 			{name : "minutes", init : 0},
 			{name : "seconds", init : 0},
 			{name : "milliseconds", init : 0},
 		]	
-		}) // end of calendRule
+		}) // end of calendarRule
 	julianWeek = new WeekClock (
 		{	// ISO8601 rule applied to Julian calendar
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of ISO 1970-01-01 is Thursday
@@ -307,7 +308,7 @@ export class JulianCalendar  {
 	*/
 	eras = ["BC", "AD"]	// may be given other codes, the codes are purely external, only indexes are used
 	canvas = "gregory"
-	stringFormat = "fields"	// prepare string parts based on value of fields, not on values computed with base calendars
+	stringFormat = "fields"	// prepare string parts based on value of fields, but using the set of value of the canvas calendar.
 	partsFormat = null	// format each part exactly as if it were a canvas calendar date
 	shiftYearStart (dateFields, shift, base) { // Shift start of fullYear to March, or back to January, for calendrical calculations
 		let shiftedFields = {...dateFields};
@@ -386,21 +387,25 @@ export class JulianCalendar  {
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	 * @param {number|string} switchingDate	- first date where Gregorien calendar was used; switchingDate may be an ISO string or a Posix timestamp.
+	 * @param {document} pldr	- the private locale data registry that holds the era names.
 	*/
 export class WesternCalendar {
-	constructor (id, switchingDate) {
+	constructor (id, switchingDate, pldr) {
 		this.id = id;
+		this.pldr = pldr;
 		this.switchingDate = new Date(switchingDate);	// first date where Gregorien calendar is used. switchingDate may be an ISO string
 		this.switchingDate.setUTCHours (0,0,0,0);		// set to 00:00 UTC at switching date
 		if (this.switchingDate.valueOf() &lt; Date.parse ("1582-10-15T00:00:00Z")) 
 			throw new RangeError ("Switching date to Gregorian shall be not earlier than 1582-10-15: " + this.switchingDate.toISOString());
 	}
-	/** Era codes: "BC" for backwards counted years before year 1, "AS" (Ancien Style) for years since Dionysos era in Julian, "NS" (New Style) fot years in Gregorian.
+	/** Era codes: "BC" for backwards counted years before year 1, 
+	* "AS" (Ancien Style) for years since Dionysos era in Julian reckoning system, 
+	* "NS" (New Style) for years in Gregorian reckoning system.
 	*/
 	eras = ["BC", "AS", "NS"]	// define before partsFormat in order to refer to it.
 	canvas = "gregory"
-	stringFormat = "fields"	// formatting options differ from base calendars
-	// partsFormat = {	era : { mode : "list", codes : this.eras, source : this.eras }	} // by not defining this object, displayed eras are only BC and AD.
+	stringFormat = "fields"	// formatting options differ from base calendars'.
+	partsFormat = {	era : { mode : "pldr", calname : "gregory" }	}
 	firstSwitchDate = new Date ("1582-10-15T00:00:00Z") // First date of A.S. or N.S. era
 	julianCalendar = new JulianCalendar (this.id) 
 	gregorianCalendar = new GregorianCalendar (this.id)
@@ -510,8 +515,9 @@ export class FrenchRevCalendar {
 	partsFormat = {
 		// weekday: {mode : "list", source : this.dayNames}
 		weekday : { mode : "pldr", 
+					calname : "frenchrev",
 					key : i => i },
-		month : { mode : "pldr" },		// {mode : "list", source : this.monthNames},
+		month : { mode : "pldr", calname : "frenchrev" },		// {mode : "list", source : this.monthNames},
 		year : {mode : "field" },
 		// era : {mode : "list", codes : this.eras, source : this.eraNames} 
 		era : { mode : "pldr" }
@@ -614,7 +620,7 @@ export class FrenchRevCalendar {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jul 25 2022 12:10:36 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 27 2022 18:53:53 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

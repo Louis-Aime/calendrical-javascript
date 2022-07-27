@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">Description of the objects and class structure suitable for the ExtDate and ExtDateTimeFormat class extensions provided in calendrical-javascript package.The methods that the user should provide are also described here.This module file does not contain any JS code, only JSDoc specifications.</div>
+            <div class="description">Description of the objects and class structure suitable for the ExtDate and ExtDateTimeFormat class extensions provided in calendrical-javascript package.The methods that the user should provide are also described here.This module file does not contain any JS code, only JSDoc specifications. User provided methods are listed as 'types' despite the JSDoc @callback tag.</div>
         
 
         
@@ -62,7 +62,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2022-08-03</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>M2022-08-06</li></ul></dd>
     
 
     
@@ -167,7 +167,7 @@
 
 
 <div class="description">
-    Build a new ExtDate object from a calendar and a set of date coordinates. It is possible to use a variant to ExtDate.
+    Build a new ExtDate object from a calendar and a set of UTC date coordinates. The constructor is ExtDate by default, however another one may be specified.
 </div>
 
 
@@ -274,7 +274,7 @@
                 </td>
             
 
-            <td class="description last">class used to construct date object; provided for possible extensions.</td>
+            <td class="description last">the class used to construct date object.</td>
         </tr>
 
     
@@ -315,7 +315,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line86">line 86</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -474,7 +474,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line101">line 101</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -633,7 +633,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line111">line 111</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line113">line 113</a>
     </li></ul></dd>
     
 
@@ -800,7 +800,7 @@
 
             
 
-            <td class="description last">the "private locale data repository" Document Object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.</td>
+            <td class="description last">the "private locale data repository" document object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.</td>
         </tr>
 
     
@@ -846,30 +846,7 @@
 
             
 
-            <td class="description last">a field expressing how date string is computed. Possible values are:"built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then modify each part as stated by "partsFormat" object;"fields" : general structure of string as stated from options, but values changed following fields of this calendar, and modified as stated by "partsFormat";currently, this option only works with Roman-like calendars;"auto" (default): means "built-in".</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>displayFields</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">displayFields</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">optional function (fields) that changes fields values before fetching CLDR or PLDR for displaying.</td>
+            <td class="description last">a field expressing how date string is computed. Possible values are:"built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then reformat each part as stated by "partsFormat" object;"fields" : general structure of string as stated from options, but values recomputed following fields of this calendar, and modified as stated by "partsFormat";currently, this option only works with Roman-like calendars;"auto" (default): means "built-in".</td>
         </tr>
 
     
@@ -974,7 +951,7 @@
 
             
 
-            <td class="description last">how to find the value: "cldr" : leave value set by standard Intl.DateTimeFormat.FormatToParts (equivalent to no object for this part name)."field": put field as is; if undefined, put "". For test and debug, and for void fields."list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found searching "codes"."pldr" : values to be found in calendar.pldr, a DOM which represents a "private locale data repository" designated with its URI/URL or identifier.</td>
+            <td class="description last">how to find the value: "cldr" : leave value set by standard Intl.DateTimeFormat.FormatToParts (equivalent to no object for this part name)."field": put field as is; if undefined, put "". For test and debug, and for void fields."list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found searching "codes"."pldr" : values to be found in calendar.pldr, an XML document which represents a "private locale data repository"</td>
         </tr>
 
     
@@ -1027,13 +1004,13 @@
 
         <tr>
             
-                <td class="name"><code>key</code></td>
+                <td class="name"><code>calname</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">keyFromField</span>
+<span class="param-type">String</span>
 
 
             
@@ -1043,7 +1020,30 @@
 
             
 
-            <td class="description last">used with "cldr" or "pldr": (field_value) => (search_key), the search_key to be used for searching in CLDR or PLDR.</td>
+            <td class="description last">if (mode == "pldr"), the calendar name to fetch. If not specified, "canvas".is tried, else "id"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if (mode == "pldr", (field_value) => search_key); by default, the search key is the field value, except for weekdays of the standard 7-days week, where the keys are ['sun', 'mon' ... 'sat' ]; therefore, this function should be provided if an alternative week structure is specified.</td>
         </tr>
 
     
@@ -1218,7 +1218,7 @@
 
             
 
-            <td class="description last">function (fields) is this date a leap year</td>
+            <td class="description last">function (fields) => (boolean): is this date in a leap year ?</td>
         </tr>
 
     
@@ -1257,7 +1257,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line11">line 11</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -1268,165 +1268,6 @@
     
 </dl>
 
-
-
-
-
-
-            
-                
-
-    
-
-    
-    <h4 class="name" id="~displayFields"><span class="type-signature"></span>displayFields<span class="signature">(internalFields)</span><span class="type-signature"> &rarr; {ExtDateType}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Change the value of certain date fields before using CLDR.This is done for example with the Hebrew calendar, where the month number above 5 of any non-leap year is incremented by one in CLDR.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>internalFields</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">ExtDateType</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">fields as they are computed internally, with no hole</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line121">line 121</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    displayTypeFields	- types for the search in CLDR
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">ExtDateType</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -1544,29 +1385,6 @@
 
         <tr>
             
-                <td class="name"><code>monthCode</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">a short acronym, e.g. 'M01' for the first month, or 'M06L' for the doubled sixth month or leap month after 'M06';this code helps finding the month name, since M07 has the same name, whether or not it is month 7 in a regular year or month 8 in a leap year;if this field is not defined in a custom calendar, the monthCode shall be set to the string corresponding to the month number;this is considered non numeric.</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>month</code></td>
             
 
@@ -1590,6 +1408,52 @@
 
         <tr>
             
+                <td class="name"><code>monthCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">(optional) a short acronym, e.g. 'M01' for the first month, or 'M06L' for the doubled sixth month or leap month after 'M06';inspired from Temporal and used with non-Unicode display applications;if this field is not defined in a custom calendar, the monthCode shall be set to the month number;</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>monthType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">(optional) the type under which the month name should be searched for in lists, CLDR or PLDR;with lunisolar calendars, a same 'month' value can lead to different month names; this field, together with "leapMonth", helps solving such cases;if missing, ExtDateTimeFormat uses .month as monthType when searching the month name.</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>leapMonth</code></td>
             
 
@@ -1606,7 +1470,7 @@
 
             
 
-            <td class="description last">if present, value is "leap" indicating that the leap month version of the month name should be used.</td>
+            <td class="description last">(optional), value is "leap" indicating that the leap month version of the month name should be used;if present, ExtDateTimeFormat adds a search key before exploring CLDR or the PLDR, and also searches the PLDR for a "mark" to add before or after the month string.</td>
         </tr>
 
     
@@ -1760,7 +1624,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line41">line 41</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line44">line 44</a>
     </li></ul></dd>
     
 
@@ -1883,7 +1747,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line93">line 93</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line95">line 95</a>
     </li></ul></dd>
     
 
@@ -2038,7 +1902,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line116">line 116</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line118">line 118</a>
     </li></ul></dd>
     
 
@@ -2079,164 +1943,6 @@
     <dd>
         
 <span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-            
-                
-
-    
-
-    
-    <h4 class="name" id="~keyFromField"><span class="type-signature"></span>keyFromField<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    From the value of a date field, provide the search key to use for searching in Unicode's CLDR or in the PLDR used,to be referenced in partsFormat.In most cases, the simple unnamed function 'i => i' will fit.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-|
-
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the value of the date field, a year, month or day number, or an era string.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line74">line 74</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - the key to be used for searching in CLDR or in the PLDR.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">String</span>
 
 
     </dd>
@@ -2351,7 +2057,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line81">line 81</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line83">line 83</a>
     </li></ul></dd>
     
 
@@ -2510,7 +2216,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line106">line 106</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -2621,7 +2327,7 @@
 
             
 
-            <td class="description last">number to add to current fullYear to get fullYear the week belongs to;</td>
+            <td class="description last">number to add to the current fullYear to get the fullYear the week belongs to;</td>
         </tr>
 
     
@@ -2752,7 +2458,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line66">line 66</a>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -2788,7 +2494,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jul 25 2022 12:10:36 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 27 2022 18:53:54 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

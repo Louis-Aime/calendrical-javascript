@@ -116,7 +116,7 @@
 
             
 
-            <td class="description last">the calendar object that describes the custom calendar,or a string that refers to a built-in calendar.if undefined, set to "iso8601".In this version, the string for a built-in calendar may only be "iso8601" (default) or "gregory". The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.</td>
+            <td class="description last">the calendar object that describes the custom calendar,or a string that refers to a built-in calendar;if undefined, set to "iso8601";In this version, the string for a built-in calendar may only be "iso8601" (default) or "gregory".</td>
         </tr>
 
     
@@ -152,7 +152,7 @@
 
             
 
-            <td class="description last">same parameter list as would be passed to the legacy Date object:	empty -> now; 	one numerical argument: Posix counter in milliseconds, as for Date;	one string argument: an ISO string for the date, passed to Date;	several numerical arguments: the arguments of Date constructor, as would be passed to Date, but		year is an algebraic full year, e.g. 1 means year 0001, not year 1901, and negative numbers may be used.		first month is always 1, not 0,		default day is 1, default time elements are 0,		the date elements are those of the target calendar, which may differ from ISO 8601;	the date elements passed are considered those of the local date, i.e. of the terminal's time zone.</td>
+            <td class="description last">same parameter list as would be passed to the legacy Date object:	empty -> now; 	one numerical argument: Posix counter in milliseconds, as for Date;	one string argument: an ISO string for the date, passed to Date;	several numerical arguments: the arguments of Date constructor, as would be passed to Date, but		year is an algebraic full year, e.g. 1 means year 0001, not year 1901, and negative numbers may be used;		first month is always 1, not 0;		default day is 1; 		default time elements are 0;		the date elements are those of the target calendar, which may differ from ISO 8601;	the date elements passed are considered those of the local date, i.e. of the terminal's time zone.</td>
         </tr>
 
     
@@ -168,7 +168,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2022-08-04</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>M2022-08-06</li></ul></dd>
     
 
     
@@ -206,7 +206,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line75">line 75</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -217,6 +217,8 @@
     <dd class="tag-see">
         <ul>
             <li><a href="customcalendarmodel.js.html">customcalendarmodel.js</a></li>
+        
+            <li>customcalendarmodel.js 		for the custom calendar model.</li>
         </ul>
     </dd>
     
@@ -650,7 +652,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line138">line 138</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line139">line 139</a>
     </li></ul></dd>
     
 
@@ -760,7 +762,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line115">line 115</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -870,7 +872,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line122">line 122</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line123">line 123</a>
     </li></ul></dd>
     
 
@@ -1041,7 +1043,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line359">line 359</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line360">line 360</a>
     </li></ul></dd>
     
 
@@ -1212,7 +1214,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line331">line 331</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line332">line 332</a>
     </li></ul></dd>
     
 
@@ -1383,7 +1385,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line323">line 323</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line324">line 324</a>
     </li></ul></dd>
     
 
@@ -1554,7 +1556,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line198">line 198</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line199">line 199</a>
     </li></ul></dd>
     
 
@@ -1725,7 +1727,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line230">line 230</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line231">line 231</a>
     </li></ul></dd>
     
 
@@ -1896,7 +1898,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line152">line 152</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line153">line 153</a>
     </li></ul></dd>
     
 
@@ -2067,7 +2069,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line248">line 248</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line249">line 249</a>
     </li></ul></dd>
     
 
@@ -2239,7 +2241,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line399">line 399</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line400">line 400</a>
     </li></ul></dd>
     
 
@@ -2410,7 +2412,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line297">line 297</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line298">line 298</a>
     </li></ul></dd>
     
 
@@ -2581,7 +2583,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line423">line 423</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line424">line 424</a>
     </li></ul></dd>
     
 
@@ -2752,7 +2754,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line407">line 407</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line408">line 408</a>
     </li></ul></dd>
     
 
@@ -2923,7 +2925,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line347">line 347</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line348">line 348</a>
     </li></ul></dd>
     
 
@@ -3094,7 +3096,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line415">line 415</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line416">line 416</a>
     </li></ul></dd>
     
 
@@ -3296,7 +3298,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line259">line 259</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line260">line 260</a>
     </li></ul></dd>
     
 
@@ -3498,7 +3500,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line283">line 283</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line284">line 284</a>
     </li></ul></dd>
     
 
@@ -3827,7 +3829,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line435">line 435</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line436">line 436</a>
     </li></ul></dd>
     
 
@@ -3998,7 +4000,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line305">line 305</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line306">line 306</a>
     </li></ul></dd>
     
 
@@ -4169,7 +4171,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line173">line 173</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line174">line 174</a>
     </li></ul></dd>
     
 
@@ -4340,7 +4342,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line367">line 367</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line368">line 368</a>
     </li></ul></dd>
     
 
@@ -4511,7 +4513,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line375">line 375</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line376">line 376</a>
     </li></ul></dd>
     
 
@@ -4682,7 +4684,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line383">line 383</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line384">line 384</a>
     </li></ul></dd>
     
 
@@ -4853,7 +4855,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line391">line 391</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line392">line 392</a>
     </li></ul></dd>
     
 
@@ -5024,7 +5026,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line339">line 339</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line340">line 340</a>
     </li></ul></dd>
     
 
@@ -5098,7 +5100,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jul 25 2022 12:10:36 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 27 2022 18:53:54 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
