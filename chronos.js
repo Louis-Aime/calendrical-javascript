@@ -4,12 +4,12 @@
 	Non-integer parameter will yield erroneous non-integer values.
 	Default parameters assume that computations are done using 1 for the first month of any calendar.
  * @module chronos
- * @version M2022-08-03
+ * @version M2022-08-06
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Character set is UTF-8
-/* Version	M2022-08-02: Update comments, change param name to calendarRule.
+/* Version	M2022-08-06: Update comments, change param name to calendarRule.
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -32,12 +32,15 @@ tort or otherwise, arising from, out of or in connection with the software
 or the use or other dealings in the software.
 */
 "use strict";
-/** Structure of the calendar rule parameter that describes a calendar's computation rules and that is passed to a Cbcce class constructor.
+/** Structure of the calendar rule parameter that describes a calendar's computation rules 
+ * and that is passed to a Cycle Bases Calendar Computation Engine, a Cbcce class constructor.
+ * The calendar structure is made up of nested cycles. Each cycle finishes with an intercalary or missing element. 
+ * e.g. the Julian-Gregorian year finishes in February, with the intercalary day (29 February) at the very end,
+ * and the olympiade, the 4-years cycle, finishes with the leap year.
  * Non checked constraints: 
  *	1. 	The cycles and the canvas elements shall be defined from the largest to the smallest
  *		e.g. four-centuries cycle, then century, then four-year cycle, then year, etc.
  *	2. 	The same names shall be used for the "coeff" and the "canvas" properties, otherwise functions shall give erroneous results.
- *	3.	canvas.month.init is defined, it is the number of the first month in the year (0 with Date, 1 with Temporal)
  * @typedef {Object} calendarRule
  * @property {Number} timeepoch - origin date or timestamp in elementary units (days, milliseconds...) to be used for the decomposition, with respect to instant 0 of used timestamp.
  * @property {Array} coeff - Array of coefficients used to decompose a timestamp into time cycles like eras, quadrisaeculae, centuries, ... down to the elementary unit.
@@ -55,19 +58,20 @@ or the use or other dealings in the software.
  * @property {Number} canvas[].init 	- value of this component at epoch, which is the lowest value (except for the first component), 
 	 * e.g. 0 or 1 for month, 1 for date, 0 for hours, minutes, seconds.
 */
-/** The Cycle Based Calendar Computation Engine (Cbcce)
+/** The Cycle Based Calendar Computation Engine (Cbcce) class.
+ * @see module:chronos for the definition of the calendarRule structure.
  * @class
- * @param {calendarRule} calendarRule - The object that describes the rules of the calendar to be implemented
+ * @param {calendarRule} calendarRule - The object that describes the rules of the calendar to be implemented.
  */
-export class Cbcce 	{	// Essential calendrical computations tools, including the Cycle Based Calendrical Computation Engine (CBCCE)
+export class Cbcce 	{
 	constructor (calendarRule) {
 		this.calendarRule = calendarRule;
 	}
-	/** The Modulo function for calendrical computations
+	/** The Modulo function for calendrical computations.
 	 * @static
 	 * @param {number} a - dividend, may be positive, null or negative.
-	 * @param {number} d - divisor, shall be non-zero
-	 * @return {number} modulo of a divided by d, with 0 <= modulo < d or d < modulo <= 0, e.g. -2 mod 3 is +1, not -2.
+	 * @param {number} d - divisor, shall be non-zero.
+	 * @return {number} modulo of a divided by d, with 0 <= modulo < d or d < modulo <= 0; e.g. -2 mod 3 is +1, not -2.
 	 */
 	static mod (a, d) {		
 		return ( a*Math.sign(d) >= 0 ? a % d : (a % d + +d) % d)
@@ -89,12 +93,12 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 	/** Cycle start shifting, keeping phase measure. Example : (20, 1) shifted by 2 in a 12-cycle with base 1 yields (19, 13), but (20, 6) yields (20, 6)
 		This operation is used for calendrical computations on Julian-Gregorian calendars (shift year start to March), but also for computations on weeks.
 	 * @static 
-	 * @param {number} cycle	- the rank of cycle, which is increased by 1 each time 'phase' reaches (mod (cycleBase, period))
+	 * @param {number} cycle	- the rank of cycle, which is increased by 1 each time 'phase' reaches (mod (cycleBase, period)).
 	 * @param {number} phase	- indicates the phase within the cycle, e.g. for the month or the day of week. (phase == cycleBase) means the start of a new cycle.
 	 * @param {number} period	- the cycle's period, typically 12 or 7 for calendrical computations, but may also be the moon's month mean duration in milliseconds.
 	 * @param {number} shift	- the number of units for shifting. After shifting, cycleBase is cycleBase + shift.
 	 * @param {number} cycleBase	- which phase is that of a new cycle, in the parameter [cycle, phase] representation. 0 by default (like month representation with Date objects).
-	 * @return {number[]} [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
+	 * @return {number[]} [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period.
 	*/
 	static shiftCycle (cycle, phase, period, shift, cycleBase=0) {
 		// if (Array.from(arguments).some(isNaN)) throw new TypeError ("Non numeric value among arguments: " + Array.from(arguments).toString()); 
@@ -150,7 +154,7 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 }
 	/** Compute the timestamp from the element of a date in a given calendar.
 	 * @param {Object} askedObject	- the numeric elements of the date, collected in an object containing the elements that calendarRule prescribes.
-	 * @returns {number} the timestamp
+	 * @returns {number} the timestamp.
 	*/
 	getNumber (askedObject) { // from an object askedObject structured as calendarRule.canvas, compute the chronological number
 		var cells = {...askedObject}, quantity = this.calendarRule.timeepoch; // initialise Unix quantity to computation epoch
@@ -186,31 +190,32 @@ export class Cbcce 	{	// Essential calendrical computations tools, including the
 /** Structure of the weekRule parameter passed to WeekClock that describes the structure of the week. 
  * Non checked constraints: 
  * 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.
- * 2. weekLength shall be > 0
- * @typedef {Object} weekRule 	-  set of parameters for the computation of week elements
- * @property {Number} originWeekday - weekday number of day 0. Value is renormalised to 0..weekLength-1.
- * @property {Function} daysInYear	- function (year), number of days in year. year is specified as "fullyear" (unambiguous); 
+ * 2. weekLength shall be > 0.
+ * @typedef {Object} weekRule 	-  set of parameters for the computation of week elements.
+ * @property {Number} originWeekday - weekday number of day 0; value is renormalised to 0..weekLength-1.
+ * @property {Function} daysInYear	- function (year), number of days in year; year is specified as "fullyear" (unambiguous); 
 	* with solar calendars, result is 365 or 366.
- * @property {Function} characDayIndex	- function (year): the day index of one day of characWeekNumber of year.
-	* if weekReset is true, this day shall be the first day of the week charcWeekNumber. If not, all weeks are of same length.
- * @property {Number} [startOfWeek=1]	- number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. 
-		Value is renormalised to 0..weekLength-1.
- * @property {Number} [characWeekNumber=1]	- number of the week of the characDayIndex. Default is 1.
- * @property {Number} [dayBase=1]		- number of the first day in any week. May differ from startOfWeek. Used for displaying result. Default is 1.
- * @property {Number} [weekBase=1]		- number of the first week in any year. May differ from characWeekNumber. Default is 1.
- * @property {Number} [weekLength=7]	- minimum number of days in one week. Default is 7.
- * @property {Number} [weekReset=false]	- whether weekday is forced to a constant value at beginning of year. Default is false.
- * @property {Number[]} [uncappedWeeks=null]	- an array of the numbers of the week that have one or more day above weekLength. Possible cases:
+ * @property {Function} characDayIndex	- function (year): the day index of one day of characWeekNumber of year;
+	* if weekReset is true, this day shall be the first day of the week charcWeekNumber; if not, all weeks are of same length.
+ * @property {Number} [startOfWeek=1]	- number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1;
+	* value is renormalised to 0..weekLength-1.
+ * @property {Number} [characWeekNumber=1]	- number of the week of the characDayIndex; default is 1.
+ * @property {Number} [dayBase=1]		- number of the first day in any week, may differ from startOfWeek; used for displaying result; default is 1.
+ * @property {Number} [weekBase=1]		- number of the first week in any year, may differ from characWeekNumber; default is 1.
+ * @property {Number} [weekLength=7]	- minimum number of days in one week; default is 7.
+ * @property {Number} [weekReset=false]	- whether weekday is forced to a constant value at beginning of year; default is false.
+ * @property {Number[]} [uncappedWeeks=null]	- an array of the numbers of the week that have one or more day above weekLength; possible cases:
 	* undefined (and set to null): all weeks have always the same duration, weekLength;
 	* .length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength;
 	* .length > 1: each week indentified is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;
-	* e.g. for French revolutionary calendar: [36], and the days are indexed indexed 10 to 15 (index of Décadi is 9);
+	* e.g. for French revolutionary calendar: [36], and the epagomenal days are indexed 10 to 15 (index of Décadi is 9);
 	* whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
 	* These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.
 */
-/** Get week figures using different reckoning sytems for weeks
+/** Get and set week figures using a specified reckoning sytems for weeks.
+ * @see module:chronos for the definition of the weekRule structure.
  * @class
- * @param {weekRule} weekRule - the description of the week
+ * @param {weekRule} weekRule - the description of the week.
  */
 export class WeekClock {
 	constructor (weekRule) {
@@ -225,9 +230,9 @@ export class WeekClock {
 		this.weekReset = weekRule.weekReset != undefined ? weekRule.weekReset : false;
 		this.uncappedWeeks = weekRule.uncappedWeeks != undefined ? weekRule.uncappedWeeks : null;
 	}
-	/**	Compute week figures in the defined week structure
-	 * @param {number} dayIndex 	- date stamp, in day unit, of the day whose figures are computed
-	 * @param {number} year 		- the relative year the dayIndex date belongs to
+	/**	Compute week figures in the defined week structure.
+	 * @param {number} dayIndex 	- date stamp, in day unit, of the day whose figures are computed.
+	 * @param {number} year 		- the algebraic year the dayIndex date belongs to.
 	 * @return {Array} 
 		* [0] : week number;
 		* [1] : week day number, depending on dayBase. Modulo this.weekLength value is always : 0 (or this.weekLength) for Sunday of first day, 1 for Monday etc.
@@ -267,7 +272,7 @@ export class WeekClock {
 		} else result.push (0, WeeksInDateYear); 	// most cases.
 		return result;
 	}
-	/**	Compute day index from week figures in the defined week structure
+	/**	Compute day index from week figures in the defined week structure.
 	 * @param {number} weekYear 	- the year (full year, a relative integer) of the week figures. There may be 1 year difference with the year of the calendar's date.
 	 * @param {number} [weekNumber] - the number of the week; if not specified, this.weekBase.
 	 * @param {number} [dayOfWeek] 	- the number day of the week, following the weekRule parameter set; if not specified: this.dayBase.
