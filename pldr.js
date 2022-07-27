@@ -11,7 +11,7 @@
 /** Stringified XML base, consisting in 2 blocks: 
  * ldmlBCP47 declares non language specific calendar elements, 
  * ldml declares language specific names; 
- * in this stringified version, ldml block does not exist in this string.
+ * in this stringified version, ldml block is empty.
  * If this file is used for a Web site and not as a module, consider changing "const" to "var" in order to avoid redeclaration errors.
 */
 const pldrstring =
