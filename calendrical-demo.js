@@ -3,12 +3,12 @@
  * To be used with suitable calendrical-demo-**.html file.
  * contents: global variables, animation routines for the html page, event listeners to follow forms.
  * @requires module:calendrical-init.js
- * @version M2022-08-02
+ * @version M2022-08-06
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
 */
 // Character set is UTF-8
-/* Version:	M2022-08-02 	Review comments.
+/* Version:	M2022-08-06 	Manage era names for Western calendars
 	see details on GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -404,7 +404,7 @@ window.onload = function () {
 		calendars.push (new calendrical.MilesianCalendar ("milesian",calendrical.pldrDOM));
 		calendars.push (new calendrical.GregorianCalendar ("iso_8601"));
 		calendars.push (new calendrical.JulianCalendar ("julian"));
-		calendars.push (new calendrical.WesternCalendar ("historic", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day)));
+		calendars.push (new calendrical.WesternCalendar ("historic", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day), calendrical.pldrDOM));
 		calendars.push (new calendrical.FrenchRevCalendar ("frenchrev",calendrical.pldrDOM));
 		customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);  // set initial custom calendar - but calendars must exist !
 		getMode();
@@ -424,7 +424,7 @@ window.onload = function () {
 			testDate = new calendrical.ExtDate (calendars.find(item => item.id == "iso_8601"),calendrical.ExtDate.fullUTC(year, month, day)),
 			index = calendars.findIndex (item => item.id == "historic");
 		if ( (testDate.valueOf() >= Date.UTC(1582,9,15,0,0,0,0)) && (testDate.day() == day) ) {
-			calendars[index] = new calendrical.WesternCalendar("historic", testDate.valueOf());
+			calendars[index] = new calendrical.WesternCalendar("historic", testDate.valueOf(), calendrical.pldrDOM);
 			[document.gregorianswitch.day.value, document.gregorianswitch.month.value, document.gregorianswitch.year.value ]
 				= [ switchingDate.day, switchingDate.month, switchingDate.year ] = [ day, month, year ];
 			compLocalePresentationCalendar();	// because we changed one calendar, disseminate change.
