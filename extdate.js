@@ -2,7 +2,7 @@
  * @module
  */
 // Character set is UTF-8
-/*	Version	M2022-08-03	Handle monthCode.
+/*	Version	M2022-08-06	Handle monthCode.
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -47,7 +47,7 @@ Date.prototype.getRealTZmsOffset = function () { // this prototype extension nec
 /** Extends the Date object with the flavour of Temporal proposal, using custom calendars. 
  * All methods of the Date object are also available. 
  * However, with the built-in methods, the figure that represents the month begins with 0, with the extended ones, it begins with 1.
- * @version M2022-08-04
+ * @version M2022-08-06
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  * @see {@link customcalendarmodel.js}
@@ -57,18 +57,19 @@ Date.prototype.getRealTZmsOffset = function () { // this prototype extension nec
  * @class
  * @param {string|object} [calendar] 
 	* the calendar object that describes the custom calendar,
-	* or a string that refers to a built-in calendar.
-	* if undefined, set to "iso8601".
+	* or a string that refers to a built-in calendar;
+	* if undefined, set to "iso8601";
 	* In this version, the string for a built-in calendar may only be "iso8601" (default) or "gregory". 
-	* The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
+	* @see  customcalendarmodel.js 		for the custom calendar model.
  * @param {string|number[]} [dateArguments]	- same parameter list as would be passed to the legacy Date object:
 	*	empty -> now; 
 	*	one numerical argument: Posix counter in milliseconds, as for Date;
 	*	one string argument: an ISO string for the date, passed to Date;
 	*	several numerical arguments: the arguments of Date constructor, as would be passed to Date, but
-	*		year is an algebraic full year, e.g. 1 means year 0001, not year 1901, and negative numbers may be used.
-	*		first month is always 1, not 0,
-	*		default day is 1, default time elements are 0,
+	*		year is an algebraic full year, e.g. 1 means year 0001, not year 1901, and negative numbers may be used;
+	*		first month is always 1, not 0;
+	*		default day is 1; 
+	* 		default time elements are 0;
 	*		the date elements are those of the target calendar, which may differ from ISO 8601;
 	*	the date elements passed are considered those of the local date, i.e. of the terminal's time zone.
  */
@@ -83,7 +84,7 @@ export default class ExtDate extends Date {
 			case "object": ; break; // ExtDate constructed although calendar object may be incomplete
 			default : throw new TypeError ('Calendar parameter is neither a string nor an object'); 
 		}
-		if (dateArguments.length > 1) {	// more than 1 argument passed to Date: a date description, not a timestamp.
+		if (dateArguments.length > 1) {	// more than 1 argument to compute the Date: at least year and month, not a timestamp.
 			if (myCalendar == "iso8601" || myCalendar == "gregory") { // First arguments are a year and a month. Year is alwasy full, month is always based 1.
 				dateArguments[1]--;		// month argument decremented for the legacy Date
 				super (...dateArguments);
