@@ -5,21 +5,41 @@
  * @license MIT 2016-2022
  */
 // Charset UTF-8. This file contains non-ANSI characters.
-/* Version	M2022-07-22 Enhance JSdoc comments
+/* Version	M2022-08-06 3 eras for 'gregory' calendars
 */
 "use strict";
 /** Stringified XML base, consisting in 2 blocks: 
- * ldmlBCP47 declares Milesian calendar general item, 
- * ldml declares language specific names; this block does not exist in this string.
+ * ldmlBCP47 declares non language specific calendar elements, 
+ * ldml declares language specific names; 
+ * in this stringified version, ldml block does not exist in this string.
  * If this file is used for a Web site and not as a module, consider changing "const" to "var" in order to avoid redeclaration errors.
 */
 const pldrstring =
 '<?xml version="1.0" encoding="UTF-8" ?>\
-<!-- Milesian month names definition - non language-specific section  -->\
+<!-- Private Locale Data Repository (PLDR) -->\
 <!-- <!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->\
-<pldr> <!-- Private Locale Data Repository - custom calendars -->\
+<pldr>\
 <ldmlBCP47>\
-<calendar type="milesian"> <!-- name will have to be registred -->\
+  <calendar type="gregory">\
+	<eras>\
+		<eraNames>\
+			<era type="0" draft="unconfirmed">Ante Christo</era>\
+			<era type="1" draft="unconfirmed">Anno Domini</era>\
+			<era type="2" draft="unconfirmed">Gregoriano computo</era>\
+		</eraNames>\
+		<eraAbbr>\
+			<era type="0" draft="unconfirmed">A. C.</era>\
+			<era type="1" draft="unconfirmed">A. D.</era>\
+			<era type="2" draft="unconfirmed">G. C.</era>\
+		</eraAbbr>\
+		<eraNarrow>\
+			<era type="0" draft="unconfirmed">AC</era>\
+			<era type="1" draft="unconfirmed">AD</era>\
+			<era type="2" draft="unconfirmed">GC</era>\
+		</eraNarrow>\
+	</eras>	\
+  </calendar>\
+<calendar type="milesian"> \
 	<months>\
 	<monthContext type="format">\
 	<default type="abbreviated"/> <!-- Is it necessary ? -->\

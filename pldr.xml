@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- definition of private calendar elements 
-All elements in <pldr> (Private Locale Data Repository)
-Non language-specific section is <ldmlBCP47>
-Language-specific section is <ldml>
+<!-- Private Locale Data Repository (PLDR): private definitions of calendar element names, 
+using the same structure as Unicode's CLDR.
+Entry node: <pldr>.
+Non language-specific section is <ldmlBCP47>.
+Language-specific section is <ldml>.
+Version M2022-08-06: 3 eras in 'gregory' calendar.
 -->
 <!-- <!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->
 <pldr>
  <ldmlBCP47>
-  <calendar type="milesian"> <!-- name will have to be registred -->
+  <calendar type="gregory">
+	<eras>
+		<eraNames>
+			<era type="0" draft="unconfirmed">Ante Christo</era>
+			<era type="1" draft="unconfirmed">Anno Domini</era>
+			<era type="2" draft="unconfirmed">Gregoriano computo</era>
+		</eraNames>
+		<eraAbbr>
+			<era type="0" draft="unconfirmed">A. C.</era>
+			<era type="1" draft="unconfirmed">A. D.</era>
+			<era type="2" draft="unconfirmed">G. C.</era>
+		</eraAbbr>
+		<eraNarrow>
+			<era type="0" draft="unconfirmed">AC</era>
+			<era type="1" draft="unconfirmed">AD</era>
+			<era type="2" draft="unconfirmed">GC</era>
+		</eraNarrow>
+	</eras>	
+  </calendar>
+  <calendar type="milesian">
     <months>
       <monthContext type="format">
-       <default type="abbreviated"/> <!-- Is it necessary ? -->
-		<monthWidth type="wide">
+       <default type="abbreviated"/>
+		<monthWidth type="wide"><!-- explicit names in Latin -->
            <month type="1" draft="unconfirmed">⁨unemis⁩</month>
            <month type="2" draft="unconfirmed">⁨secundemis⁩</month>
            <month type="3" draft="unconfirmed">⁨tertemis⁩</month>
@@ -159,7 +180,7 @@ Language-specific section is <ldml>
       </quarterContext>
     </quarters>
   </calendar>
- <calendar type="frenchrev"> <!-- name will have to be registred -->
+ <calendar type="frenchrev"> 
     <months>
       <monthContext type="format">
        <default type="abbreviated"/>
@@ -485,10 +506,29 @@ Language-specific section is <ldml>
  <ldml>
 	<identity>
 		<language type="fr"/>
+		<calendar type="gregory">
+			<eras>
+				<eraNames>
+					<era type="0" draft="unconfirmed">avant Jésus-Christ</era>
+					<era type="1" draft="unconfirmed">après Jésus-Christ</era>
+					<era type="2" draft="unconfirmed">comput grégorien</era>
+				</eraNames>
+				<eraAbbr>
+					<era type="0" draft="unconfirmed">av. J.-C.</era>
+					<era type="1" draft="unconfirmed">ap. J.-C.</era>
+					<era type="2" draft="unconfirmed">c. grég.</era>
+				</eraAbbr>
+				<eraNarrow>
+					<era type="0" draft="unconfirmed">AEC</era>
+					<era type="1" draft="unconfirmed">AD</era>
+					<era type="2" draft="unconfirmed">CG</era>
+				</eraNarrow>
+			</eras>
+		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">unème</month>
 				   <month type="2" draft="unconfirmed">secondème</month>
@@ -505,7 +545,7 @@ Language-specific section is <ldml>
 				</monthWidth>
 			  </monthContext>
 			  <monthContext type="stand-alone">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">unème</month>
 				   <month type="2" draft="unconfirmed">secondème</month>
@@ -859,10 +899,29 @@ Language-specific section is <ldml>
 	</identity>
 	<identity>
 		<language type="en"/>
+		<calendar type="gregory">
+			<eras>
+				<eraNames>
+					<era type="0" draft="unconfirmed">Before Christ</era>
+					<era type="1" draft="unconfirmed">Ancient Style</era>
+					<era type="2" draft="unconfirmed">New Style</era>
+				</eraNames>
+				<eraAbbr>
+					<era type="0" draft="unconfirmed">BC</era>
+					<era type="1" draft="unconfirmed">AS</era>
+					<era type="2" draft="unconfirmed">NS</era>
+				</eraAbbr>
+				<eraNarrow>
+					<era type="0" draft="unconfirmed">B</era>
+					<era type="1" draft="unconfirmed">A</era>
+					<era type="2" draft="unconfirmed">N</era>
+				</eraNarrow>
+			</eras>
+		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/>
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">Firstem</month>
 				   <month type="2" draft="unconfirmed">Secondem</month>
@@ -879,7 +938,7 @@ Language-specific section is <ldml>
 				</monthWidth>
 			  </monthContext>
 			  <monthContext type="stand-alone">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">Firstem</month>
 				   <month type="2" draft="unconfirmed">Secondem</month>
@@ -900,10 +959,29 @@ Language-specific section is <ldml>
 	</identity>
 	<identity>
 		<language type="de"/>
+		<calendar type="gregory">
+			<eras>
+				<eraNames>
+					<era type="0" draft="unconfirmed">vor Christus</era>
+					<era type="1" draft="unconfirmed">alter Stil</era>
+					<era type="2" draft="unconfirmed">neuer Stil</era>
+				</eraNames>
+				<eraAbbr>
+					<era type="0" draft="unconfirmed">v. Chr.</era>
+					<era type="1" draft="unconfirmed">a. S.</era>
+					<era type="2" draft="unconfirmed">n. S.</era>
+				</eraAbbr>
+				<eraNarrow>
+					<era type="0" draft="unconfirmed">V</era>
+					<era type="1" draft="unconfirmed">A</era>
+					<era type="2" draft="unconfirmed">N</era>
+				</eraNarrow>
+			</eras>
+		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">Erstme</month>
 				   <month type="2" draft="unconfirmed">Zweitme</month>
@@ -920,7 +998,7 @@ Language-specific section is <ldml>
 				</monthWidth>
 			  </monthContext>
 			  <monthContext type="stand-alone">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">Erstme</month>
 				   <month type="2" draft="unconfirmed">Zweitme</month>
@@ -941,10 +1019,29 @@ Language-specific section is <ldml>
 	</identity>
 	<identity>
 		<language type="es"/>
+		<calendar type="gregory">
+			<eras>
+				<eraNames>
+					<era type="0" draft="unconfirmed">antes de Christo</era>
+					<era type="1" draft="unconfirmed">estilo antiguo</era>
+					<era type="2" draft="unconfirmed">nuevo estilo</era>
+				</eraNames>
+				<eraAbbr>
+					<era type="0" draft="unconfirmed">AC</era>
+					<era type="1" draft="unconfirmed">ea</era>
+					<era type="2" draft="unconfirmed">ne.</era>
+				</eraAbbr>
+				<eraNarrow>
+					<era type="0" draft="unconfirmed">A</era>
+					<era type="1" draft="unconfirmed">e</era>
+					<era type="2" draft="unconfirmed">n</era>
+				</eraNarrow>
+			</eras>
+		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/>
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">primerem</month>
 				   <month type="2" draft="unconfirmed">segondem</month>
@@ -961,7 +1058,7 @@ Language-specific section is <ldml>
 				</monthWidth>
 			  </monthContext>
 			  <monthContext type="stand-alone">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">primerem</month>
 				   <month type="2" draft="unconfirmed">segondem</month>
@@ -982,10 +1079,29 @@ Language-specific section is <ldml>
 	</identity>
 	<identity>
 		<language type="pt"/>
+		<calendar type="gregory">
+			<eras>
+				<eraNames>
+					<era type="0" draft="unconfirmed">antes de Christo</era>
+					<era type="1" draft="unconfirmed">estilo antigo</era>
+					<era type="2" draft="unconfirmed">novo estilo</era>
+				</eraNames>
+				<eraAbbr>
+					<era type="0" draft="unconfirmed">AC</era>
+					<era type="1" draft="unconfirmed">ea</era>
+					<era type="2" draft="unconfirmed">ne.</era>
+				</eraAbbr>
+				<eraNarrow>
+					<era type="0" draft="unconfirmed">A</era>
+					<era type="1" draft="unconfirmed">e</era>
+					<era type="2" draft="unconfirmed">n</era>
+				</eraNarrow>
+			</eras>
+		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">primeirem</month>
 				   <month type="2" draft="unconfirmed">segundem</month>
@@ -1002,7 +1118,7 @@ Language-specific section is <ldml>
 				</monthWidth>
 			  </monthContext>
 			  <monthContext type="stand-alone">
-			   <default type="abbreviated"/> <!-- Is it necessary ? -->
+			   <default type="abbreviated"/> 
 				<monthWidth type="wide">
 				   <month type="1" draft="unconfirmed">primeirem</month>
 				   <month type="2" draft="unconfirmed">segundem</month>

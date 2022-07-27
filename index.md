@@ -21,9 +21,9 @@ The first panel also shows the week figures, with which you can specify a date.
  
 ## JSDoc reader's guide
 The modules and the classes within the modules are described under the *Modules* and *Classes* JSDoc pages. 
-The *Global* page describes scripts of the demonstrator, not parts of this packages. 
-However the structure of a custom calendar is described in the *Global* section, generated from *customcalendarmodel.js*, 
-you may reach it from the last menu object of *Global*.
+The structure of a custom calendar, that the user should provide, is described the *customcalendarmodel* module.
+The *Global* page mostly describes scripts of the demonstrator. Have a look on *loadCalendrical* and *calendrical*
+as examples for your personal implementation. 
 
 ## Comments and proposal
  Use this repository's [issues](https://github.com/Louis-Aime/calendrical-javascript/issues).

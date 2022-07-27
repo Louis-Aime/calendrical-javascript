@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: fetchdom</title>
+    <title>JSDoc: Namespace: window</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: fetchdom</h1>
+    <h1 class="page-title">Namespace: window</h1>
 
     
 
@@ -28,8 +28,7 @@
 
 <header>
     
-        
-            
+        <h2>window</h2>
         
     
 </header>
@@ -38,32 +37,13 @@
     <div class="container-overview">
     
         
-            <div class="description">Fetch an XML resource as a Document Object (DOM).</div>
-        
 
         
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <dl class="details">
 
     
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2022-08-06</li></ul></dd>
-    
 
     
 
@@ -80,19 +60,9 @@
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Louis A. de Fouquières https://github.com/Louis-Aime</li>
-        </ul>
-    </dd>
-    
 
     
 
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2022</li></ul></dd>
     
 
     
@@ -100,7 +70,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="fetchdom.js.html">fetchdom.js</a>, <a href="fetchdom.js.html#line1">line 1</a>
+        <a href="calendrical-demo.js.html">calendrical-demo.js</a>, <a href="calendrical-demo.js.html#line392">line 392</a>
     </li></ul></dd>
     
 
@@ -110,24 +80,6 @@
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         
@@ -157,7 +109,7 @@
     
 
     
-    <h4 class="name" id=".fetchDOM"><span class="type-signature">(static) </span>fetchDOM<span class="signature">(XMLResource, timeout)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id=".onload"><span class="type-signature">(static) </span>onload<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -165,7 +117,7 @@
 
 
 <div class="description">
-    This function works like import (): it returns a Promise to build a document object from an XML resource.
+    Initialisation function. After page is loaded, global variables are initialised, then event handlers are set.
 </div>
 
 
@@ -174,78 +126,6 @@
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>XMLResource</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the URL of the fetched resource.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>timeout</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the timeout passed to XMLHttpRequest in ms; default is 0, meaning no timeout.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -281,7 +161,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="fetchdom.js.html">fetchdom.js</a>, <a href="fetchdom.js.html#line11">line 11</a>
+        <a href="calendrical-demo.js.html">calendrical-demo.js</a>, <a href="calendrical-demo.js.html#line395">line 395</a>
     </li></ul></dd>
     
 
@@ -306,28 +186,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    The parameter of the resolution function is the document corresponding to the fetched resource,the parameter of the failure function is the error message.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 

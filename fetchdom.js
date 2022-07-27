@@ -1,22 +1,19 @@
 /** Fetch an XML resource as a Document Object (DOM).
  * @module
- * @version M2021-08-21
+ * @version M2022-08-06
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Charset UTF-8.
-/* Version	M2022-01-19	Enhance JSdoc comments
-	M2021-08-21	Handle all error cases in a similar way, setting the error variable to the error code.
-	M2021-07-22	make a module.
-	M2021-02-13	Build as a Promise, in a similar way to import(), and not embbeded as a module.
+/* Version	M2022-08-06	Enhance JSdoc comments
 */
 "use strict";
-/** This function works like import (): it returns a Promise to build a DOM from an XML resource.
+/** This function works like import (): it returns a Promise to build a document object from an XML resource.
  * @static
  * @function fetchDOM
  * @param {String} XMLResource - the URL of the fetched resource.
  * @param {Number} timeout - the timeout passed to XMLHttpRequest in ms; default is 0, meaning no timeout.
- * @return {Promise} The parameter of the resolution function is the fetched resource,
+ * @return {Promise} The parameter of the resolution function is the document corresponding to the fetched resource,
  * the parameter of the failure function is the error message. 
 */
 export default function fetchDOM (XMLResource, timeout = 0) {	// This is similar to import () but it builds one DOM from an XML file.

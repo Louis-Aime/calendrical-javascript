@@ -26,23 +26,12 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** Extension of Intl.DateTimeFormat objects, to handle custom calendars.
- * this module is linked to module:extdate.js, but could also be used with Temporal
- * @module ExtDateTimeFormat
- * @version M2021-09-18
- * @requires module:extdate.js
- * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+            <pre class="prettyprint source linenums"><code>/** Extension of Intl.DateTimeFormat object. 
+ @module
  */
 // Character set is UTF-8
-/* Purpose
-	Handle custom calendars
-	New functionnalities for Intl.DateTimeFormat
-Contents
-	Description of Custom calendar objects
-	ExtDateTimeFormat: extension of Intl.DateTimeFormat
-*/
-/*	Version	M2022-07-22	JSdoc update
+/*	Version	M2022-08-06	handle intercalary months as coded in CLDR, 
+	with language-sensitive intercalary mark.
 	See history on GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -67,22 +56,32 @@ or the use or other dealings in the software.
 */
 "use strict";
 import ExtDate from './extdate.js';
-	/** Extends the Intl.DateTimeFormat object for custom calendars, and offers new functionalities. 
-	 * All method of the Intl.DateTimeFormat object are available, however formatToParts, format, and resolvedOptions are enhanced.
+/** Extension of Intl.DateTimeFormat object. 
+ * JSDoc calls extdatetimeformat the default exported class ExtDateTimeFormat.
+ * Handle built-in or custom calendars.
+ * Handle Private Locale Data Repositories, with same structure as Unicode's CLDR.
+ * Handle the eraDisplay option.
+ * Handle "2-digit" and "numeric" options value in a different way.
+ * Requires module:extdate.js, which could be substituted by Temporal.
+ * @version M2022-08-06
+ * @author Louis A. de Fouquières https://github.com/Louis-Aime
+ * @license MIT 2016-2022	 
+ * @see {@link customcalendarmodel.js}
+ * @requires extdate.js
+ * @extends Intl.DateTimeFormat.
 	 * @class
-	 * @extends Intl.DateTimeFormat.
-	 * @param {string} locale	- as for Intl.DateTimeFormat.
-	 * @param {Object} options	- same as for Intl.DateTimeFormat 
+	 * @param {string} [locale]	- as for Intl.DateTimeFormat.
+	 * @param {Object} [options]	- same as for Intl.DateTimeFormat 
 		* + option eraDisplay : ("never"/"always"/"auto"), default to "auto": should era be displayed ? 
 		* if "auto", era is displayed if year is displayed and era of now is not equal to era of formatted date.
 		* if era option is not specified, "short" is assumed whenever necessary. 
 		* Note: date and time fields option values "2-digit" and "numeric" yield different effects, unlike legacy Intl.DateTimeFormat.
-	 * @param {Object} calendar	- a calendar used to format the date.
+	 * @param {Object} [calendar]	- a calendar used to format the date.
 		*	If this parameter is not specified, the calendar resolved with locale and options will be used. 
 		*	If specified as a built-in calendar string, this calendar supersedes the one resolved with locale and options. 
 		*	If specified as a custom calendar and if a Private Locale Data Repository (PLDR) is given, this will be used for calendar's entity names. 
 		*	If no PLDR is provided, the calendar.canvas field refers to the built-in calendar to use for entity names.
-		*	Note: The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.
+	* @see  customcalendarmodel.js 		for the custom calendar model.
  	*/
 export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	constructor (locale, options, calendar) { // options should not be set to null, not accepted by Unicode
@@ -183,16 +182,12 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		}
 		// Special options for days of week
 		this.dayContext = (this.options.day == null &amp;&amp; this.options.month == null &amp;&amp; this.options.year == null) ? 'stand-alone' : 'format';
-		// stringFormat "fields" option is only possible with a calendar that uses Roman months
+		// stringFormat "fields" option is only possible with a canvas calendar that uses Roman months
 		if (this.calendar != undefined &amp;&amp; this.calendar.stringFormat == "fields") switch (this.calendar.canvas) {
 			case "iso8601": case "gregory": case "buddhist": case "japanese": case "roc": break;
 			default : throw new RangeError ("Canvas formatting implemented only from gregory-like built-in calendars: " + this.calendar.canvas);
 		}
 		// Exclude lunar calendar models as canvas - for now...
-		if (this.calendar != undefined) switch (this.calendar.canvas) {
-			case "chinese": case "dangi": case "hebraic" : throw new RangeError ("No canvas formatting from luni-solar calendars: " + this.calendar.canvas);
-			default : ;
-		}
 	}	// end constructor
 	/** The names of the fields necessary to fully characterise a date in any calendar.
 	 * @static
@@ -211,7 +206,8 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	resolvedOptions() { 
 		return this.options
 	}
-	/** Private function, should era be displayed for a given date in reference calendar ? Manages eraDisplay option.
+	/** Should era be displayed for a given date in reference calendar ? Manage eraDisplay option.
+	* @private
 	* @param {Object} aDate	- the given date with its calendar and options.
 	* @return {Boolean}	whether era should be displayed.
 	*/
@@ -240,63 +236,97 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 						!== this.calendar.fieldsFromCounter(today.toResolvedLocalDate (this.options.timeZone).valueOf()).era ;
 		}
 	}
-	/** Private function, fetch a value from a Private Locale Date Repository (PLDR).
+	/** Fetch a value from a Private Locale Date Repository (PLDR).
+	 * @private
 	 * @param {string} name		- name of the date field (era / month / dayofweek).
-	 * @param {string} option	- asked format option fot this field.
+	 * @param {string} fieldOption	- specific field option that depend on the context and may differ from 'this.options'.
 	 * @param {number|string} value	- field value for the date field in ExtDate "bag".
-	 * @return {string} the string value for this date field after the current options.
+	 * @param {string}	variant		- "leap" for the name of an intercalary month used with a luni-solar calendar.
+	 * @return {string} the string value for this date field.
 	*/
-	pldrFetch (name,options,value) {
+	pldrFetch (calendarbase, name, fieldOption, value, variant='') {
 		let selector = "", Xpath1 = "", node = {}, result = "";
 		switch (name) {
 			case "era" :	// analyse era options here since at construction it is not known whether era shall be displayed
-				switch (options) { 
+				switch (fieldOption) { 
 					case "long" : selector = "eraNames"; break;
 					case "short": selector = "eraAbbr"; break;
 					case "narrow":selector = "eraNarrow"; break;
 				}
-				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+this.calendar.id+"']/eras/"+selector
+				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+calendarbase+"']/eras/"+selector
 					+"/era[@type=" + value + "]";
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				result = node.stringValue;
 				// language specific ?
 				Xpath1 = "/pldr/ldml/identity/language[@type='"+this.lang
-					+"']/../calendar[@type='"+this.calendar.id+"']/eras/"+selector
+					+"']/../calendar[@type='"+calendarbase+"']/eras/"+selector
 					+"/era[@type=" + value + "]";
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				if (node.stringValue != "") result = node.stringValue; // If found, replace international name with language specific one.
 				return result; break;
 			case "month": 	// this.monthWidth may be initiated with month being numeric.
-				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+this.calendar.id+"']/months/monthContext[@type='"+this.monthContext
+				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+calendarbase+"']/months/monthContext[@type='"+this.monthContext
 					+"']/monthWidth[@type='" + this.monthWidth
-					+"']/month[@type="+ value + "]";
+					+"']/month[@type="+ value + (variant == "" ? "]" : "][@yeartype='" + variant + "']");
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				result = node.stringValue;
 				// Search if a language specific name exists
 				Xpath1 = "/pldr/ldml/identity/language[@type='"+this.lang
-					+"']/../calendar[@type='"+this.calendar.id+"']/months/monthContext[@type='"+this.monthContext
+					+"']/../calendar[@type='"+calendarbase+"']/months/monthContext[@type='"+this.monthContext
 					+"']/monthWidth[@type='" + this.monthWidth
-					+"']/month[@type=" + value + "]";
+					+"']/month[@type=" + value + (variant == "" ? "]" : "][@yeartype='" + variant + "']");
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				if (node.stringValue != "") result = node.stringValue; // If found, replace international name with language specific one.
 				if (result == "")		// no result obtained, give a number, or a 2-digit number if this option is set.
-					result = options == "2-digit" ? this.figure2.format(value) : this.figure1.format(value);
+					result = fieldOption == "2-digit" ? this.figure2.format(value) : this.figure1.format(value);
+				// Add the intercalary month marker; zero or one mark before or after the month indication.
+				if (variant != '') { 
+					let markbefore = "", markafter = "";
+					Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+calendarbase+"']/months/monthContext[@type='"+this.monthContext
+						+"']/monthWidth[@type='" + this.monthWidth
+						+"']/month[@type='leap'][@locate='before']";
+					node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
+					markbefore = node.stringValue; 
+					Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+calendarbase+"']/months/monthContext[@type='"+this.monthContext
+						+"']/monthWidth[@type='" + this.monthWidth
+						+"']/month[@type='leap'][@locate='after']";
+					node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
+					markafter = node.stringValue; 
+					// Search if a language specific mark exists
+					Xpath1 = "/pldr/ldml/identity/language[@type='"+this.lang
+						+"']/../calendar[@type='"+calendarbase+"']/months/monthContext[@type='"+this.monthContext
+						+"']/monthWidth[@type='" + this.monthWidth
+						+"']/month[@type='leap'][@locate='before']";
+					node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
+					if (node.stringValue != "") { // If found, replace international mark with language specific one.
+						markbefore = node.stringValue; markafter = '';
+					}
+					Xpath1 = "/pldr/ldml/identity/language[@type='"+this.lang
+						+"']/../calendar[@type='"+calendarbase+"']/months/monthContext[@type='"+this.monthContext
+						+"']/monthWidth[@type='" + this.monthWidth
+						+"']/month[@type='leap'][@locate='after']";
+					node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
+					if (node.stringValue != "") { // If found, replace international mark with language specific one.
+						markafter = node.stringValue; markbefore = '';
+					}
+				result = markbefore +  result + markafter;
+				}
 				return result;
 				break;
 			case "weekday": 
-				switch (options) {
+				switch (fieldOption) {
 					case "long" : selector = this.dayContext == "format" ? "wide" : "wide"; break;
 					case "short": selector = this.dayContext == "format" ? "abbreviated" : "short"; break;
 					case "narrow":selector = this.dayContext == "format" ? "short" : "narrow"; break;
 				}
-				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+this.calendar.id+"']/days/dayContext[@type='"+this.dayContext
+				Xpath1 = "/pldr/ldmlBCP47/calendar[@type='"+calendarbase+"']/days/dayContext[@type='"+this.dayContext
 					+"']/dayWidth[@type='"+selector
 					+"']/day[@type=" + value + "]";
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
 				result = node.stringValue;
 				// Search if a language specific name exists
 				Xpath1 = "/pldr/ldml/identity/language[@type='"+this.lang
-					+"']/../calendar[@type='"+this.calendar.id+"']/days/dayContext[@type='"+this.dayContext
+					+"']/../calendar[@type='"+calendarbase+"']/days/dayContext[@type='"+this.dayContext
 					+"']/dayWidth[@type='"+selector
 					+"']/day[@type=" + value + "]",
 				node = this.calendar.pldr.evaluate(Xpath1, this.calendar.pldr, null, XPathResult.STRING_TYPE, null);
@@ -329,12 +359,15 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 			myTZ = (myPartsTZ != undefined) ? myPartsTZ.value : null;	// Remember Time zone name since we compute on UTC date values.
 		if (this.calendar != undefined) {
 			myDateFields = this.calendar.fieldsFromCounter (myAbsoluteDate.valueOf()); // the fields of the date in the calendar, not TZ-dependant.
+			// add default values of optional month fields
+			if (myDateFields.monthType == undefined) myDateFields.monthType = myDateFields.month; 	// myDateFields.monthType is still a number.
 			try {
 				Object.assign(myDateFields, this.calendar.weekFieldsFromCounter (myAbsoluteDate.valueOf()));	// Add week-related fields, including "weekday".
 			}
 			catch (e) {}	// week fields may not have been implemented. 
 		}
-		if (this.calendar != undefined &amp;&amp; this.calendar.stringFormat == "fields") {	// order of parts is OK, but parts should be computed from fields. Week is considered OK. canvas calendar is Roman.
+		if (this.calendar != undefined &amp;&amp; this.calendar.stringFormat == "fields") {	
+			// order of parts is OK, but parts should be computed from fields. Week is considered OK. 'canvas' calendar is Roman.
 			options.timeZone = "UTC";
 			let myCanvasFields = {...myDateFields};
 			let shiftDate = new Date (myAbsoluteDate.valueOf());
@@ -378,7 +411,8 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 						case "month": switch (options.month) {
 							case "2-digit" : myParts[i].value = this.figure2.format(myDateFields.month); break;
 							case "numeric" : myParts[i].value = this.figure1.format(myDateFields.month); break;
-							default : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]
+							default : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields.monthType - 1]; break;
+							// the month name is chosen after monthType, not month, to cater with lunisolar calendars.
 						} break;
 						case "weekday" : myParts[i].value = this.calendar.partsFormat[item.type].source[myDateFields[item.type]-1]; break;
 						default : // other fields are numeric, not subject to lists;
@@ -386,8 +420,10 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 					case "pldr" : 		// fake ICU computations using pldr. 
 						//	myInitialParts = {...myParts}; // Initial code was nested the reverse way.
 						// myParts = myInitialParts.map ( ({type, value}) => { // .map may not map to itself
+						let calendarname = this.calendar.partsFormat[item.type].calname;
+						if (calendarname == undefined) calendarname = this.calendar.canvas == undefined ? this.calendar.id : this.calendar.canvas;
 						switch (item.type) {
-							case "era": myParts[i].value = this.pldrFetch ("era",options.era,
+							case "era": myParts[i].value = this.pldrFetch (calendarname,"era",options.era,
 								this.calendar.eras.indexOf(myDateFields[item.type])); break;
 							case "year": switch (options.year) {
 								case "2-digit" : // Authorised only if displayed year is strictly positive, and with a quote.
@@ -396,8 +432,14 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 								case "numeric" : myParts[i].value = this.figure1.format(myDateFields.year); 
 								}
 								break;
-							case "month" : 
-								myParts[i].value = this.pldrFetch ("month", options.month, (myDateFields.month)); 
+							case "month" : switch (options.month) {	// like with CLDR, displayed month number may differ from type corresponding to month name.
+								case "numeric" : case "2-digit": // here the month number is displayed
+									myParts[i].value = this.pldrFetch (calendarname,"month", options.month, myDateFields.month); 
+									break; 
+								default :	// here the month name shall be computed
+									myParts[i].value = this.pldrFetch (calendarname,"month", options.month, myDateFields.monthType, myDateFields.leapMonth); 
+									break;
+								}
 								break;
 							case "day": switch (options.day) {
 								case "2-digit" : myParts[i].value = this.figure2.format(myDateFields.day); break;
@@ -407,7 +449,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 							case "weekday": 
 								let key = this.calendar.partsFormat.weekday.key;
 								if ( key == undefined ) key = ExtDateTimeFormat.weekdayKey;	// a function
-								myParts[i].value = this.pldrFetch ("weekday", options.weekday, key(myDateFields.weekday)); break;
+								myParts[i].value = this.pldrFetch (calendarname,"weekday", options.weekday, key(myDateFields.weekday)); break;
 							case "hour": switch (options.hour) {
 								case "numeric" :	// This option is often tranformed in 2-digit with ":" separators, force to individual printing
 									let ftime = new Intl.DateTimeFormat (options.locale, {timeZone : options.timeZone, hour : "numeric", timeZoneName : "short"}),
@@ -488,13 +530,13 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 13 2022 20:45:23 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 27 2022 18:53:54 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

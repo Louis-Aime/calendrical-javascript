@@ -66,7 +66,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2021-07-16</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>M2022-08-06</li></ul></dd>
     
 
     
@@ -178,7 +178,7 @@
 
 
 <div class="description">
-    Structure of the calendar rule parameter that describes a calendar's computation rules and that is passed to a Cbcce class constructor.Non checked constraints: 	1. 	The cycles and the canvas elements shall be defined from the largest to the smallest		e.g. four-centuries cycle, then century, then four-year cycle, then year, etc.	2. 	The same names shall be used for the "coeff" and the "canvas" properties, otherwise functions shall give erroneous results.	3.	canvas.month.init is defined, it is the number of the first month in the year (0 with Date, 1 with Temporal)
+    Structure of the calendar rule parameter that describes a calendar's computation rules and that is passed to a Cycle Bases Calendar Computation Engine, a Cbcce class constructor.The calendar structure is made up of nested cycles. Each cycle finishes with an intercalary or missing element. e.g. the Julian-Gregorian year finishes in February, with the intercalary day (29 February) at the very end,and the olympiade, the 4-years cycle, finishes with the leap year.Non checked constraints: 	1. 	The cycles and the canvas elements shall be defined from the largest to the smallest		e.g. four-centuries cycle, then century, then four-year cycle, then year, etc.	2. 	The same names shall be used for the "coeff" and the "canvas" properties, otherwise functions shall give erroneous results.
 </div>
 
 
@@ -526,13 +526,13 @@
 
             
                 
-<h4 class="name" id="~weekDayRule">weekDayRule</h4>
+<h4 class="name" id="~weekRule">weekRule</h4>
 
 
 
 
 <div class="description">
-    Structure of the weekDayRule parameter passed to WeekClock that describes the structure of the week. Non checked constraints: 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.2. weekLength shall be > 0
+    Structure of the weekRule parameter passed to WeekClock that describes the structure of the week. Non checked constraints: 1. characWeekNumber shall be at beginning of year, before any intercalary month or day.2. weekLength shall be > 0.
 </div>
 
 
@@ -607,7 +607,7 @@
                 </td>
             
 
-            <td class="description last">weekday number of day 0. Value is renormalised to 0..weekLength-1.</td>
+            <td class="description last">weekday number of day 0; value is renormalised to 0..weekLength-1.</td>
         </tr>
 
     
@@ -640,7 +640,7 @@
                 </td>
             
 
-            <td class="description last">function (year), number of days in year. year is specified as "fullyear" (unambiguous); with solar calendars, result is 365 or 366.</td>
+            <td class="description last">function (year), number of days in year; year is specified as "fullyear" (unambiguous); with solar calendars, result is 365 or 366.</td>
         </tr>
 
     
@@ -673,7 +673,7 @@
                 </td>
             
 
-            <td class="description last">function (year): the day index of one day of characWeekNumber of year.if weekReset is true, this day shall be the first day of the week charcWeekNumber. If not, all weeks are of same length.</td>
+            <td class="description last">function (year): the day index of one day of characWeekNumber of year;if weekReset is true, this day shall be the first day of the week charcWeekNumber; if not, all weeks are of same length.</td>
         </tr>
 
     
@@ -710,8 +710,7 @@
                 </td>
             
 
-            <td class="description last">number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1. 
-		Value is renormalised to 0..weekLength-1.</td>
+            <td class="description last">number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1;value is renormalised to 0..weekLength-1.</td>
         </tr>
 
     
@@ -748,7 +747,7 @@
                 </td>
             
 
-            <td class="description last">number of the week of the characDayIndex. Default is 1.</td>
+            <td class="description last">number of the week of the characDayIndex; default is 1.</td>
         </tr>
 
     
@@ -785,7 +784,7 @@
                 </td>
             
 
-            <td class="description last">number of the first day in any week. May differ from startOfWeek. Used for displaying result. Default is 1.</td>
+            <td class="description last">number of the first day in any week, may differ from startOfWeek; used for displaying result; default is 1.</td>
         </tr>
 
     
@@ -822,7 +821,7 @@
                 </td>
             
 
-            <td class="description last">number of the first week in any year. May differ from characWeekNumber. Default is 1.</td>
+            <td class="description last">number of the first week in any year, may differ from characWeekNumber; default is 1.</td>
         </tr>
 
     
@@ -859,7 +858,7 @@
                 </td>
             
 
-            <td class="description last">minimum number of days in one week. Default is 7.</td>
+            <td class="description last">minimum number of days in one week; default is 7.</td>
         </tr>
 
     
@@ -896,7 +895,7 @@
                 </td>
             
 
-            <td class="description last">whether weekday is forced to a constant value at beginning of year. Default is false.</td>
+            <td class="description last">whether weekday is forced to a constant value at beginning of year; default is false.</td>
         </tr>
 
     
@@ -933,7 +932,7 @@
                 </td>
             
 
-            <td class="description last">an array of the numbers of the week that have one or more day above weekLength. Possible cases:undefined (and set to null): all weeks have always the same duration, weekLength;.length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength;.length > 1: each week indentified is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;e.g. for French revolutionary calendar: [36], and the days are indexed indexed 10 to 15 (index of Décadi is 9);whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.</td>
+            <td class="description last">an array of the numbers of the week that have one or more day above weekLength; possible cases:undefined (and set to null): all weeks have always the same duration, weekLength;.length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength;.length > 1: each week indentified is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;e.g. for French revolutionary calendar: [36], and the epagomenal days are indexed 10 to 15 (index of Décadi is 9);whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.</td>
         </tr>
 
     
@@ -972,7 +971,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line186">line 186</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line190">line 190</a>
     </li></ul></dd>
     
 
@@ -1002,13 +1001,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 13 2022 20:45:23 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 27 2022 18:53:54 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

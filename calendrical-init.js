@@ -1,15 +1,14 @@
 /** 
- * @file Example of initialiser for calendrical-javascript usage.
- * This asynchronous function initialises the user modules of calendrical-javascript for a web page environment.
- * This is to be customised.
- * @version M2021-08-29
+ * @file Example of initialiser for calendrical-javascript usage, to be customised to special needs.
+ * Ounce the loadCalendrical promise is settled, 
+ * the calendrical global object holds all calendrical-javascript impored objects.
+ * @version M2022-08-06
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Character set is UTF-8 
-/* Version	M2022-01-26	Comments for JSdoc
-	M2021-08-29	Local XML file
-	Version log on GitHub
+/* Version	M2022-08-06	Make pldrFetch a permanently visible function.
+	Version log via GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -32,11 +31,21 @@ tort or otherwise, arising from, out of or in connection with the software
 or the use or other dealings in the software.
 */
 "use strict";
-const // Promises of loading user modules, and global object than collects all values. Note: calendrical should be object if access from global object is required
-	calendrical = {},	// prefix for the calendrical modules, that may be accessed from the global object.
+const 
+	/** Prefix for all calendrical-javascript imported objects. 
+	* The calendar classes also imported from calendars.js are not described here, as they may change.
+	* @property {Object} pldrDOM	- Private Locale Data Repository as a domain.
+	* @property {Object} TimeUnits	- The time units in milliseconds.
+	* @property {Object} ExtDate	- Extends legacy Date object.
+	* @property {Object} ExtDateTimeFormat	- Extends Intl.DateTimeFormat.
+	*/
+	calendrical = {},
+	/** This promise aggregates all calendrical-javascript imports and initialisations.
+	*/
 	loadCalendrical = Promise.all([
 		import ('./fetchdom.js').then (
-			(value) => value.default ('./pldr.xml', 1000),
+			(value) => { calendrical.pldrFetch = value.default;
+						return calendrical.pldrFetch ('./pldr.xml', 1000) },
 			(error) => { throw 'Error loading standard modules' }		// failure fetching pldr as XML file, fallback in next step
 			).then (
 				(value) => { calendrical.pldrDOM = value },			// fetching XML file has succeeded.

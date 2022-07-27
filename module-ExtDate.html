@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: module:ExtDate</title>
+    <title>JSDoc: Class: module:extdate</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: module:ExtDate</h1>
+    <h1 class="page-title">Class: module:extdate</h1>
 
     
 
@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>module:ExtDate<span class="signature">(calendar<span class="signature-attributes">opt</span>, dateArguments<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>module:extdate<span class="signature">(calendar<span class="signature-attributes">opt</span>, dateArguments<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Extends the Date object with the flavour of Temporal proposal, using custom calendars. All methods of the Date object are also available. However, with the built-in methods, the figure that represents the month begins with 0, with the extended ones, it begins with 1.</div>
         
@@ -45,7 +45,7 @@
     
 
     
-    <h4 class="name" id="module:ExtDate"><span class="type-signature"></span>new module:ExtDate<span class="signature">(calendar<span class="signature-attributes">opt</span>, dateArguments<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="module:extdate"><span class="type-signature"></span>new module:extdate<span class="signature">(calendar<span class="signature-attributes">opt</span>, dateArguments<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -116,7 +116,7 @@
 
             
 
-            <td class="description last">the calendar object that describes the custom calendar,or a string that refers to a built-in calendar.if undefined, set to "iso8601".In this version, the string for a built-in calendar may only be "iso8601" (default) or "gregory". The custom calendar model is specified in 'customcalendarmodel.js', a code-free file that JSDoc displays as a Global object.</td>
+            <td class="description last">the calendar object that describes the custom calendar,or a string that refers to a built-in calendar;if undefined, set to "iso8601";In this version, the string for a built-in calendar may only be "iso8601" (default) or "gregory".</td>
         </tr>
 
     
@@ -152,7 +152,7 @@
 
             
 
-            <td class="description last">same parameter list as would be passed to the legacy Date object:	empty -> now; 	one numerical argument: Posix counter in milliseconds, as for Date;	one string argument: an ISO string for the date, passed to Date;	several numerical arguments: the arguments of Date constructor, as would be passed to Date, but		year is an algebraic full year, e.g. 1 means year 0001, not year 1901, and negative numbers may be used.		first month is always 1, not 0,		default day is 1, default time elements are 0,		the date elements are those of the target calendar, which may differ from ISO 8601;	the date elements passed are considered those of the local date, i.e. of the terminal's time zone.</td>
+            <td class="description last">same parameter list as would be passed to the legacy Date object:	empty -> now; 	one numerical argument: Posix counter in milliseconds, as for Date;	one string argument: an ISO string for the date, passed to Date;	several numerical arguments: the arguments of Date constructor, as would be passed to Date, but		year is an algebraic full year, e.g. 1 means year 0001, not year 1901, and negative numbers may be used;		first month is always 1, not 0;		default day is 1; 		default time elements are 0;		the date elements are those of the target calendar, which may differ from ISO 8601;	the date elements passed are considered those of the local date, i.e. of the terminal's time zone.</td>
         </tr>
 
     
@@ -167,7 +167,8 @@
 <dl class="details">
 
     
-
+    <dt class="tag-version">Version:</dt>
+    <dd class="tag-version"><ul class="dummy"><li>M2022-08-06</li></ul></dd>
     
 
     
@@ -185,7 +186,19 @@
     
 
     
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Louis A. de Fouquières https://github.com/Louis-Aime</li>
+        </ul>
+    </dd>
+    
 
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2022</li></ul></dd>
     
 
     
@@ -193,18 +206,34 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line71">line 71</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line76">line 76</a>
     </li></ul></dd>
     
 
     
 
     
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="customcalendarmodel.js.html">customcalendarmodel.js</a></li>
+        
+            <li>customcalendarmodel.js 		for the custom calendar model.</li>
+        </ul>
+    </dd>
+    
 
     
 </dl>
 
 
+
+<h5>Requires:</h5>
+<ul>
+    <li>module:chronos.js</li>
+
+    <li>module:time-units.js</li>
+</ul>
 
 
 
@@ -233,12 +262,20 @@
 
 
     <ul>
-        <li><a href="Date.html">Date</a></li>
+        <li>Date.</li>
     </ul>
 
 
     
 
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:chronos.js</li>
+        
+            <li>module:time-units.js</li>
+        </ul>
     
 
     
@@ -268,7 +305,7 @@
 
 
 <div class="description">
-    Basic utility fonction: get UTC date from ISO 8601 UTC date figures in UTC, including full year i.e. 2-digit year is a year of the first century.Please notice the slight differences with the legacy Date.UTC() function.
+    Basic utility fonction: get UTC date from ISO 8601 UTC date figures, including full year, i.e. 2-digit year is a year of the first century.Please notice the slight differences with the legacy Date.UTC() function.
 </div>
 
 
@@ -340,7 +377,7 @@
                 </td>
             
 
-            <td class="description last">The year expressed as a relative unambiguous number.</td>
+            <td class="description last">The year expressed as an algebraic unambiguous number, as specified by ISO 8601.</td>
         </tr>
 
     
@@ -379,7 +416,7 @@
                 </td>
             
 
-            <td class="description last">The month number, 1 to 12.</td>
+            <td class="description last">The month number, 1 to 12 for Jan. to Dec.</td>
         </tr>
 
     
@@ -615,7 +652,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line134">line 134</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line139">line 139</a>
     </li></ul></dd>
     
 
@@ -644,7 +681,7 @@
 
         
 <div class="param-desc">
-    the Posix timestamp corresponding to the specified date.
+    the Posix timestamp corresponding to the specified UTC date.
 </div>
 
 
@@ -725,7 +762,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line111">line 111</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -835,7 +872,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line118">line 118</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line123">line 123</a>
     </li></ul></dd>
     
 
@@ -1006,7 +1043,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line352">line 352</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line360">line 360</a>
     </li></ul></dd>
     
 
@@ -1177,7 +1214,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line328">line 328</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line332">line 332</a>
     </li></ul></dd>
     
 
@@ -1348,7 +1385,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line320">line 320</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line324">line 324</a>
     </li></ul></dd>
     
 
@@ -1519,7 +1556,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line195">line 195</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line199">line 199</a>
     </li></ul></dd>
     
 
@@ -1690,7 +1727,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line227">line 227</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line231">line 231</a>
     </li></ul></dd>
     
 
@@ -1756,7 +1793,7 @@
 
 
 <div class="description">
-    Compute the system time zone offset at this date, or the time zone offset of a named time zone in ms.This function is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries.As there were no time zones, the real offset is computed to the second, but the legacy method may round to minutes, depending on the navigator.
+    Compute the system time zone offset at this date, or the time zone offset of a named time zone in ms.This method is defined because there are discrepancies among navigators for the ***Date.prototype.getTimezoneOffset()*** function, when used for date before 1847 in UK or even later in most other countries.As there were no time zones, the real offset is computed to the second, but the legacy method may round to minutes, depending on the navigator.
 </div>
 
 
@@ -1861,7 +1898,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line148">line 148</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line153">line 153</a>
     </li></ul></dd>
     
 
@@ -2032,7 +2069,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line245">line 245</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line249">line 249</a>
     </li></ul></dd>
     
 
@@ -2204,7 +2241,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line392">line 392</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line400">line 400</a>
     </li></ul></dd>
     
 
@@ -2375,7 +2412,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line294">line 294</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line298">line 298</a>
     </li></ul></dd>
     
 
@@ -2546,7 +2583,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line416">line 416</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line424">line 424</a>
     </li></ul></dd>
     
 
@@ -2717,7 +2754,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line400">line 400</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line408">line 408</a>
     </li></ul></dd>
     
 
@@ -2888,7 +2925,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line344">line 344</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line348">line 348</a>
     </li></ul></dd>
     
 
@@ -3059,7 +3096,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line408">line 408</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line416">line 416</a>
     </li></ul></dd>
     
 
@@ -3200,7 +3237,7 @@
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">String</span>
 
 
             
@@ -3261,7 +3298,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line256">line 256</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line260">line 260</a>
     </li></ul></dd>
     
 
@@ -3290,7 +3327,7 @@
 
         
 <div class="param-desc">
-    a new timeStamp
+    a new timestamp
 </div>
 
 
@@ -3463,7 +3500,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line280">line 280</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line284">line 284</a>
     </li></ul></dd>
     
 
@@ -3792,7 +3829,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line428">line 428</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line436">line 436</a>
     </li></ul></dd>
     
 
@@ -3963,7 +4000,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line302">line 302</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line306">line 306</a>
     </li></ul></dd>
     
 
@@ -4134,7 +4171,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line170">line 170</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line174">line 174</a>
     </li></ul></dd>
     
 
@@ -4305,7 +4342,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line360">line 360</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line368">line 368</a>
     </li></ul></dd>
     
 
@@ -4476,7 +4513,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line368">line 368</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line376">line 376</a>
     </li></ul></dd>
     
 
@@ -4647,7 +4684,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line376">line 376</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line384">line 384</a>
     </li></ul></dd>
     
 
@@ -4818,7 +4855,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line384">line 384</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line392">line 392</a>
     </li></ul></dd>
     
 
@@ -4989,7 +5026,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line336">line 336</a>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line340">line 340</a>
     </li></ul></dd>
     
 
@@ -5057,13 +5094,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 13 2022 20:45:23 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 27 2022 18:53:54 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -29,9 +29,9 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-chronos.html">chronos</a>.</span>Cbcce<span class="signature">(calendRule)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-chronos.html">chronos</a>.</span>Cbcce<span class="signature">(calendarRule)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">The Cycle Based Calendar Computation Engine (Cbcce)</div>
+            <div class="class-description">The Cycle Based Calendar Computation Engine (Cbcce) class.</div>
         
     
 </header>
@@ -46,7 +46,7 @@
     
 
     
-    <h4 class="name" id="Cbcce"><span class="type-signature"></span>new Cbcce<span class="signature">(calendRule)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Cbcce"><span class="type-signature"></span>new Cbcce<span class="signature">(calendarRule)</span><span class="type-signature"></span></h4>
     
 
     
@@ -86,7 +86,7 @@
 
         <tr>
             
-                <td class="name"><code>calendRule</code></td>
+                <td class="name"><code>calendarRule</code></td>
             
 
             <td class="type">
@@ -102,7 +102,7 @@
 
             
 
-            <td class="description last">The object that describes the rules of the calendar to be implemented</td>
+            <td class="description last">The object that describes the rules of the calendar to be implemented.</td>
         </tr>
 
     
@@ -143,12 +143,19 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line62">line 62</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line66">line 66</a>
     </li></ul></dd>
     
 
     
 
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>module:chronos for the definition of the calendarRule structure.</li>
+        </ul>
+    </dd>
     
 
     
@@ -323,7 +330,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line81">line 81</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line85">line 85</a>
     </li></ul></dd>
     
 
@@ -482,7 +489,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line119">line 119</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line123">line 123</a>
     </li></ul></dd>
     
 
@@ -641,7 +648,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line111">line 111</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line115">line 115</a>
     </li></ul></dd>
     
 
@@ -707,7 +714,7 @@
 
 
 <div class="description">
-    The Modulo function for calendrical computations
+    The Modulo function for calendrical computations.
 </div>
 
 
@@ -782,7 +789,7 @@
 
             
 
-            <td class="description last">divisor, shall be non-zero</td>
+            <td class="description last">divisor, shall be non-zero.</td>
         </tr>
 
     
@@ -823,7 +830,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line72">line 72</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -852,7 +859,7 @@
 
         
 <div class="param-desc">
-    modulo of a divided by d, with 0 <= modulo < d or d < modulo <= 0, e.g. -2 mod 3 is +1, not -2.
+    modulo of a divided by d, with 0 <= modulo < d or d < modulo <= 0; e.g. -2 mod 3 is +1, not -2.
 </div>
 
 
@@ -948,7 +955,7 @@
                 </td>
             
 
-            <td class="description last">the rank of cycle, which is increased by 1 each time 'phase' reaches (mod (cycleBase, period))</td>
+            <td class="description last">the rank of cycle, which is increased by 1 each time 'phase' reaches (mod (cycleBase, period)).</td>
         </tr>
 
     
@@ -1099,7 +1106,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line99">line 99</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -1128,7 +1135,7 @@
 
         
 <div class="param-desc">
-    [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period
+    [returnCycle, returnPhase] with: (returnCycle * period + returnPhase == cycle * period + phase) && (shift + cycleBase) <= returnPhase < (shift + cycleBase)+period.
 </div>
 
 
@@ -1217,7 +1224,7 @@
 
             
 
-            <td class="description last">the numeric elements of the date, collected in an object containing the elements that calendRule prescribes.</td>
+            <td class="description last">the numeric elements of the date, collected in an object containing the elements that calendarRule prescribes.</td>
         </tr>
 
     
@@ -1258,7 +1265,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line155">line 155</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line159">line 159</a>
     </li></ul></dd>
     
 
@@ -1287,7 +1294,7 @@
 
         
 <div class="param-desc">
-    the timestamp
+    the timestamp.
 </div>
 
 
@@ -1417,7 +1424,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line126">line 126</a>
+        <a href="chronos.js.html">chronos.js</a>, <a href="chronos.js.html#line130">line 130</a>
     </li></ul></dd>
     
 
@@ -1446,7 +1453,7 @@
 
         
 <div class="param-desc">
-    the calendar elements in the structure that calendRule prescribes.
+    the calendar elements in the structure that calendarRule prescribes.
 </div>
 
 
@@ -1485,13 +1492,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-ExtDate.html">ExtDate</a></li><li><a href="module-ExtDateTimeFormat.html">ExtDateTimeFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 13 2022 20:45:23 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jul 27 2022 18:53:54 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
