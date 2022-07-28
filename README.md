@@ -31,9 +31,9 @@ An additional option `eraDisplay` is available.
 |Display or hide era automatically|0|+|
 |Use variants to Unicode's CLDR (using a PLDR)|0|+|
 |Differentiate `2-digit` from `numeric` for time representation|0|+|
+|Customise intercalary month marker for chinese and dangi calendars|0|+|
 ### Custom calendars
-The general structure of a custom calendar is documented in `customcalendarmodel.js`, 
-and also in the *Global* section of the JSDoc documentation, as a type.
+The general structure of a custom calendar is documented as a type in `customcalendarmodel.js` module. 
 Some useful examples are given in `calendars.js`.
 The calendar of any European country that used the Julian calendar and switched some day to the Gregorian one 
 may easily be specified and used.
@@ -43,33 +43,33 @@ may easily be specified and used.
 |Julian calendar|0|+|
 |Historical Julio-gregorian calendars|0|+|
 |Historical French revolutionary calendar|0|+|
-|Tentative Milesian calendar|0|+|
+|Milesian calendar|0|+|
 
 Tentative new week numbering systems are also possible.
 ### `timeUnits` object (time-units.js)
 Convert simple durations to and from milliseconds, using coefficients defined once for all.
 ### `Cbcce` class (chronos.js)
-Define any algorithmic calendar with a simple object, see `chronos.js` or the JSDoc documentation:
+Define almost any algorithmic calendar with a simple object, see `chronos.js` or the JSDoc documentation:
 the Cycle Based Calendar Computation Engine (Cbcce) will convert between timestamp and date-time fields.
 Basic solid-state integer division and modulo routines are also available.
-These tools provide a general framework to deal will most algorithmic calendars, 
+These tools provide a general framework to deal with most algorithmic calendars, 
 including Julian,  Gregorian, Coptic, Ethiopic, Meton-cycle implied with the Hebrew calendar, etc.
-See examples in `calendars.js`.
+See implementation examples in `calendars.js`.
 ### `WeekClock` class (chronos.js)
 Define special week rules, with more or less than 7 days, epagomenal days at end of year, or an intercalation day anywhere in the year.
 The WeekClock instantiated object will compute day sequential number to and from week figures. 
 The rules for the week are specified in an object, see `chronos.js` or the JSDoc documentation.
-See examples in `calendars.js`.
+See implementation examples in `calendars.js`.
 ### IsoCounter class (chronos.js)
 Convert a set of ISO 8601 date fields to and from a sequential day number relative to a given epoch,
 by default 1970-01-01. Useful for computations on Julian Day, Modified JD, Microsoft base, etc.
 ### `fetchDOM` promise generator function (fetchdom.js)
-Open access to an external XML resource and convert it to a DOM. 
-This function works like `import()` but establishes a DOM rather than an access to a module.
+Open access to an external XML resource and convert it to a document (DOM) object. 
+This function works like `import()` but establishes a document object rather than an access to a module.
 This function is a general purpose object. It is here used to fetch the Private Locale Data Repository (PLDR) used with calendars.
 ### pldr.js
-A simplified and stringified version of our Private Locale Data Repository, to be used when the access to the XML PLDR is not available.
-
+A simplified and stringified version of our Private Locale Data Repository, 
+to be used when the access to the XML PLDR file is not available.
 ## Demonstration and documentation files
 The calendrical-\*.js and calendrical-demo\*.html files are for test and demonstrating purposes. 
 The JSDoc documentation and the demo are available from GitHub Pages.
