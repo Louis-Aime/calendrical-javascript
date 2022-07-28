@@ -23,19 +23,19 @@ const pldrstring =
   <calendar type="gregory">\
 	<eras>\
 		<eraNames>\
-			<era type="0" draft="unconfirmed">Ante Christo</era>\
-			<era type="1" draft="unconfirmed">Anno Domini</era>\
-			<era type="2" draft="unconfirmed">Gregoriano computo</era>\
+			<era type="0" draft="unconfirmed">ante Christo</era>\
+			<era type="1" draft="unconfirmed">computo Julii</era>\
+			<era type="2" draft="unconfirmed">computo Gregorii</era>\
 		</eraNames>\
 		<eraAbbr>\
 			<era type="0" draft="unconfirmed">A. C.</era>\
-			<era type="1" draft="unconfirmed">A. D.</era>\
-			<era type="2" draft="unconfirmed">G. C.</era>\
+			<era type="1" draft="unconfirmed">C. J.</era>\
+			<era type="2" draft="unconfirmed">C. G.</era>\
 		</eraAbbr>\
 		<eraNarrow>\
 			<era type="0" draft="unconfirmed">AC</era>\
-			<era type="1" draft="unconfirmed">AD</era>\
-			<era type="2" draft="unconfirmed">GC</era>\
+			<era type="1" draft="unconfirmed">CJ</era>\
+			<era type="2" draft="unconfirmed">CG</era>\
 		</eraNarrow>\
 	</eras>	\
   </calendar>\

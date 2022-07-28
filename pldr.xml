@@ -4,7 +4,7 @@ using the same structure as Unicode's CLDR.
 Entry node: <pldr>.
 Non language-specific section is <ldmlBCP47>.
 Language-specific section is <ldml>.
-Version M2022-08-06: 3 eras in 'gregory' calendar.
+Version M2022-08-07: 3 eras in 'gregory' calendar.
 -->
 <!-- <!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->
 <pldr>
@@ -12,19 +12,19 @@ Version M2022-08-06: 3 eras in 'gregory' calendar.
   <calendar type="gregory">
 	<eras>
 		<eraNames>
-			<era type="0" draft="unconfirmed">Ante Christo</era>
-			<era type="1" draft="unconfirmed">Anno Domini</era>
-			<era type="2" draft="unconfirmed">Gregoriano computo</era>
+			<era type="0" draft="unconfirmed">ante Christo</era>
+			<era type="1" draft="unconfirmed">computo Julii</era>
+			<era type="2" draft="unconfirmed">computo Gregorii</era>
 		</eraNames>
 		<eraAbbr>
 			<era type="0" draft="unconfirmed">A. C.</era>
-			<era type="1" draft="unconfirmed">A. D.</era>
-			<era type="2" draft="unconfirmed">G. C.</era>
+			<era type="1" draft="unconfirmed">C. J.</era>
+			<era type="2" draft="unconfirmed">C. G.</era>
 		</eraAbbr>
 		<eraNarrow>
 			<era type="0" draft="unconfirmed">AC</era>
-			<era type="1" draft="unconfirmed">AD</era>
-			<era type="2" draft="unconfirmed">GC</era>
+			<era type="1" draft="unconfirmed">CJ</era>
+			<era type="2" draft="unconfirmed">CG</era>
 		</eraNarrow>
 	</eras>	
   </calendar>
@@ -510,18 +510,18 @@ Version M2022-08-06: 3 eras in 'gregory' calendar.
 			<eras>
 				<eraNames>
 					<era type="0" draft="unconfirmed">avant Jésus-Christ</era>
-					<era type="1" draft="unconfirmed">après Jésus-Christ</era>
-					<era type="2" draft="unconfirmed">comput grégorien</era>
+					<era type="1" draft="unconfirmed">calendrier julien</era>
+					<era type="2" draft="unconfirmed">calendrier grégorien</era>
 				</eraNames>
 				<eraAbbr>
 					<era type="0" draft="unconfirmed">av. J.-C.</era>
-					<era type="1" draft="unconfirmed">ap. J.-C.</era>
-					<era type="2" draft="unconfirmed">c. grég.</era>
+					<era type="1" draft="unconfirmed">jul.</era>
+					<era type="2" draft="unconfirmed">grég.</era>
 				</eraAbbr>
 				<eraNarrow>
-					<era type="0" draft="unconfirmed">AEC</era>
-					<era type="1" draft="unconfirmed">AD</era>
-					<era type="2" draft="unconfirmed">CG</era>
+					<era type="0" draft="unconfirmed">A</era>
+					<era type="1" draft="unconfirmed">J</era>
+					<era type="2" draft="unconfirmed">G</era>
 				</eraNarrow>
 			</eras>
 		</calendar>
@@ -959,25 +959,6 @@ Version M2022-08-06: 3 eras in 'gregory' calendar.
 	</identity>
 	<identity>
 		<language type="de"/>
-		<calendar type="gregory">
-			<eras>
-				<eraNames>
-					<era type="0" draft="unconfirmed">vor Christus</era>
-					<era type="1" draft="unconfirmed">alter Stil</era>
-					<era type="2" draft="unconfirmed">neuer Stil</era>
-				</eraNames>
-				<eraAbbr>
-					<era type="0" draft="unconfirmed">v. Chr.</era>
-					<era type="1" draft="unconfirmed">a. S.</era>
-					<era type="2" draft="unconfirmed">n. S.</era>
-				</eraAbbr>
-				<eraNarrow>
-					<era type="0" draft="unconfirmed">V</era>
-					<era type="1" draft="unconfirmed">A</era>
-					<era type="2" draft="unconfirmed">N</era>
-				</eraNarrow>
-			</eras>
-		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
@@ -1019,25 +1000,6 @@ Version M2022-08-06: 3 eras in 'gregory' calendar.
 	</identity>
 	<identity>
 		<language type="es"/>
-		<calendar type="gregory">
-			<eras>
-				<eraNames>
-					<era type="0" draft="unconfirmed">antes de Christo</era>
-					<era type="1" draft="unconfirmed">estilo antiguo</era>
-					<era type="2" draft="unconfirmed">nuevo estilo</era>
-				</eraNames>
-				<eraAbbr>
-					<era type="0" draft="unconfirmed">AC</era>
-					<era type="1" draft="unconfirmed">ea</era>
-					<era type="2" draft="unconfirmed">ne.</era>
-				</eraAbbr>
-				<eraNarrow>
-					<era type="0" draft="unconfirmed">A</era>
-					<era type="1" draft="unconfirmed">e</era>
-					<era type="2" draft="unconfirmed">n</era>
-				</eraNarrow>
-			</eras>
-		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
@@ -1079,25 +1041,6 @@ Version M2022-08-06: 3 eras in 'gregory' calendar.
 	</identity>
 	<identity>
 		<language type="pt"/>
-		<calendar type="gregory">
-			<eras>
-				<eraNames>
-					<era type="0" draft="unconfirmed">antes de Christo</era>
-					<era type="1" draft="unconfirmed">estilo antigo</era>
-					<era type="2" draft="unconfirmed">novo estilo</era>
-				</eraNames>
-				<eraAbbr>
-					<era type="0" draft="unconfirmed">AC</era>
-					<era type="1" draft="unconfirmed">ea</era>
-					<era type="2" draft="unconfirmed">ne.</era>
-				</eraAbbr>
-				<eraNarrow>
-					<era type="0" draft="unconfirmed">A</era>
-					<era type="1" draft="unconfirmed">e</era>
-					<era type="2" draft="unconfirmed">n</era>
-				</eraNarrow>
-			</eras>
-		</calendar>
 		<calendar type="milesian">
 			<months>
 			  <monthContext type="format">
