@@ -2,9 +2,9 @@
  @module extdatetimeformat
  */
 // Character set is UTF-8
-/*	Version	M2022-08-06	handle intercalary months as coded in CLDR, 
-	with language-sensitive intercalary mark.
-	See history on GitHub
+/*	Version	M2022-08-24	Compute whether era should be displayed 
+		even for "chinese" and "dangi" calendars.
+	See history on GitHub.
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -94,12 +94,16 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		// Control and resolve specific options
 		if (this.options.eraDisplay == undefined) this.options.eraDisplay = "auto";
 		switch (this.options.eraDisplay) {
-			case "always":	if (options.era == undefined) options.era = "short";
+			case "always":	if (this.options.era == undefined) this.options.era = "short";
 			case "auto": 	// we should insert here the preceding statement, however this can have impact if era is asked from the user.
 			case "never": break;
 			default: throw new RangeError ("Unknown option for displaying era: " + this.options.eraDisplay);
-		}
-		if (this.options.eraDisplay == "auto" && this.DTFOptions.year == undefined) this.options.eraDisplay = "never";
+		};
+		// Review next statement after management of chinese/dangi calendars in Intl.DateTimeFormat
+		if (this.options.eraDisplay == "auto"
+			&& this.DTFOptions.year == undefined && this.DTFOptions.dateStyle == undefined && this.options.era == undefined) 
+				this.options.eraDisplay = "never";
+		
 		if (this.calendar != undefined) {
 			if (this.calendar.stringFormat == undefined) this.calendar.stringFormat = "auto";
 			switch (this.calendar.stringFormat) {
@@ -196,7 +200,11 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 				var today = new ExtDate(this.calendar);
 				if (this.calendar == undefined) {	// a built-in calendar, let us just compare with a particular formatting - with Temporal, this part of code is cancelled
 								// era : "short" is the better choice to get a discriminant era. "long" may lead to no era field at all !
-					let eraFormat = new Intl.DateTimeFormat ( this.options.locale, { calendar : this.options.calendar, year : "numeric", era : "short" } ),
+					let yearOption = (this.options.calendar == "chinese" || this.options.calendar == "dangi") ? undefined : "numeric", 
+							// "chinese" and "dangi" calendars: era field only available if year field not asked ! 
+						eraFormat = new Intl.DateTimeFormat ( this.options.locale, { calendar : this.options.calendar, 
+							weekday : "narrow", // in order to avoid a change of displayed fileds if only era field is present
+							year : yearOption, era : "short" } ),
 						dateParts = eraFormat.formatToParts(date),
 						todaysParts = eraFormat.formatToParts(today),
 						eraIndex = dateParts.findIndex(item => item.type == "era"),
