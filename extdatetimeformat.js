@@ -179,7 +179,7 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 	*/
 	static weekdayKey (i) { return ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][i] }	// the keys used for weekdays in CLDR, use the same for PLDR
 	/** the resolved options for this object, that slightly differ from those of Intl.DateTimeFormat.
-	 * @return {Object} the options revised to reflect what will be provided. eraDisplay is also resolved.
+	 * @return {Object} the options revised to reflect what will be provided. eraDisplay is also resolved. hour12 is never returned.
 	*/
 	resolvedOptions() { 
 		return this.options
