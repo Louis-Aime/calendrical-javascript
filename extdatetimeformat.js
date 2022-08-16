@@ -2,7 +2,7 @@
  @module extdatetimeformat
  */
 // Character set is UTF-8
-/*	Version	M2022-08-24	Compute whether era should be displayed 
+/*	Version	M2022-08-26	Resolved options may be reintroduced to a new object with the same effect.
 		even for "chinese" and "dangi" calendars.
 	See history on GitHub.
 */
@@ -86,10 +86,11 @@ export default class ExtDateTimeFormat extends Intl.DateTimeFormat {
 		}
 		this.options.numberingSystem = this.DTFOptions.numberingSystem;
 		this.options.timeZone = this.DTFOptions.timeZone;
-		this.options.timeZoneName = this.DTFOptions.timeZoneName;
-		this.options.dayPeriod = this.DTFOptions.dayPeriod;
-		this.options.hour12 = this.DTFOptions.hour12;
-		this.options.hourCycle = this.DTFOptions.hourCycle;
+		// next fields are only constructed if they are computed by Intl.DateTimeFormat
+		if (this.DTFOptions.timeZoneName != undefined) this.options.timeZoneName = this.DTFOptions.timeZoneName;
+		if (this.DTFOptions.dayPeriod != undefined) this.options.dayPeriod = this.DTFOptions.dayPeriod;
+		if (this.DTFOptions.hourCycle != undefined) this.options.hourCycle = this.DTFOptions.hourCycle;
+		delete this.options.hour12 // do not set to this.DTFOptions.hour12, because hourCycle holds the most complete information on how it should be managed.
 
 		// Control and resolve specific options
 		if (this.options.eraDisplay == undefined) this.options.eraDisplay = "auto";
