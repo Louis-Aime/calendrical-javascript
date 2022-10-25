@@ -3,7 +3,7 @@
 	* Passing non numeric values will yield NaN results.
 	* Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
  * @module
- * @version M2028-08-06
+ * @version M2028-11-04
  * @requires module:time-units.js
  * @requires module:chronos.js
  * @requires module:extdate.js
@@ -11,7 +11,7 @@
  * @license MIT 2016-2022
 //	Character set is UTF-8
 */
-/* Versions:	M2022-08-06 Eras for Western calendar
+/* Versions:	M2022-11-04 Era for French Revolution calendar
 */ 
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
 Permission is hereby granted, free of charge, to any person obtaining
@@ -492,7 +492,7 @@ export class FrenchRevCalendar {
 		month : { mode : "pldr", calname : "frenchrev" },		// {mode : "list", source : this.monthNames},
 		year : {mode : "field" },
 		// era : {mode : "list", codes : this.eras, source : this.eraNames} 
-		era : { mode : "pldr" }
+		era : { mode : "pldr", calname : "frenchrev" }
 	}
 	frenchClockWork = new Cbcce ({ // To be used with a Unix timestamp in ms. Decompose into years, months, day, hours, minutes, seconds, ms
 		timeepoch : -6004454400000, // Unix timestamp of 3 10m 1779 00h00 UTC in ms, the origin for the algorithm
