@@ -29,9 +29,9 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-calendars.html">calendars</a>.</span>GregorianCalendar<span class="signature">(id)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-calendars.html">calendars</a>.</span>GregorianCalendar<span class="signature">(id, switchingDate, pldr)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Generic Gregorian proleptic calendar, with no era. Years are algebraic numbers.this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.</div>
+            <div class="class-description">Generic non-proleptic Gregorian calendar, with a date of switchover to the Gregorian reckoning system as parameter.</div>
         
     
 </header>
@@ -46,7 +46,7 @@
     
 
     
-    <h4 class="name" id="GregorianCalendar"><span class="type-signature"></span>new GregorianCalendar<span class="signature">(id)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="GregorianCalendar"><span class="type-signature"></span>new GregorianCalendar<span class="signature">(id, switchingDate, pldr)</span><span class="type-signature"></span></h4>
     
 
     
@@ -106,6 +106,55 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>switchingDate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">first date where Gregorien calendar was used; switchingDate may be an ISO string or a Posix timestamp.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pldr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">document</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the private locale data registry that holds the era names.</td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -143,7 +192,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line158">line 158</a>
+        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line363">line 363</a>
     </li></ul></dd>
     
 
@@ -189,6 +238,72 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="eras"><span class="type-signature"></span>eras<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Era codes: "bc" for backwards counted years before year 1, "os" (Old Style) for years since Dionysius era in Julian reckoning system, "ns" (New Style) for years in Gregorian reckoning system.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line376">line 376</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
 
@@ -205,13 +320,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.WesternCalendar.html">WesternCalendar</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-pldr.html">pldr</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Oct 26 2022 00:03:24 GMT+0200 (heure d’été d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Oct 31 2022 11:59:51 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
