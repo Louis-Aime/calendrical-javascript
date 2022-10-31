@@ -1,11 +1,11 @@
 /** a Private Locale Data Repository stored as a string, with its DOM parser.
  * @module
- * @version M2022-07-22
+ * @version M2022-11-10
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Charset UTF-8. This file contains non-ANSI characters.
-/* Version	M2022-08-06 3 eras for 'gregory' calendars
+/* Version	M2022-11-10	latin names for the non-proleptic gregorian calendar
 */
 "use strict";
 /** Stringified XML base, consisting in 2 blocks: 
@@ -24,18 +24,18 @@ const pldrstring =
 	<eras>\
 		<eraNames>\
 			<era type="0" draft="unconfirmed">ante Christo</era>\
-			<era type="1" draft="unconfirmed">computo Julii</era>\
-			<era type="2" draft="unconfirmed">computo Gregorii</era>\
+			<era type="1" draft="unconfirmed">stilo vetere</era>\
+			<era type="2" draft="unconfirmed">stilo novo</era>\
 		</eraNames>\
 		<eraAbbr>\
 			<era type="0" draft="unconfirmed">A. C.</era>\
-			<era type="1" draft="unconfirmed">C. J.</era>\
-			<era type="2" draft="unconfirmed">C. G.</era>\
+			<era type="1" draft="unconfirmed">st. v.</era>\
+			<era type="2" draft="unconfirmed">st. n.</era>\
 		</eraAbbr>\
 		<eraNarrow>\
-			<era type="0" draft="unconfirmed">AC</era>\
-			<era type="1" draft="unconfirmed">CJ</era>\
-			<era type="2" draft="unconfirmed">CG</era>\
+			<era type="0" draft="unconfirmed">A</era>\
+			<era type="1" draft="unconfirmed">V</era>\
+			<era type="2" draft="unconfirmed">N</era>\
 		</eraNarrow>\
 	</eras>	\
   </calendar>\
