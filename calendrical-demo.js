@@ -3,12 +3,12 @@
  * To be used with suitable calendrical-demo-**.html file.
  * contents: global variables, animation routines for the html page, event listeners to follow forms.
  * @requires module:calendrical-init.js
- * @version M2022-08-06
+ * @version M2022-11-10
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
 */
 // Character set is UTF-8
-/* Version:	M2022-08-06 	Manage era names for Western calendars
+/* Version:	M2022-11-10 	Calendars renamed. No "historic", but "gregorian" and "iso_8601"
 	see details on GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -399,12 +399,12 @@ function setDateToNow(){
 window.onload = function () {
 	// Initial values are taken from forms in page
 	[ switchingDate.day, switchingDate.month, switchingDate.year ]
-		= [document.gregorianswitch.day.value, +document.gregorianswitch.month.value, document.gregorianswitch.year.value ];	// computed here for 'historic' calendar.
+		= [document.gregorianswitch.day.value, +document.gregorianswitch.month.value, document.gregorianswitch.year.value ];	// computed here for the 'gregorian' calendar.
 	loadCalendrical.then (() => {
 		calendars.push (new calendrical.MilesianCalendar ("milesian",calendrical.pldrDOM));
-		calendars.push (new calendrical.GregorianCalendar ("iso_8601"));
+		calendars.push (new calendrical.ProlepticGregorianCalendar ("iso_8601"));
 		calendars.push (new calendrical.JulianCalendar ("julian"));
-		calendars.push (new calendrical.WesternCalendar ("historic", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day), calendrical.pldrDOM));
+		calendars.push (new calendrical.GregorianCalendar ("gregorian", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day), calendrical.pldrDOM));
 		calendars.push (new calendrical.FrenchRevCalendar ("frenchrev",calendrical.pldrDOM));
 		customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);  // set initial custom calendar - but calendars must exist !
 		getMode();
@@ -422,14 +422,14 @@ window.onload = function () {
 			month = event.srcElement.elements.month.value,
 			year =  Math.round (event.srcElement.elements.year.value),
 			testDate = new calendrical.ExtDate (calendars.find(item => item.id == "iso_8601"),calendrical.ExtDate.fullUTC(year, month, day)),
-			index = calendars.findIndex (item => item.id == "historic");
+			index = calendars.findIndex (item => item.id == "gregorian");
 		if ( (testDate.valueOf() >= Date.UTC(1582,9,15,0,0,0,0)) && (testDate.day() == day) ) {
-			calendars[index] = new calendrical.WesternCalendar("historic", testDate.valueOf(), calendrical.pldrDOM);
+			calendars[index] = new calendrical.GregorianCalendar("gregorian", testDate.valueOf(), calendrical.pldrDOM);
 			[document.gregorianswitch.day.value, document.gregorianswitch.month.value, document.gregorianswitch.year.value ]
 				= [ switchingDate.day, switchingDate.month, switchingDate.year ] = [ day, month, year ];
 			compLocalePresentationCalendar();	// because we changed one calendar, disseminate change.
-			if (calendars[customCalIndex].id == "historic") targetDate = new calendrical.ExtDate (calendars[index], targetDate.valueOf());	
-				// sweep former historic calendar out of current data
+			if (calendars[customCalIndex].id == "gregorian") targetDate = new calendrical.ExtDate (calendars[index], targetDate.valueOf());	
+				// sweep former gregorian calendar out of current data
 		}
 		else {
 			alert ("Invalid switching date to Gregorian calendar: " + day + '/' + month + '/' + year );
