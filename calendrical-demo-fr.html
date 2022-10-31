@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Calendriers utilisateurs et affichage étendu des dates</title>
-<!-- Version	M2022-08-05	add a tiny lunisolar calendar (for test)
+<!-- Version	M2022-11-10	No more "historic", but "Gregorian" calendar with switchover
 	M2022-03-24 describe TZ offset
 	M2021-08-22 created from dateextendtest, with associated .js splitted and selected values in fields
 	M2021-08-13 Control switching date to Gregorian
@@ -55,12 +55,12 @@
 					<option value="iso_8601" selected>iso 8601</option>
 					<option value="milesian">milésien</option>
 					<option value="julian">julien</option>
-					<option value="historic">historique</option>
+					<option value="gregorian" selected>grégorien</option>
 					<option value="frenchrev">révolutionnaire</option>
 					</select></td>
-				<td><input name="year" type="number" value="0" class="centered digit4"></td>
-				<td><input name="monthname" type="number" value="1" min="1" max="13" class="centered digit2"></td>
-				<td><input name="day" type="number" value="1" min="1" max="31" class="centered digit2"> </td>
+				<td><input name="year" type="number" value="1582" class="centered digit4"></td>
+				<td><input name="monthname" type="number" value="12" min="1" max="13" class="centered digit2"></td>
+				<td><input name="day" type="number" value="9" min="1" max="31" class="centered digit2"> </td>
 				<td><button class="textline">Ok</button></td>
 				</form>
 			  </tr>
@@ -95,7 +95,7 @@
 		 </table>
 		</form>
 		</section>
-		<section><h4 class="panelhead">Calendrier historique&nbsp;: passage au grégorien</h4>
+		<section><h4 class="panelhead">Calendrier grégorien&nbsp;: entrée en vigueur</h4>
 			<table class="centered">
 			 <form name="gregorianswitch">
 			   <tr>
