@@ -10,7 +10,7 @@ From this site (https://louis-aime.github.io/calendrical-javascript/) you can:
 
 ## Demonstrator usage
 With the first panel, choose a custom calendar, then enter a date in this calendar. 
-If you use the "historic" calendar, you can specify the switching day to Gregorian.
+If you use the "Gregorian" calendar, you can specify the switching day to New Style Gregorian.
 With the next panels, specify the display options. You may choose a Unicode built-in calendar.
 The date projected are displayed in the last panels.
 The first panel also shows the week figures, with which you can specify a date.
