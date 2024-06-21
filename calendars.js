@@ -11,7 +11,7 @@
  * @license MIT 2016-2024
 //	Character set is UTF-8
 */
-/* Versions:	M2022-11-10 Era codes in small letters, Gregorian and proleptic Gregorian calendar renamed.
+/* Versions:	See Github
 */ 
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2024
 Permission is hereby granted, free of charge, to any person obtaining
@@ -332,7 +332,7 @@ export class JulianCalendar  {
 		return this.julianClockwork.getNumber(this.shiftYearStart(myFields,2,1));
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (deemed UTC)
-		let timeStamp = this.setCounterFromFields (fields);
+		let timeStamp = this.counterFromFields (fields);
 		return new construct (this, timeStamp)
 	}
 	weekFieldsFromCounter (timeStamp) {	// week fields, from a timestamp deemed UTC
@@ -434,7 +434,7 @@ export class GregorianCalendar {
 		
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (deemed UTC)
-		let number = this.setCounterFromFields (fields);
+		let number = this.counterFromFields (fields);
 		return new construct (this, number)
 	}
 	weekFieldsFromCounter (timeStamp) {
@@ -589,7 +589,6 @@ export class FrenchRevCalendar {
 export class Persian33Calendar { 
 	constructor (id) {
 		this.id = id;
-		this.pldr = pldr;
 	}
 	/* Basic references
 	*/
@@ -601,12 +600,12 @@ export class Persian33Calendar {
 	}
 	persian33Clockwork = new Cbcce ( 
 		{ 					//calendarRule object, used with Posix epoch
-		timeepoch : -42879024000000, // Unix timestamp of 1 Farvardin -10 (1 4m 622) 00h00 UTC in ms
+		timeepoch : -42879024000000, // Unix timestamp of 1 Farvardin -10 (1 4m 611) 00h00 UTC in ms
 		coeff : [ 
-		  {cyclelength : 1041376200000, ceiling : Infinity, subCycleShift : 0, multiplier : 33, target : "year"},	// The main 33-years cycle.
+		  {cyclelength : 1041379200000, ceiling : Infinity, subCycleShift : 0, multiplier : 33, target : "year"},	// The main 33-years cycle.
 		  {cyclelength : 126230400000, ceiling : 7, subCycleShift : +1, multiplier : 4, target : "year"},			// The cycle. If last of upper cycle, add one year.
-		  {cyclelength : 31536000000, ceiling : 3, subCycleShift : 0, multiplier : 1, target : "year", notify : "InLongYear"},	// The year, grouped by 4 (3+1).
-		  {cyclelength : 16070400000, ceiling : Infinity, subCycleShift : 0, multiplier : 2, target : "semester"},	// First semester of 6 x 31 month.
+		  {cyclelength : 31536000000, ceiling : 3, subCycleShift : 0, multiplier : 1, target : "year", notify : "inLongYear"},	// The year, grouped by 4 (3+1).
+		  {cyclelength : 16070400000, ceiling : Infinity, subCycleShift : 0, multiplier : 1, target : "semester"},	// First semester of 6 x 31 month.
 		  {cyclelength : 86400000, ceiling : Infinity, subCycleShift : 0, multiplier : 1, target : "semday"},
 		  {cyclelength : 3600000, ceiling : Infinity, subCycleShift : 0, multiplier : 1, target : "hours"},
 		  {cyclelength : 60000, ceiling : Infinity, subCycleShift : 0, multiplier : 1, target : "minutes"},
@@ -626,9 +625,9 @@ export class Persian33Calendar {
 	persianWeek = new WeekClock (
 		{
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
-			daysInYear: (year) => (this.inLeapYear({ year : year, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 }) ? 366 : 365),
+			daysInYear: (year) => (this.inLeapYear({ year : year, semester : 0, semday : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 }) ? 366 : 365),
 								// leap year rule for this calendar
-			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, semester : 0, semday : 3})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 1,		// week start with 0
 			// The rest by default
 		}
@@ -640,7 +639,7 @@ export class Persian33Calendar {
 		if (fields.year != undefined && fields.fullYear != undefined)
 			{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
 		else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear };
-		if (fields.semester == undefined || fields.semday == undefined)
+		if (isNaN(fields.semester) || isNaN(fields.semday))
 			[fields.semester, fields.semday] = [Math.floor((fields.month - 1)/6), (fields.month < 7 ? (fields.month-1) * 31 : 186 + (fields.month-7) * 30) + fields.day - 1];
 		return fields
 	}
@@ -681,8 +680,8 @@ export class Persian33Calendar {
 	/* Simple properties and method as inspired by Temporal
 	*/
 	inLeapYear (fields) { 	// is this year a long year.
-		let myFields = {...fields};
-		if (myFields.inLongYear == undefined) myFields = this.persian33Clockwork.getObject (this.persian33Clockwork.getNumber (fields));
+		let myFields = this.solveAskedFields(fields);
+		if (myFields.inLongYear == undefined) myFields = this.persian33Clockwork.getObject (this.persian33Clockwork.getNumber (myFields));
 		return myFields.inLongYear
 	}
 }
