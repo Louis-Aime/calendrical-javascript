@@ -113,7 +113,6 @@ export class MilesianCalendar {
 	/* Basic conversion methods	
 	*/
 	fieldsFromCounter (timeStamp) { // year, month, day, from Posix timestamp, UTC
-		// let TZOffset = TZ == "UTC" ? 0 : new ExtDate("iso8601",timeStamp).getRealTZmsOffset(); // decide not to use TZ here
 		let fields = this.milesianClockwork.getObject (timeStamp);
 		fields.fullYear = fields.year;
 		return fields
@@ -124,7 +123,6 @@ export class MilesianCalendar {
 		return this.milesianClockwork.getNumber( myFields )
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (UTC)
-		// let timeStamp = this.counterFromFields (fields, TZ);
 		return new construct (this, this.counterFromFields(fields))
 	}
 	weekFieldsFromCounter (timeStamp) { 			// week coordinates : number of week, weekday, last/this/next year, weeks in weekyear
@@ -206,7 +204,7 @@ export class ProlepticGregorianCalendar {
 	buildDateFromFields (fields, construct = ExtDate) {
 		let myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
 		myFields = Object.assign (myFields, this.solveAskedFields(fields));
-		return new construct (this, ExtDate.fullUTC(fields.fullYear, fields.month, fields.day, fields.hours, fields.minutes, fields.seconds, fields.milliseconds))
+		return new construct (this, this.counterFromFields(fields))
 	}
 	weekFieldsFromCounter (timeStamp) {
 		let myDate = new ExtDate ("iso8601", timeStamp),
@@ -332,8 +330,7 @@ export class JulianCalendar  {
 		return this.julianClockwork.getNumber(this.shiftYearStart(myFields,2,1));
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (deemed UTC)
-		let timeStamp = this.counterFromFields (fields);
-		return new construct (this, timeStamp)
+		return new construct (this, this.counterFromFields(fields))
 	}
 	weekFieldsFromCounter (timeStamp) {	// week fields, from a timestamp deemed UTC
 		let	year = this.fieldsFromCounter (timeStamp).fullYear,
@@ -434,8 +431,7 @@ export class GregorianCalendar {
 		
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (deemed UTC)
-		let number = this.counterFromFields (fields);
-		return new construct (this, number)
+		return new construct (this, this.counterFromFields(fields))
 	}
 	weekFieldsFromCounter (timeStamp) {
 		if (timeStamp < this.switchingDate.valueOf()) 
@@ -565,6 +561,9 @@ export class FrenchRevCalendar {
 			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
 			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
 	}
+	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (UTC)
+		return new construct (this, this.counterFromFields(fields))
+	}
 	inLeapYear (fields) {
 		let myFields = {...fields};
 		if (myFields.inSextileYear == undefined) myFields = this.frenchClockWork.getObject (this.frenchClockWork.getNumber (fields));
@@ -594,10 +593,8 @@ export class Persian33Calendar {
 	*/
 	canvas = "persian"
 	eras = ["ap"]
-	stringFormat = "built-in"	
-	partsFormat = {
-		era : {mode : "codes"},
-	}
+	stringFormat = "built-in"	// This calendar is exactly the same as "persian" of Unicode.
+
 	persian33Clockwork = new Cbcce ( 
 		{ 					//calendarRule object, used with Posix epoch
 		timeepoch : -42879024000000, // Unix timestamp of 1 Farvardin -10 (1 4m 611) 00h00 UTC in ms
@@ -646,7 +643,6 @@ export class Persian33Calendar {
 	/* Basic conversion methods	
 	*/
 	fieldsFromCounter (timeStamp) { // year, month, day, from Posix timestamp, UTC
-		// let TZOffset = TZ == "UTC" ? 0 : new ExtDate("iso8601",timeStamp).getRealTZmsOffset(); // decide not to use TZ here
 		let fields = this.persian33Clockwork.getObject (timeStamp);
 		fields.fullYear = fields.year;
 		// Computation of month and day in month
@@ -660,7 +656,6 @@ export class Persian33Calendar {
 		return this.persian33Clockwork.getNumber( myFields )
 	}
 	buildDateFromFields (fields, construct = ExtDate) {			// Construct an ExtDate object from the date in this calendar (UTC)
-		// let timeStamp = this.counterFromFields (fields, TZ);
 		return new construct (this, this.counterFromFields(fields))
 	}
 	weekFieldsFromCounter (timeStamp) { 			// week coordinates : number of week, weekday, last/this/next year, weeks in weekyear
