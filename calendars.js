@@ -92,13 +92,13 @@ export class MilesianCalendar {
 	milesianWeek = new WeekClock (
 		{
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
-			daysInYear: (year) => (Cbcce.isGregorianLeapYear( year + 1 ) ? 366 : 365),		// leap year rule for Milesian calendar
+			daysInYear: (year) => (this.inLeapYear( { year : year } ) ? 366 : 365),		// leap year rule for Milesian calendar
 			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 7})/Milliseconds.DAY_UNIT) ),
-			startOfWeek : 0,		// week start with 0
+			startOfWeek : 0,		// week start with 0 (Sunday).
 			characWeekNumber : 0,	// we have a week 0 and the characteristic day for this week is 7 1m.
-			dayBase : 0,			// use 0..6 display for weekday
-			weekBase : 0,			// number of week begins with 0
-			weekLength : 7			// the Milesian week is the 7-days well-known week
+			dayBase : 0,			// use 0..6 display for weekdays.
+			weekBase : 0,			// number of week begins with 0.
+			weekLength : 7			// the Milesian week is the 7-days well-known week.
 		}
 		)
 	/*	Field control
@@ -143,7 +143,7 @@ export class MilesianCalendar {
 	*/
 	eras = null				// list of code values for eras. No era in Milesian calendar.
 	inLeapYear (fields) { 	// is the Milesian year of this date a Milesian leap year.
-		return Cbcce.isGregorianLeapYear ( fields.year + 1 )
+		return Cbcce.isGregorianLeapYear ( this.solveAskedFields(fields).fullYear + 1 )
 	}
 }
 
@@ -167,10 +167,10 @@ export class ProlepticGregorianCalendar {
 	gregorianWeek = new WeekClock (
 		{
 			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
-			daysInYear : (year) => (Cbcce.isGregorianLeapYear ( year ) ? 366 : 365),
+			daysInYear : (year) => (this.inLeapYear( { year : year } ) ? 366 : 365),
 			characDayIndex: (year) => ( Math.floor(this.counterFromFields({fullYear : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
-			startOfWeek : 1
-			// the rest of by default
+			startOfWeek : 1	// ISO week starts with Monday
+			// the rest by default
 		}
 	) 	// set for gregorian week elements.
 	solveAskedFields (askedFields) {
@@ -220,7 +220,7 @@ export class ProlepticGregorianCalendar {
 			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
 	}
 	inLeapYear (fields) {
-		return Cbcce.isGregorianLeapYear ( fields.fullYear )
+		return Cbcce.isGregorianLeapYear ( this.solveAskedFields(fields).fullYear )
 	}
 }
 
@@ -264,7 +264,7 @@ export class JulianCalendar  {
 	julianWeek = new WeekClock (
 		{	// ISO 8601 rule applied to Julian calendar
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of ISO 1970-01-01 is Thursday
-			daysInYear: (year) => (Cbcce.isJulianLeapYear( year ) ? 366 : 365),		// leap year rule for this calendar
+			daysInYear: (year) => (this.inLeapYear( { fullYear : year } ) ? 366 : 365),		// leap year rule for this calendar
 			characDayIndex: (year) => ( Math.floor(this.counterFromFields({fullYear : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
 			startOfWeek : 1,		// week start with 1 (Monday)
 			characWeekNumber : 1,	// we have a week 1 and the characteristic day for this week is 4 January.
@@ -347,7 +347,7 @@ export class JulianCalendar  {
 	/* properties and other methods
 	*/
 	inLeapYear (fields) { // 
-		return Cbcce.isJulianLeapYear(fields.fullYear)
+		return Cbcce.isJulianLeapYear(this.solveAskedFields(fields).fullYear)
 	}
 } // end of calendar class
 
@@ -565,8 +565,8 @@ export class FrenchRevCalendar {
 		return new construct (this, this.counterFromFields(fields))
 	}
 	inLeapYear (fields) {
-		let myFields = {...fields};
-		if (myFields.inSextileYear == undefined) myFields = this.frenchClockWork.getObject (this.frenchClockWork.getNumber (fields));
+		let myFields = this.solveAskedFields(fields);
+		if (myFields.inSextileYear == undefined) myFields = this.fieldsFromCounter (this.counterFromFields (myFields));
 		return myFields.inSextileYear
 	}
 	valid (fields) {	// enforced at date expressed by those fields
@@ -622,10 +622,10 @@ export class Persian33Calendar {
 	persianWeek = new WeekClock (
 		{
 			originWeekday: 4, 		// Use day part of Posix timestamp, week of day of 1970-01-01 is Thursday
-			daysInYear: (year) => (this.inLeapYear({ year : year, semester : 0, semday : 0, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 }) ? 366 : 365),
+			daysInYear: (year) => (this.inLeapYear({ year : year, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 }) ? 366 : 365),
 								// leap year rule for this calendar
-			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, semester : 0, semday : 3})/Milliseconds.DAY_UNIT) ),
-			startOfWeek : 1,		// week start with 0
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({year : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
+			startOfWeek : 7		// week start with Sunday
 			// The rest by default
 		}
 		)
@@ -636,8 +636,10 @@ export class Persian33Calendar {
 		if (fields.year != undefined && fields.fullYear != undefined)
 			{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
 		else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear };
-		if (isNaN(fields.semester) || isNaN(fields.semday))
-			[fields.semester, fields.semday] = [Math.floor((fields.month - 1)/6), (fields.month < 7 ? (fields.month-1) * 31 : 186 + (fields.month-7) * 30) + fields.day - 1];
+		if (fields.month != undefined) {
+			fields.semester = Math.floor((fields.month - 1)/6);
+			if (fields.day != undefined) fields.semday = (fields.month < 7 ? (fields.month-1) * 31 : (fields.month-7) * 30) + fields.day - 1;
+		} else [fields.semester, fields.semday] = [undefined, undefined];
 		return fields
 	}
 	/* Basic conversion methods	
@@ -651,7 +653,7 @@ export class Persian33Calendar {
 		return fields
 	}
 	counterFromFields (fields) { // Posix timestamp at UTC, from year, month, day and possibly time
-		let myFields = { year : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		let myFields = { hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
 		myFields = Object.assign (myFields, this.solveAskedFields(fields));	// Here semester and day in semester are computed
 		return this.persian33Clockwork.getNumber( myFields )
 	}
@@ -676,7 +678,7 @@ export class Persian33Calendar {
 	*/
 	inLeapYear (fields) { 	// is this year a long year.
 		let myFields = this.solveAskedFields(fields);
-		if (myFields.inLongYear == undefined) myFields = this.persian33Clockwork.getObject (this.persian33Clockwork.getNumber (myFields));
+		if (myFields.inLongYear == undefined) myFields = this.fieldsFromCounter (this.counterFromFields (myFields));
 		return myFields.inLongYear
 	}
 }
