@@ -297,639 +297,6 @@
     
 
     
-    <h4 class="name" id=".fullUTC"><span class="type-signature">(static) </span>fullUTC<span class="signature">(fullYear<span class="signature-attributes">opt</span>, month<span class="signature-attributes">opt</span>, day<span class="signature-attributes">opt</span>, hours<span class="signature-attributes">opt</span>, minutes<span class="signature-attributes">opt</span>, seconds<span class="signature-attributes">opt</span>, milliseconds<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Basic utility fonction: get UTC date from ISO 8601 UTC date figures, including full year, i.e. 2-digit year is a year of the first century.Please notice the slight differences with the legacy Date.UTC() function.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>fullYear</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last">The year expressed as an algebraic unambiguous number, as specified by ISO 8601.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>month</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    1
-                
-                </td>
-            
-
-            <td class="description last">The month number, 1 to 12 for Jan. to Dec.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>day</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    1
-                
-                </td>
-            
-
-            <td class="description last">The day number in the month.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>hours</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last">The UTC hour</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>minutes</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last">The UTC minutes</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>seconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last">The UTC seconds</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>milliseconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last">The UTC milliseconds</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line139">line 139</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    the Posix timestamp corresponding to the specified UTC date.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".numericFields"><span class="type-signature">(static) </span>numericFields<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Give the list of numeric fields in a date object, and of their respective default values.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line116">line 116</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    ( name_of_field : field default value )
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".numericWeekFields"><span class="type-signature">(static) </span>numericWeekFields<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Give the list of numeric fields in a week day date object, and of their respective default values.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line123">line 123</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    ( name_of_field : field default value )
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="day"><span class="type-signature"></span>day<span class="signature">(TZ<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
@@ -4229,177 +3596,6 @@
     
 
     
-    <h4 class="name" id="weekday"><span class="type-signature"></span>weekday<span class="signature">(TZ<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get weekday number, under rules specified in weekRule.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>TZ</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line368">line 368</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    weekday number.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="weekNumber"><span class="type-signature"></span>weekNumber<span class="signature">(TZ<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
@@ -4543,177 +3739,6 @@
         
 <div class="param-desc">
     week number.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="weeksInYear"><span class="type-signature"></span>weeksInYear<span class="signature">(TZ<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get number of weeks in this week calendar year, under rules specified in weekRule.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>TZ</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line384">line 384</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    number of weeks.
 </div>
 
 
@@ -4913,6 +3938,348 @@
     
 
     
+    <h4 class="name" id="weekday"><span class="type-signature"></span>weekday<span class="signature">(TZ<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get weekday number, under rules specified in weekRule.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>TZ</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line368">line 368</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    weekday number.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="weeksInYear"><span class="type-signature"></span>weeksInYear<span class="signature">(TZ<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get number of weeks in this week calendar year, under rules specified in weekRule.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>TZ</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Named time zone. If "" or undefined (default value), local date and time. If "UTC", UTC date and time.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line384">line 384</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    number of weeks.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="year"><span class="type-signature"></span>year<span class="signature">(TZ<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
@@ -5079,6 +4446,639 @@
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id=".fullUTC"><span class="type-signature">(static) </span>fullUTC<span class="signature">(fullYear<span class="signature-attributes">opt</span>, month<span class="signature-attributes">opt</span>, day<span class="signature-attributes">opt</span>, hours<span class="signature-attributes">opt</span>, minutes<span class="signature-attributes">opt</span>, seconds<span class="signature-attributes">opt</span>, milliseconds<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Basic utility fonction: get UTC date from ISO 8601 UTC date figures, including full year, i.e. 2-digit year is a year of the first century.Please notice the slight differences with the legacy Date.UTC() function.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fullYear</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The year expressed as an algebraic unambiguous number, as specified by ISO 8601.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>month</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">The month number, 1 to 12 for Jan. to Dec.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>day</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">The day number in the month.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hours</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The UTC hour</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>minutes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The UTC minutes</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>seconds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The UTC seconds</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>milliseconds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The UTC milliseconds</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line139">line 139</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the Posix timestamp corresponding to the specified UTC date.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".numericFields"><span class="type-signature">(static) </span>numericFields<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Give the list of numeric fields in a date object, and of their respective default values.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line116">line 116</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ( name_of_field : field default value )
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".numericWeekFields"><span class="type-signature">(static) </span>numericWeekFields<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Give the list of numeric fields in a week day date object, and of their respective default values.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extdate.js.html">extdate.js</a>, <a href="extdate.js.html#line123">line 123</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ( name_of_field : field default value )
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
     
 
     
@@ -5094,13 +5094,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.Persian33Calendar.html">Persian33Calendar</a></li><li><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Nov 12 2022 09:57:13 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sun Jun 23 2024 19:20:56 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -33,17 +33,17 @@
  * This module file does not contain any JS code, only JSDoc specifications. 
  * User provided methods are listed as 'types' despite the JSDoc @callback tag.
  * @module customcalendarmodel
- * @version M2022-08-06
+ * @version M2024-07-02
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+ * @license MIT 2016-2024
 */
 /**	Class model for custom calendar classes or objects, inspired by Temporal but adapted to ExtDate and ExtDateTimeFormat objects.
  * @typedef {Object} Customcalendar 
  * @property {String} id 	- a specific name for this calendar, used by the ExtDate.toCalString method.
  * @property {String} canvas 	- the name of a built-in calendar that provides the initial structure, and possible the names of months, weekdays etc. for the target calendar.
- * @property {access} pldr 	- the "private locale data repository" document object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.
+ * @property {access} pldr 	- a "private locale data repository" document object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.
  * @property {String[]} eras	- array of the string codes for the eras for this calendar, if eras used.
- * @property {String} stringFormat	- a field expressing how date string is computed. Possible values are:
+ * @property {String} stringFormat	- a string that specifies how date string is computed. Possible values are:
 	* "built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then reformat each part as stated by "partsFormat" object;
 	* "fields" : general structure of string as stated from options, but values recomputed following fields of this calendar, and modified as stated by "partsFormat";
 	* currently, this option only works with Roman-like calendars;
@@ -54,20 +54,20 @@
 	* "cldr" : leave value set by standard Intl.DateTimeFormat.FormatToParts (equivalent to no object for this part name).
 	* "field": put field as is; if undefined, put "". For test and debug, and for void fields.
 	* "list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found searching "codes".
-	* "pldr" : values to be found in calendar.pldr, an XML document which represents a "private locale data repository"
+	* "pldr" : values to be found in an XML document which represents a "private locale data repository", to be specified as a class parameter.
  * @property {access} partsFormat.current.source 	- the reference to the values, if mode == "list" or "pldr".
  * @property {String[]} partsFormat.current.codes 	- if (mode == "list" ) and for a non-numeric field (e.g. an era), the array of codes to search for.
- * @property {String} partsFormat.current.calname	- if (mode == "pldr"), the calendar name to fetch. If not specified, "canvas".is tried, else "id"
- * @property {function} partsFormat.current.key		- if (mode == "pldr", (field_value) => search_key); 
- * by default, the search key is the field value, except for weekdays of the standard 7-days week, where the keys are ['sun', 'mon' ... 'sat' ]; 
+ * @property {String} partsFormat.current.calname	- if (mode == "pldr"), the calendar name to fetch. If not specified, "canvas".is tried out, else "id".
+ * @property {function} partsFormat.current.key		- if (mode == "pldr"), (field_value) => search_key; 
+ * by default, the search key is the field value, except for weekdays of the standard 7-days week, where the keys are ['sun', 'mon' ... 'sat']; 
  * therefore, this function should be provided if an alternative week structure is specified.
- * @property {buildDateFromFields} buildDateFromFields - construct a new ExtDate object from date coordinates in this calendar.
- * @property {fieldsFromCounter}	fieldsFromCounter	- from a timestamp, give UTC date and hour fields. 
- * @property {counterFromFields}	counterFromFields	- from a UTC date and time expression, compute the timestamp. 
- * @property {weekFieldsFromCounter}	weekFieldsFromCounter	- from a timestamp, give UTC date in week coordinates and hour fields. 
- * @property {counterFromWeekFields} counterFromWeekFields 	- from a UTC date in week coordinates and time expression, compute the timestamp.
- * @property {solveAskedFields} solveAskedFields 	- from a set of date fields, solve any ambiguity before merging.
- * @property {inLeapYear}	inLeapYear 	function (fields) => (boolean): is this date in a leap year ?
+ * @property {function} buildDateFromFields - construct a new ExtDate object from date coordinates in this calendar.
+ * @property {function}	fieldsFromCounter	- from a timestamp, give UTC date and hour fields. 
+ * @property {function}	counterFromFields	- from a UTC date and time expression, compute the timestamp. 
+ * @property {function}	weekFieldsFromCounter	- from a timestamp, give UTC date in week coordinates and hour fields. 
+ * @property {function} counterFromWeekFields 	- from a UTC date in week coordinates and time expression, compute the timestamp.
+ * @property {function} solveAskedFields 	- from a set of date fields, solve any ambiguity before merging.
+ * @property {function}	inLeapYear 	function (fields) => (boolean): is this date in a leap year ?
  */
 /** Object type for the date figures using ExtDate. There is a distinction between 'numeric' fields and others.
  * The numeric fields are all numbers, and define the date in a unique way. All custom calendars shall provide all numeric fields.
@@ -158,13 +158,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.Persian33Calendar.html">Persian33Calendar</a></li><li><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Nov 12 2022 09:57:13 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sun Jun 23 2024 19:20:55 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
