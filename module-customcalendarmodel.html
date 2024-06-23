@@ -62,7 +62,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2022-08-06</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>M2024-07-02</li></ul></dd>
     
 
     
@@ -92,7 +92,7 @@
 
     
     <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2022</li></ul></dd>
+    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2024</li></ul></dd>
     
 
     
@@ -154,6 +154,1167 @@
         <h3 class="subsection-title">Type Definitions</h3>
 
         
+                
+<h4 class="name" id="~Customcalendar">Customcalendar</h4>
+
+
+
+
+<div class="description">
+    Class model for custom calendar classes or objects, inspired by Temporal but adapted to ExtDate and ExtDateTimeFormat objects.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a specific name for this calendar, used by the ExtDate.toCalString method.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>canvas</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the name of a built-in calendar that provides the initial structure, and possible the names of months, weekdays etc. for the target calendar.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pldr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">access</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a "private locale data repository" document object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>eras</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;String></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">array of the string codes for the eras for this calendar, if eras used.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stringFormat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a string that specifies how date string is computed. Possible values are:"built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then reformat each part as stated by "partsFormat" object;"fields" : general structure of string as stated from options, but values recomputed following fields of this calendar, and modified as stated by "partsFormat";currently, this option only works with Roman-like calendars;"auto" (default): means "built-in".</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>partsFormat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">specifies how to format each part corresponding to each date field. Each tag is the name of a part to display (e.g. "era").
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>current</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">'current' is the name of a date field, like year, month, day etc.
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">how to find the value: "cldr" : leave value set by standard Intl.DateTimeFormat.FormatToParts (equivalent to no object for this part name)."field": put field as is; if undefined, put "". For test and debug, and for void fields."list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found searching "codes"."pldr" : values to be found in an XML document which represents a "private locale data repository", to be specified as a class parameter.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">access</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the reference to the values, if mode == "list" or "pldr".</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>codes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;String></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if (mode == "list" ) and for a non-numeric field (e.g. an era), the array of codes to search for.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>calname</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if (mode == "pldr"), the calendar name to fetch. If not specified, "canvas".is tried out, else "id".</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if (mode == "pldr"), (field_value) => search_key; by default, the search key is the field value, except for weekdays of the standard 7-days week, where the keys are ['sun', 'mon' ... 'sat']; therefore, this function should be provided if an alternative week structure is specified.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>buildDateFromFields</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">construct a new ExtDate object from date coordinates in this calendar.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fieldsFromCounter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">from a timestamp, give UTC date and hour fields.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>counterFromFields</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">from a UTC date and time expression, compute the timestamp.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weekFieldsFromCounter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">from a timestamp, give UTC date in week coordinates and hour fields.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>counterFromWeekFields</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">from a UTC date in week coordinates and time expression, compute the timestamp.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>solveAskedFields</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">from a set of date fields, solve any ambiguity before merging.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>inLeapYear</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">function (fields) => (boolean): is this date in a leap year ?</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line12">line 12</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="~ExtDateType">ExtDateType</h4>
+
+
+
+
+<div class="description">
+    Object type for the date figures using ExtDate. There is a distinction between 'numeric' fields and others.The numeric fields are all numbers, and define the date in a unique way. All custom calendars shall provide all numeric fields.Non numeric fields are not required from custom calendars.Fields may hold the date and time coordinates for any time zone.
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>era</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a short international acronym that helps resolving the complete date together with the other date fields;e.g. "BC" or "AD" in the context of the Julian calendar, that is necessary in addition to the 'year' indication; this field is not numeric.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>year</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a positive number that expresses the year; the era element is necessary in order to fully determine the year; this element is considered non numeric, although it is a number.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fullYear</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">an algebraic number that determines the year in a non ambiguous manner; the range of possible values is without hole; this is considered a numeric field.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>month</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">month number in a year; the months of a given year are enumerated starting from 1 and without hole.this is considered a numeric field.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>monthCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">(optional) a short acronym, e.g. 'M01' for the first month, or 'M06L' for the doubled sixth month or leap month after 'M06';inspired from Temporal and used with non-Unicode display applications;if this field is not defined in a custom calendar, the monthCode shall be set to the month number;</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>monthType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">(optional) the type under which the month name should be searched for in lists, CLDR or PLDR;with lunisolar calendars, a same 'month' value can lead to different month names; this field, together with "leapMonth", helps solving such cases;if missing, ExtDateTimeFormat uses .month as monthType when searching the month name.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>leapMonth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">(optional), value is "leap" indicating that the leap month version of the month name should be used;if present, ExtDateTimeFormat adds a search key before exploring CLDR or the PLDR, and also searches the PLDR for a "mark" to add before or after the month string.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>day</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number of the day in the month, starting from 1 and without hole.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hour</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number of hours since the beginning of the present day, no change with respect to Date.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>minutes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number of minutes since the beginning of the present hour, no change with respect to Date.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>seconds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number of seconds since the beginning of the present minute, no change with respect to Date.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>milliseconds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number of milliseconds since the beginning of the present second, no change with respect to Date.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line44">line 44</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="~WeekFigures">WeekFigures</h4>
+
+
+
+
+<div class="description">
+    Object type for the week figures of a date
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>weekYearOffset</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">number to add to the current fullYear to get the fullYear the week belongs to;</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weekYear</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">year for the week coordinates (civil full year + weekYearOffset);</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weekNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">number of the week in the year;</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weekday</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">number of the day in the week, 0..6 for Sunday..Saturday or 1..7 for Monday..Sunday, or a weekday number of another week structure.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weeksInYear</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">number of weeks in the weekYear the week belongs to.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line75">line 75</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
                 
 
     
@@ -680,961 +1841,6 @@
 </dl>
 
     
-
-
-
-
-
-            
-                
-<h4 class="name" id="~Customcalendar">Customcalendar</h4>
-
-
-
-
-<div class="description">
-    Class model for custom calendar classes or objects, inspired by Temporal but adapted to ExtDate and ExtDateTimeFormat objects.
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">a specific name for this calendar, used by the ExtDate.toCalString method.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>canvas</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the name of a built-in calendar that provides the initial structure, and possible the names of months, weekdays etc. for the target calendar.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pldr</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">access</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the "private locale data repository" document object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>eras</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;String></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">array of the string codes for the eras for this calendar, if eras used.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stringFormat</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">a field expressing how date string is computed. Possible values are:"built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then reformat each part as stated by "partsFormat" object;"fields" : general structure of string as stated from options, but values recomputed following fields of this calendar, and modified as stated by "partsFormat";currently, this option only works with Roman-like calendars;"auto" (default): means "built-in".</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>partsFormat</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">specifies how to format each part corresponding to each date field. Each tag is the name of a part to display (e.g. "era").
-                <h6>Properties</h6>
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>current</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">'current' is the name of a date field, like year, month, day etc.
-                <h6>Properties</h6>
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>mode</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">how to find the value: "cldr" : leave value set by standard Intl.DateTimeFormat.FormatToParts (equivalent to no object for this part name)."field": put field as is; if undefined, put "". For test and debug, and for void fields."list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found searching "codes"."pldr" : values to be found in calendar.pldr, an XML document which represents a "private locale data repository"</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>source</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">access</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the reference to the values, if mode == "list" or "pldr".</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>codes</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;String></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">if (mode == "list" ) and for a non-numeric field (e.g. an era), the array of codes to search for.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>calname</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">if (mode == "pldr"), the calendar name to fetch. If not specified, "canvas".is tried, else "id"</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">if (mode == "pldr", (field_value) => search_key); by default, the search key is the field value, except for weekdays of the standard 7-days week, where the keys are ['sun', 'mon' ... 'sat' ]; therefore, this function should be provided if an alternative week structure is specified.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>buildDateFromFields</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">buildDateFromFields</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">construct a new ExtDate object from date coordinates in this calendar.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fieldsFromCounter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">fieldsFromCounter</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">from a timestamp, give UTC date and hour fields.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>counterFromFields</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">counterFromFields</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">from a UTC date and time expression, compute the timestamp.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>weekFieldsFromCounter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">weekFieldsFromCounter</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">from a timestamp, give UTC date in week coordinates and hour fields.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>counterFromWeekFields</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">counterFromWeekFields</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">from a UTC date in week coordinates and time expression, compute the timestamp.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>solveAskedFields</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">solveAskedFields</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">from a set of date fields, solve any ambiguity before merging.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>inLeapYear</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">inLeapYear</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">function (fields) => (boolean): is this date in a leap year ?</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line12">line 12</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-            
-                
-<h4 class="name" id="~ExtDateType">ExtDateType</h4>
-
-
-
-
-<div class="description">
-    Object type for the date figures using ExtDate. There is a distinction between 'numeric' fields and others.The numeric fields are all numbers, and define the date in a unique way. All custom calendars shall provide all numeric fields.Non numeric fields are not required from custom calendars.Fields may hold the date and time coordinates for any time zone.
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>era</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">a short international acronym that helps resolving the complete date together with the other date fields;e.g. "BC" or "AD" in the context of the Julian calendar, that is necessary in addition to the 'year' indication; this field is not numeric.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>year</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">a positive number that expresses the year; the era element is necessary in order to fully determine the year; this element is considered non numeric, although it is a number.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fullYear</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">an algebraic number that determines the year in a non ambiguous manner; the range of possible values is without hole; this is considered a numeric field.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>month</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">month number in a year; the months of a given year are enumerated starting from 1 and without hole.this is considered a numeric field.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>monthCode</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(optional) a short acronym, e.g. 'M01' for the first month, or 'M06L' for the doubled sixth month or leap month after 'M06';inspired from Temporal and used with non-Unicode display applications;if this field is not defined in a custom calendar, the monthCode shall be set to the month number;</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>monthType</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(optional) the type under which the month name should be searched for in lists, CLDR or PLDR;with lunisolar calendars, a same 'month' value can lead to different month names; this field, together with "leapMonth", helps solving such cases;if missing, ExtDateTimeFormat uses .month as monthType when searching the month name.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>leapMonth</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(optional), value is "leap" indicating that the leap month version of the month name should be used;if present, ExtDateTimeFormat adds a search key before exploring CLDR or the PLDR, and also searches the PLDR for a "mark" to add before or after the month string.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>day</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the number of the day in the month, starting from 1 and without hole.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>hour</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the number of hours since the beginning of the present day, no change with respect to Date.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>minutes</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the number of minutes since the beginning of the present hour, no change with respect to Date.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>seconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the number of seconds since the beginning of the present minute, no change with respect to Date.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>milliseconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the number of milliseconds since the beginning of the present second, no change with respect to Date.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line44">line 44</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
 
 
 
@@ -2269,212 +2475,6 @@
 
 
             
-                
-<h4 class="name" id="~WeekFigures">WeekFigures</h4>
-
-
-
-
-<div class="description">
-    Object type for the week figures of a date
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>weekYearOffset</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number to add to the current fullYear to get the fullYear the week belongs to;</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>weekYear</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">year for the week coordinates (civil full year + weekYearOffset);</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>weekNumber</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of the week in the year;</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>weekday</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of the day in the week, 0..6 for Sunday..Saturday or 1..7 for Monday..Sunday, or a weekday number of another week structure.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>weeksInYear</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of weeks in the weekYear the week belongs to.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="customcalendarmodel.js.html">customcalendarmodel.js</a>, <a href="customcalendarmodel.js.html#line75">line 75</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-            
     
 
     
@@ -2488,13 +2488,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-calendars.html">calendars</a></li><li><a href="module-chronos.html">chronos</a></li><li><a href="module-customcalendarmodel.html">customcalendarmodel</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li><li><a href="module-fetchdom.html">fetchdom</a></li><li><a href="module-pldr.html">pldr</a></li><li><a href="module-time-units.html">time-units</a></li></ul><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></li><li><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></li><li><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></li><li><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></li><li><a href="module-calendars.Persian33Calendar.html">Persian33Calendar</a></li><li><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></li><li><a href="module-chronos.Cbcce.html">Cbcce</a></li><li><a href="module-chronos.IsoCounter.html">IsoCounter</a></li><li><a href="module-chronos.WeekClock.html">WeekClock</a></li><li><a href="module-extdate.html">extdate</a></li><li><a href="module-extdatetimeformat.html">extdatetimeformat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TZ">TZ</a></li><li><a href="global.html#TZOffset">TZOffset</a></li><li><a href="global.html#addTime">addTime</a></li><li><a href="global.html#addedTime">addedTime</a></li><li><a href="global.html#askedOptions">askedOptions</a></li><li><a href="global.html#calcCustom">calcCustom</a></li><li><a href="global.html#calcTime">calcTime</a></li><li><a href="global.html#calcWeek">calcWeek</a></li><li><a href="global.html#calendars">calendars</a></li><li><a href="global.html#calendrical">calendrical</a></li><li><a href="global.html#changeAddTime">changeAddTime</a></li><li><a href="global.html#changeDayOffset">changeDayOffset</a></li><li><a href="global.html#compLocalePresentationCalendar">compLocalePresentationCalendar</a></li><li><a href="global.html#cusAskedOptions">cusAskedOptions</a></li><li><a href="global.html#customCalIndex">customCalIndex</a></li><li><a href="global.html#dayOffset">dayOffset</a></li><li><a href="global.html#extAskedOptions">extAskedOptions</a></li><li><a href="global.html#extUsedOptions">extUsedOptions</a></li><li><a href="global.html#getMode">getMode</a></li><li><a href="global.html#loadCalendrical">loadCalendrical</a></li><li><a href="global.html#setCalend">setCalend</a></li><li><a href="global.html#setDateToNow">setDateToNow</a></li><li><a href="global.html#setDayOffset">setDayOffset</a></li><li><a href="global.html#setDisplay">setDisplay</a></li><li><a href="global.html#setUTCHoursFixed">setUTCHoursFixed</a></li><li><a href="global.html#switchingDate">switchingDate</a></li><li><a href="global.html#targetDate">targetDate</a></li><li><a href="global.html#usedOptions">usedOptions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Nov 12 2022 09:57:13 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sun Jun 23 2024 19:20:56 GMT+0200 (heure d’été d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

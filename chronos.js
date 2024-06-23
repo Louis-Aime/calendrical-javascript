@@ -4,14 +4,14 @@
 	Non-integer parameter will yield erroneous non-integer values.
 	Default parameters assume that computations are done using 1 for the first month of any calendar.
  * @module chronos
- * @version M2022-08-06
+ * @version M2024-07-02
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+ * @license MIT 2016-2024
  */
 // Character set is UTF-8
-/* Version	M2022-08-06: Update comments, change param name to calendarRule.
+/* Versions: see GitHub
 */
-/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
+/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2024
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -33,10 +33,11 @@ or the use or other dealings in the software.
 */
 "use strict";
 /** Structure of the calendar rule parameter that describes a calendar's computation rules 
- * and that is passed to a Cycle Bases Calendar Computation Engine, a Cbcce class constructor.
+ * and that is passed to the Cycle Bases Calendar Computation Engine (Cbcce), a class constructor.
  * The calendar structure is made up of nested cycles. Each cycle finishes with an intercalary or missing element. 
- * e.g. the Julian-Gregorian year finishes in February, with the intercalary day (29 February) at the very end,
- * and the olympiade, the 4-years cycle, finishes with the leap year.
+ * Computations are made on an intermediary calendar which is derived from a real-life calendar.
+ * E.g. for the Julian-Gregorian calendar, the derived calendar's year finishes in February, the intercalary day (29 February) is at the very end,
+ * and the olympiade (4-years cycle), finishes with the leap year.
  * Non checked constraints: 
  *	1. 	The cycles and the canvas elements shall be defined from the largest to the smallest
  *		e.g. four-centuries cycle, then century, then four-year cycle, then year, etc.
@@ -195,21 +196,21 @@ export class Cbcce 	{
  * @property {Number} originWeekday - weekday number of day 0; value is renormalised to 0..weekLength-1.
  * @property {Function} daysInYear	- function (year), number of days in year; year is specified as "fullyear" (unambiguous); 
 	* with solar calendars, result is 365 or 366.
- * @property {Function} characDayIndex	- function (year): the day index of one day of characWeekNumber of year;
-	* if weekReset is true, this day shall be the first day of the week charcWeekNumber; if not, all weeks are of same length.
- * @property {Number} [startOfWeek=1]	- number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1;
+ * @property {Function} characDayIndex	- function (year): the day index of one day of week number characWeekNumber of year;
+	* if weekReset is true, this day shall be the first day of the week characWeekNumber ; if not, all weeks are of same length.
+ * @property {Number} [startOfWeek=1]	- weekday number of the first day of the week for this calendar, e.g. 0 for Sunday, 1 for Monday etc. Default is 1;
 	* value is renormalised to 0..weekLength-1.
  * @property {Number} [characWeekNumber=1]	- number of the week of the characDayIndex; default is 1.
- * @property {Number} [dayBase=1]		- number of the first day in any week, may differ from startOfWeek; used for displaying result; default is 1.
- * @property {Number} [weekBase=1]		- number of the first week in any year, may differ from characWeekNumber; default is 1.
- * @property {Number} [weekLength=7]	- minimum number of days in one week; default is 7.
+ * @property {Number} [dayBase=1]		- the lowest number a weekday may have, normally only 0 or 1 are possible; not necessarily startOfWeek; default is 1.
+ * @property {Number} [weekBase=1]		- the lowest number for a week, normally only 0 or 1 are possible; not necessarily characWeekNumber; default is 1.
+ * @property {Number} [weekLength=7]	- number of days, or minimum number of days in one week; default is 7.
  * @property {Number} [weekReset=false]	- whether weekday is forced to a constant value at beginning of year; default is false.
- * @property {Number[]} [uncappedWeeks=null]	- an array of the numbers of the week that have one or more day above weekLength; possible cases:
+ * @property {Number[]} [uncappedWeeks=null]	- an array of the week numbers that have one or more day above weekLength; possible cases:
 	* undefined (and set to null): all weeks have always the same duration, weekLength;
 	* .length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength;
-	* .length > 1: each week indentified is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;
-	* e.g. for French revolutionary calendar: [36], and the epagomenal days are indexed 10 to 15 (index of Décadi is 9);
-	* whereas for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
+	* .length > 1: each indentified week is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;
+	* e.g. for French revolutionary calendar: [36], and the epagomenal days are indexed above Décadi, last day of the ordinary decade;
+	* e.g. for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
 	* These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.
 */
 /** Get and set week figures using a specified reckoning sytems for weeks.
@@ -274,18 +275,22 @@ export class WeekClock {
 	}
 	/**	Compute day index from week figures in the defined week structure.
 	 * @param {number} weekYear 	- the year (full year, a relative integer) of the week figures. There may be 1 year difference with the year of the calendar's date.
-	 * @param {number} [weekNumber] - the number of the week; if not specified, this.weekBase.
-	 * @param {number} [dayOfWeek] 	- the number day of the week, following the weekRule parameter set; if not specified: this.dayBase.
-	 * @param {boolean} [check] 	- whether a consitency check is done.
-	 * @return {number} day index, in day units (not in milliseconds or other), of the day that corresponds to the week figures.
+	 * @param {number} [weekNumber] - the week number; if not specified, this.weekBase i.e. the first week of any year.
+	 * @param {number} [dayOfWeek] 	- the weekday number; if not specified, this.startOfWeek i.e. the first day of the week for this culture.
+	 * @param {boolean} [check] 	- check consistency of result; no check by default.
+	 * @return {number} day index of the day that corresponds to the week figures.
 	*/
-	getNumberFromWeek (weekYear, weekNumber = this.weekBase, dayOfWeek = this.dayBase, check = false) {
+	getNumberFromWeek (weekYear, weekNumber = this.weekBase, dayOfWeek = this.startOfWeek, check = false) {
 		if (weekNumber < this.weekBase) throw new RangeError ('Week number too low: ' + weekNumber);
-		if (dayOfWeek - this.dayBase < 0) throw new RangeError ('Day of week to low: ' + dayOfWeek);
-		let	cDayIndex = this.characDayIndex (weekYear);
-		cDayIndex -= (this.weekReset ? 0 : Cbcce.mod ( cDayIndex + this.originWeekday - this.dayBase, this.weekLength )) ;
-		let	result = cDayIndex + (weekNumber - this.weekBase) * this.weekLength + (dayOfWeek - this.dayBase) ;
-		if (this.uncappedWeeks != null)  this.uncappedWeeks.forEach ((value) => ( result += (weekNumber > value ? 1 :0) )) ;
+		if (dayOfWeek < this.dayBase) throw new RangeError ('Day of week too low: ' + dayOfWeek);
+		let	cDayIndex = this.characDayIndex (weekYear);	// Find a day within week number characWeekNumber of this year.
+		cDayIndex -= (this.weekReset ? 0 : Cbcce.mod ( cDayIndex + this.originWeekday - this.startOfWeek, this.weekLength )) ;	// Find first day of said week.
+		let weekcomponents = Cbcce.divmod (dayOfWeek - this.startOfWeek, this.weekLength);	// Take note of epagomenal days
+		let	result = cDayIndex + (weekNumber - this.weekBase) * this.weekLength + weekcomponents[1] ;	// Add weeks and week "phase".
+		if (this.uncappedWeeks != null) {
+			this.uncappedWeeks.forEach ((value) => ( result += (weekNumber > value ? 1 :0) )) ;	// Add shift due to days added in middle of year.
+			if (this.uncappedWeeks.length == 1 && weekNumber == this.uncappedWeeks[0]) result += weekcomponents[0] * this.weekLength;	// Add additional days
+		}
 		// Control by doing the reverse computation
 		let test = this.getWeekFigures (cDayIndex, weekYear);
 		if (check) {

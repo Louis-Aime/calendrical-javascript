@@ -3,15 +3,14 @@
  * To be used with suitable calendrical-demo-**.html file.
  * contents: global variables, animation routines for the html page, event listeners to follow forms.
  * @requires module:calendrical-init.js
- * @version M2022-11-10
+ * @version M2024-06-31
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+ * @license MIT 2016-2024
 */
 // Character set is UTF-8
-/* Version:	M2022-11-10 	Calendars renamed. No "historic", but "gregorian" and "iso_8601"
-	see details on GitHub
+/* Version: see details on GitHub
 */
-/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
+/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2024
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -404,8 +403,10 @@ window.onload = function () {
 		calendars.push (new calendrical.MilesianCalendar ("milesian",calendrical.pldrDOM));
 		calendars.push (new calendrical.ProlepticGregorianCalendar ("iso_8601"));
 		calendars.push (new calendrical.JulianCalendar ("julian"));
-		calendars.push (new calendrical.GregorianCalendar ("gregorian", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day), calendrical.pldrDOM));
+		calendars.push (new calendrical.GregorianCalendar 
+			("gregorian", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day), calendrical.pldrDOM));
 		calendars.push (new calendrical.FrenchRevCalendar ("frenchrev",calendrical.pldrDOM));
+		calendars.push (new calendrical.Persian33Calendar ("persian33"));
 		customCalIndex = calendars.findIndex (item => item.id == document.custom.calend.value);  // set initial custom calendar - but calendars must exist !
 		getMode();
 		compLocalePresentationCalendar();	// set initial formatters to presentation options
