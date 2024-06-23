@@ -5,17 +5,17 @@
  * This module file does not contain any JS code, only JSDoc specifications. 
  * User provided methods are listed as 'types' despite the JSDoc @callback tag.
  * @module customcalendarmodel
- * @version M2022-08-06
+ * @version M2024-07-02
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+ * @license MIT 2016-2024
 */
 /**	Class model for custom calendar classes or objects, inspired by Temporal but adapted to ExtDate and ExtDateTimeFormat objects.
  * @typedef {Object} Customcalendar 
  * @property {String} id 	- a specific name for this calendar, used by the ExtDate.toCalString method.
  * @property {String} canvas 	- the name of a built-in calendar that provides the initial structure, and possible the names of months, weekdays etc. for the target calendar.
- * @property {access} pldr 	- the "private locale data repository" document object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.
+ * @property {access} pldr 	- a "private locale data repository" document object, to use for displaying certain fields (e.g. months) with ExtDateTimeFormat.
  * @property {String[]} eras	- array of the string codes for the eras for this calendar, if eras used.
- * @property {String} stringFormat	- a field expressing how date string is computed. Possible values are:
+ * @property {String} stringFormat	- a string that specifies how date string is computed. Possible values are:
 	* "built-in" : compute parts of displayed string as an ordinary DateTimeFormat, and then reformat each part as stated by "partsFormat" object;
 	* "fields" : general structure of string as stated from options, but values recomputed following fields of this calendar, and modified as stated by "partsFormat";
 	* currently, this option only works with Roman-like calendars;
@@ -26,20 +26,20 @@
 	* "cldr" : leave value set by standard Intl.DateTimeFormat.FormatToParts (equivalent to no object for this part name).
 	* "field": put field as is; if undefined, put "". For test and debug, and for void fields.
 	* "list" : (enumerable) values indicated in "source" field; if field is not a number, index to be found searching "codes".
-	* "pldr" : values to be found in calendar.pldr, an XML document which represents a "private locale data repository"
+	* "pldr" : values to be found in an XML document which represents a "private locale data repository", to be specified as a class parameter.
  * @property {access} partsFormat.current.source 	- the reference to the values, if mode == "list" or "pldr".
  * @property {String[]} partsFormat.current.codes 	- if (mode == "list" ) and for a non-numeric field (e.g. an era), the array of codes to search for.
- * @property {String} partsFormat.current.calname	- if (mode == "pldr"), the calendar name to fetch. If not specified, "canvas".is tried, else "id"
- * @property {function} partsFormat.current.key		- if (mode == "pldr", (field_value) => search_key); 
- * by default, the search key is the field value, except for weekdays of the standard 7-days week, where the keys are ['sun', 'mon' ... 'sat' ]; 
+ * @property {String} partsFormat.current.calname	- if (mode == "pldr"), the calendar name to fetch. If not specified, "canvas".is tried out, else "id".
+ * @property {function} partsFormat.current.key		- if (mode == "pldr"), (field_value) => search_key; 
+ * by default, the search key is the field value, except for weekdays of the standard 7-days week, where the keys are ['sun', 'mon' ... 'sat']; 
  * therefore, this function should be provided if an alternative week structure is specified.
- * @property {buildDateFromFields} buildDateFromFields - construct a new ExtDate object from date coordinates in this calendar.
- * @property {fieldsFromCounter}	fieldsFromCounter	- from a timestamp, give UTC date and hour fields. 
- * @property {counterFromFields}	counterFromFields	- from a UTC date and time expression, compute the timestamp. 
- * @property {weekFieldsFromCounter}	weekFieldsFromCounter	- from a timestamp, give UTC date in week coordinates and hour fields. 
- * @property {counterFromWeekFields} counterFromWeekFields 	- from a UTC date in week coordinates and time expression, compute the timestamp.
- * @property {solveAskedFields} solveAskedFields 	- from a set of date fields, solve any ambiguity before merging.
- * @property {inLeapYear}	inLeapYear 	function (fields) => (boolean): is this date in a leap year ?
+ * @property {function} buildDateFromFields - construct a new ExtDate object from date coordinates in this calendar.
+ * @property {function}	fieldsFromCounter	- from a timestamp, give UTC date and hour fields. 
+ * @property {function}	counterFromFields	- from a UTC date and time expression, compute the timestamp. 
+ * @property {function}	weekFieldsFromCounter	- from a timestamp, give UTC date in week coordinates and hour fields. 
+ * @property {function} counterFromWeekFields 	- from a UTC date in week coordinates and time expression, compute the timestamp.
+ * @property {function} solveAskedFields 	- from a set of date fields, solve any ambiguity before merging.
+ * @property {function}	inLeapYear 	function (fields) => (boolean): is this date in a leap year ?
  */
 /** Object type for the date figures using ExtDate. There is a distinction between 'numeric' fields and others.
  * The numeric fields are all numbers, and define the date in a unique way. All custom calendars shall provide all numeric fields.

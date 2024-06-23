@@ -44,6 +44,7 @@ may easily be specified and used.
 |Customisable Gregorian calendar with switchover date|0|+|
 |French revolutionary calendar|0|+|
 |Milesian calendar|0|+|
+|Persian calendar (33 years cycle)|+|+|
 
 Tentative new week numbering systems are also possible.
 ### `timeUnits` object (time-units.js)
@@ -88,3 +89,4 @@ As defined in calendrical-demo.js, some calendars are instantiated from the clas
  * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, using CLDR's names for days, months, eras.  
  * **gregorian** : you instantiate the *GregorianCalendar* with a user-defined switching date to Gregorian reckoning. The *era* field is used to diffentiate "os" (Old Style, meaning Julian reckoning) from "ns" (New Style, Gregorian reckoning). pldr is required, in order to display these eras in a few languages.
  * **frenchRev**: the calendar defined by the French Convention in 1793. pldr is required.
+ * **persian 33**: the official algorithmic calendar used in Iran and Afghanistan, same effect as Unicode's.
