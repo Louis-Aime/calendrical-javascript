@@ -3,12 +3,12 @@
 	* Passing non numeric values where numbers are expected will yield NaN results.
 	* Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
  * @module
- * @version M2024-06-31
+ * @version M2025-03-05
  * @requires module:time-units.js
  * @requires module:chronos.js
  * @requires module:extdate.js
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2024
+ * @license MIT 2016-2025
 //	Character set is UTF-8
 */
 /* Versions:	See Github
@@ -56,7 +56,7 @@ export class MilesianCalendar {
 	}
 	/* Basic references for the Milesian calendar
 	*/
-	canvas = "iso8601"
+	canvas = "gregory"
 	stringFormat = "fields"	// formatting options for Milesian calendars
 	partsFormat = {
 		era : {mode : "field"},
@@ -468,7 +468,7 @@ export class FrenchRevCalendar {
 	}
 	/* Basic references
 	*/
-	canvas = "iso8601"
+	canvas = "gregory"
 	stringFormat = "fields"
 	/* 
 	dayNames = ["primidi","duodi", "tridi", "quartidi", "quintidi", "sextidi", "septidi", "octidi", "nonidi", "décadi",
