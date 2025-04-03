@@ -529,7 +529,7 @@ export class FrenchRevCalendar {
 			weekBase : 1,			// number of decade begins with 1
 			weekLength : 10,			// The length of week (decade) is 10 within a year.
 			weekReset : true,		// decade cycle is reset to startOfWeek at at the beginning of each year
-			uncappedWeeks : [36]	// sans-culottides days are assigned to last decade.
+			uncappedWeeks : [37]	// sans-culottides days are assigned to a specific incomplete decade.
 		}
 	)
 	solveAskedFields (askedFields) {
