@@ -4,8 +4,8 @@ using the same structure as Unicode's CLDR.
 Entry node: <pldr>.
 Non language-specific section is <ldmlBCP47>.
 Language-specific section is <ldml>.
-Version 	M2022-11-10	era names and codes revisited
-	M2022-08-07: 3 eras in 'gregory' calendar.
+Version 	M2025-04-13 Reshaped decades of French Revolution calendar
+	
 -->
 <!-- <!DOCTYPE ldmlBCP47 SYSTEM "../../common/dtd/ldmlBCP47.dtd"> -->
 <pldr>
@@ -353,12 +353,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨octidi⁩</day>
 				<day type="9" draft="unconfirmed">⁨nonidi⁩</day>
 				<day type="10" draft="unconfirmed">⁨decadi⁩</day>
-				<day type="11" draft="unconfirmed">⁨jour de la Vertu⁩</day>
-				<day type="12" draft="unconfirmed">⁨jour du Genie⁩</day>
-				<day type="13" draft="unconfirmed">⁨jour du Travail⁩</day>
-				<day type="14" draft="unconfirmed">⁨jour de l'Opinion⁩</day>
-				<day type="15" draft="unconfirmed">⁨jour des Recompenses⁩</day>
-				<day type="16" draft="unconfirmed">⁨jour de la Revolution⁩</day>
 			</dayWidth>
 			<dayWidth type="abbreviated">
 				<day type="1" draft="unconfirmed">⁨prim.⁩</day>
@@ -371,12 +365,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨oct.⁩</day>
 				<day type="9" draft="unconfirmed">⁨non.⁩</day>
 				<day type="10" draft="unconfirmed">⁨dec.⁩</day>
-				<day type="11" draft="unconfirmed">⁨j. V.⁩</day>
-				<day type="12" draft="unconfirmed">⁨j. G.⁩</day>
-				<day type="13" draft="unconfirmed">⁨j. T.⁩</day>
-				<day type="14" draft="unconfirmed">⁨j. O.⁩</day>
-				<day type="15" draft="unconfirmed">⁨j. R.⁩</day>
-				<day type="16" draft="unconfirmed">⁨j. Rl.⁩</day>
 			</dayWidth>
 			<dayWidth type="short">
 				<day type="1" draft="unconfirmed">⁨pr⁩</day>
@@ -389,12 +377,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨oc⁩</day>
 				<day type="9" draft="unconfirmed">⁨no⁩</day>
 				<day type="10" draft="unconfirmed">⁨dc⁩</day>
-				<day type="11" draft="unconfirmed">⁨jV⁩</day>
-				<day type="12" draft="unconfirmed">⁨jG⁩</day>
-				<day type="13" draft="unconfirmed">⁨jT⁩</day>
-				<day type="14" draft="unconfirmed">⁨jO⁩</day>
-				<day type="15" draft="unconfirmed">⁨jR⁩</day>
-				<day type="16" draft="unconfirmed">⁨jl⁩</day>
 			</dayWidth>
 			<dayWidth type="narrow">
 				<day type="1" draft="unconfirmed">⁨P⁩</day>
@@ -407,12 +389,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨O⁩</day>
 				<day type="9" draft="unconfirmed">⁨N⁩</day>
 				<day type="10" draft="unconfirmed">⁨D⁩</day>
-				<day type="11" draft="unconfirmed">⁨V⁩</day>
-				<day type="12" draft="unconfirmed">⁨G⁩</day>
-				<day type="13" draft="unconfirmed">⁨T⁩</day>
-				<day type="14" draft="unconfirmed">⁨O⁩</day>
-				<day type="15" draft="unconfirmed">⁨R⁩</day>
-				<day type="16" draft="unconfirmed">⁨R⁩</day>
 			</dayWidth>
 		</dayContext>
 		<dayContext type="stand-alone">
@@ -427,12 +403,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨octidi⁩</day>
 				<day type="9" draft="unconfirmed">⁨nonidi⁩</day>
 				<day type="10" draft="unconfirmed">⁨decadi⁩</day>
-				<day type="11" draft="unconfirmed">⁨jour de la Vertu⁩</day>
-				<day type="12" draft="unconfirmed">⁨jour du Genie⁩</day>
-				<day type="13" draft="unconfirmed">⁨jour du Travail⁩</day>
-				<day type="14" draft="unconfirmed">⁨jour de l'Opinion⁩</day>
-				<day type="15" draft="unconfirmed">⁨jour des Recompenses⁩</day>
-				<day type="16" draft="unconfirmed">⁨jour de la Revolution⁩</day>
 			</dayWidth>
 			<dayWidth type="abbreviated">
 				<day type="1" draft="unconfirmed">⁨prim.⁩</day>
@@ -445,12 +415,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨oct.⁩</day>
 				<day type="9" draft="unconfirmed">⁨non.⁩</day>
 				<day type="10" draft="unconfirmed">⁨dec.⁩</day>
-				<day type="11" draft="unconfirmed">⁨j. V.⁩</day>
-				<day type="12" draft="unconfirmed">⁨j. G.⁩</day>
-				<day type="13" draft="unconfirmed">⁨j. T.⁩</day>
-				<day type="14" draft="unconfirmed">⁨j. O.⁩</day>
-				<day type="15" draft="unconfirmed">⁨j. R.⁩</day>
-				<day type="16" draft="unconfirmed">⁨j. Rl.⁩</day>
 			</dayWidth>
 			<dayWidth type="short">
 				<day type="1" draft="unconfirmed">⁨pr⁩</day>
@@ -463,12 +427,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨oc⁩</day>
 				<day type="9" draft="unconfirmed">⁨no⁩</day>
 				<day type="10" draft="unconfirmed">⁨dc⁩</day>
-				<day type="11" draft="unconfirmed">⁨jV⁩</day>
-				<day type="12" draft="unconfirmed">⁨jG⁩</day>
-				<day type="13" draft="unconfirmed">⁨jT⁩</day>
-				<day type="14" draft="unconfirmed">⁨jO⁩</day>
-				<day type="15" draft="unconfirmed">⁨jR⁩</day>
-				<day type="16" draft="unconfirmed">⁨jl⁩</day>
 			</dayWidth>
 			<dayWidth type="narrow">
 				<day type="1" draft="unconfirmed">⁨P⁩</day>
@@ -481,12 +439,6 @@ Version 	M2022-11-10	era names and codes revisited
 				<day type="8" draft="unconfirmed">⁨O⁩</day>
 				<day type="9" draft="unconfirmed">⁨N⁩</day>
 				<day type="10" draft="unconfirmed">⁨D⁩</day>
-				<day type="11" draft="unconfirmed">⁨V⁩</day>
-				<day type="12" draft="unconfirmed">⁨G⁩</day>
-				<day type="13" draft="unconfirmed">⁨T⁩</day>
-				<day type="14" draft="unconfirmed">⁨O⁩</day>
-				<day type="15" draft="unconfirmed">⁨R⁩</day>
-				<day type="16" draft="unconfirmed">⁨R⁩</day>
 			</dayWidth>
 		</dayContext>
 	</days>
