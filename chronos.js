@@ -207,8 +207,8 @@ export class Cbcce 	{
  * @property {Number} [weekReset=false]	- whether weekday is forced to a constant value at beginning of year; default is false.
  * @property {Number[]} [uncappedWeeks=null]	- an array of the week numbers that have one or more day above weekLength; possible cases:
 	* undefined (and set to null): all weeks have always the same duration, weekLength;
-	* .length = 1: last complete week of year is followed by several epagomenal days. These days are attached to the last week and hold numbers above weekLength;
-	* .length > 1: each indentified week is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;
+	* .length = 1: last week of year: either an ordinary week with epagomenal days added, or a separate week of epagomenal days.
+	* .length > 1: each identified week is followed by one (unique) epagomenal day. Any such week has weekLength + 1 days;
 	* e.g. for French revolutionary calendar: [36], and the epagomenal days are indexed above Décadi, last day of the ordinary decade;
 	* e.g. for ONU projected calendar: [26, 52], the Mondial day in the middle of year and the Bissextile day at the very end.
 	* These days are only considered if weekReset is true, and in this case, uncappedWeeks should at least have one value.
@@ -246,6 +246,7 @@ export class WeekClock {
 			[weeksInYear, weekShiftNextYear] = Cbcce.divmod (this.daysInYear(year), this.weekLength),	// Integer division of calendar year in weeks. 
 			// this figure characterises the week year, in particular versus number of weeks.
 			weekYearPhase = (this.weekReset ? 0 : Cbcce.mod (cDayIndex + this.originWeekday - this.startOfWeek, this.weekLength)); 	
+			if (this.uncappedWeeks != null && this.uncappedWeeks.length == 1) weeksInYear = this.uncappedWeeks[0];	// Force last week of year if required
 		// Compute basic coordinates: week cycle number (base 0) from referenceDay, day number 0..this.weekLength-1 in week beginning at 0 then shift to this.startOfWeek.
 		var result = Cbcce.divmod ( dayIndex - cDayIndex + this.startOfWeek + weekYearPhase, this.weekLength ); // Here, first week is 0 and first day of week is 0.
 		if (this.uncappedWeeks != null && this.uncappedWeeks.length > 1) 	// one or several weeks with one epagomenal days within year. One epagomenal day per singular week.
