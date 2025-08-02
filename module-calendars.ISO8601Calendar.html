@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: calendars</title>
+    <title>JSDoc: Class: ISO8601Calendar</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: calendars</h1>
+    <h1 class="page-title">Class: ISO8601Calendar</h1>
 
     
 
@@ -28,8 +28,10 @@
 
 <header>
     
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-calendars.html">calendars</a>.</span>ISO8601Calendar<span class="signature">(id)</span><span class="type-signature"></span></h2>
         
-            
+            <div class="class-description">Generic ISO 8601 calendar, with no era. Years are algebraic numbers.This class is based on Unicode's 'iso8601', but implements the full standard i.e. signed full years.Since mid-2025 with Firefox, dates are displayed in the order: signed year, month, day, unlike the default gregorian calendar.</div>
         
     
 </header>
@@ -38,20 +40,74 @@
     <div class="container-overview">
     
         
-            <div class="description">A set of custom (non-Unicode) calendar classes following the customcalendarmodel.js specification.Numeric parameters data shall be integer numbers unless otherwhise specified. No special check is performed. Passing non numeric values where numbers are expected will yield NaN results.Passing non integer values will yield erroneous results. Please control that figures are integer in your application.</div>
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="ISO8601Calendar"><span class="type-signature"></span>new ISO8601Calendar<span class="signature">(id)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
         
 
         
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
             
 
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
+            
+            </td>
 
+            
 
+            
 
+            <td class="description last">the calendar identifier.</td>
+        </tr>
 
-
-
+    
+    </tbody>
+</table>
 
 
 
@@ -61,9 +117,6 @@
 <dl class="details">
 
     
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2025-08-12</li></ul></dd>
-    
 
     
 
@@ -80,20 +133,9 @@
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Louis A. de Fouquières https://github.com/Louis-Aime</li>
-        </ul>
-    </dd>
-    
 
     
 
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2025
-//	Character set is UTF-8</li></ul></dd>
     
 
     
@@ -101,7 +143,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line1">line 1</a>
+        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line156">line 156</a>
     </li></ul></dd>
     
 
@@ -131,49 +173,13 @@
 
 
 
-        
     
     </div>
 
     
 
     
-        <h3 class="subsection-title">Requires</h3>
 
-        <ul>
-            <li>module:time-units.js</li>
-        
-            <li>module:chronos.js</li>
-        
-            <li>module:extdate.js</li>
-        </ul>
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-calendars.FrenchRevCalendar.html">FrenchRevCalendar</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-calendars.GregorianCalendar.html">GregorianCalendar</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-calendars.ISO8601Calendar.html">ISO8601Calendar</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-calendars.JulianCalendar.html">JulianCalendar</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-calendars.MilesianCalendar.html">MilesianCalendar</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-calendars.Persian33Calendar.html">Persian33Calendar</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-calendars.ProlepticGregorianCalendar.html">ProlepticGregorianCalendar</a></dt>
-            <dd></dd>
-        </dl>
     
 
     

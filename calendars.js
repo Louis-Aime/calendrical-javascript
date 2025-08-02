@@ -148,7 +148,8 @@ export class MilesianCalendar {
 }
 
 	/** Generic ISO 8601 calendar, with no era. Years are algebraic numbers.
-	 * this class is based on Unicode's 'iso8601', but implements the full standard i.e. signed full years.
+	 * This class is based on Unicode's 'iso8601', but implements the full standard i.e. signed full years.
+	 * Since mid-2025 with Firefox, dates are displayed in the order: signed year, month, day, unlike the default gregorian calendar.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	*/
@@ -225,8 +226,10 @@ export class ISO8601Calendar {
 }
 
 	/** Generic proleptic Gregorian calendar, with no era. Years are algebraic numbers.
-	 * this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.
-	 * the only difference with ISO8601 is the reference to Unicode's 'gregory' instead of 'iso8601'. Makes a difference in display routines in Firefox (M2025-08)
+	 * Date elements are represented in the same order as for contemporary dates in the various languages. 
+	 * However, dates before the switchover to Gregorian are all "new style", event before 1582.  
+	 * Year are algebraic: there is a 0 year, and the year figure is signed. 
+	 * The only difference with ISO8601 is the reference to Unicode's 'gregory' instead of 'iso8601'.
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	*/
