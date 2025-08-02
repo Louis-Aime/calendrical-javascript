@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Custom calendars and extended date display</title>
-<!-- Version	M2024-07-01	See GitHub for details
+<!-- Version	M2025-08-12	See GitHub for details
 -->	
 	<meta name="creator" content="Louis-Aimé de Fouquières">
 	<meta name="description" content="Custom calendars and extended date display">
@@ -37,12 +37,13 @@
 			  <form name="custom">
 			  <tr>
 				<td><select name="calend" size="1" class="centered">
-					<option value="iso_8601" selected>ISO 8601</option>
+					<option value="iso_8601" >ISO 8601</option>
 					<option value="milesian" >Milesian</option>
 					<option value="julian">Julian</option>
-					<option value="gregorian" selected>Gregorian</option>
+					<option value="prolepgreg">Proleptic Gregorian</option>
+					<option value="gregorian" selected>Real Gregorian</option>
 					<option value="frenchrev">French republic</option>
-					<option value="persian33">Persian 33</option>
+					<option value="persian33">Persian 33 yrs cycle</option>
 					</select></td>
 				<td><input name="year" type="number" value="1752" class="centered digit4"> </td>
 				<td><input name="monthname" type="number" value="9" min="1" max="13" class="centered digit2"></td>
@@ -222,7 +223,7 @@
 						<option value="buddhist">buddhist</option>
 						<option value="chinese">chinese (luni-solar)</option>
 						<option value="coptic">coptic</option>
-						<option value="dangi">dangi (Korea)</option>
+						<option value="dangi">dangi (korean luni-solar)</option>
 						<option value="ethioaa">ethiopian Amete Alem (5493 BC) </option>
 						<option value="ethiopic">ethiopian Amete Mihret (8 AD)</option>
 						<option value="gregory">gregorian (proleptic)</option>

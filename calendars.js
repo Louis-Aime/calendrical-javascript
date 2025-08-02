@@ -3,7 +3,7 @@
 	* Passing non numeric values where numbers are expected will yield NaN results.
 	* Passing non integer values will yield erroneous results. Please control that figures are integer in your application.
  * @module
- * @version M2025-03-05
+ * @version M2025-08-12
  * @requires module:time-units.js
  * @requires module:chronos.js
  * @requires module:extdate.js
@@ -13,7 +13,7 @@
 */
 /* Versions:	See Github
 */ 
-/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2024
+/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2025
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -147,8 +147,86 @@ export class MilesianCalendar {
 	}
 }
 
+	/** Generic ISO 8601 calendar, with no era. Years are algebraic numbers.
+	 * this class is based on Unicode's 'iso8601', but implements the full standard i.e. signed full years.
+	 * @class
+	 * @param {string} id	- the calendar identifier.
+	*/
+export class ISO8601Calendar {
+	constructor (id) {
+		this.id = id;
+	}
+	eras = null			// no era with the ISO 8601 calendar.
+	canvas = "iso8601"
+	stringFormat = "built-in"	// formatting options start from canvas calendars values
+	partsFormat = {
+		era : { mode : "field" },
+		year : { mode : "field" }
+	}
+	// no clockwork, use standard Date routines
+	gregorianWeek = new WeekClock (
+		{
+			originWeekday : 4,	// 1 Jan. 1970 ISO is Thursday
+			daysInYear : (year) => (this.inLeapYear( { year : year } ) ? 366 : 365),
+			characDayIndex: (year) => ( Math.floor(this.counterFromFields({fullYear : year, month : 1, day : 4})/Milliseconds.DAY_UNIT) ),
+			startOfWeek : 1	// ISO week starts with Monday
+			// the rest by default
+		}
+	) 	// set for gregorian week elements.
+	solveAskedFields (askedFields) {
+		var fields = {...askedFields};
+		if (fields.year != undefined && fields.fullYear != undefined)
+			{ if  (fields.year != fields.fullYear) throw new TypeError ('Unconsistent year and fullYear fields: ' + fields.year + ', ' + fields.fullYear) }
+		else { if (fields.year != undefined) { fields.fullYear = fields.year } else if (fields.fullYear != undefined) fields.year = fields.fullYear };
+		return fields
+	}
+	fieldsFromCounter (timeStamp) {
+		let myDate = new ExtDate ("iso8601", timeStamp),
+			myFields = {
+				fullYear : myDate.getUTCFullYear(),
+				month : myDate.getUTCMonth() + 1,
+				day : myDate.getUTCDate(),
+				hours : myDate.getUTCHours(),
+				minutes : myDate.getUTCMinutes(),
+				seconds : myDate.getUTCSeconds(),
+				milliseconds : myDate.getUTCMilliseconds()
+			};
+			myFields.year = myFields.fullYear; 
+		return myFields;
+	}
+	counterFromFields (fields) {
+		let myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, this.solveAskedFields(fields));
+		let myDate = new ExtDate 
+			("iso8601", ExtDate.fullUTC(myFields.fullYear, myFields.month, myFields.day, myFields.hours, myFields.minutes, myFields.seconds, myFields.milliseconds));
+		return myDate.valueOf()
+	}
+	buildDateFromFields (fields, construct = ExtDate) {
+		let myFields = { fullYear : 0, month : 1, day : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, this.solveAskedFields(fields));
+		return new construct (this, this.counterFromFields(fields))
+	}
+	weekFieldsFromCounter (timeStamp) {
+		let myDate = new ExtDate ("iso8601", timeStamp),
+			fullYear = myDate.getUTCFullYear(),
+			myFigures = this.gregorianWeek.getWeekFigures (Math.floor(myDate.valueOf()/Milliseconds.DAY_UNIT), fullYear);
+		return {weekYearOffset : myFigures[2], weekYear : fullYear + myFigures[2], weekNumber : myFigures[0], weekday : myFigures[1], weeksInYear : myFigures[3]}
+	}
+	counterFromWeekFields (fields) {
+		let myFields = { weekYear : 0, weekNumber : 1, weekday : 1, hours : 0, minutes : 0, seconds : 0, milliseconds : 0 };
+		myFields = Object.assign (myFields, fields);
+		return this.gregorianWeek.getNumberFromWeek (myFields.weekYear, myFields.weekNumber, myFields.weekday) * Milliseconds.DAY_UNIT 
+			+ myFields.hours * Milliseconds.HOUR_UNIT + myFields.minutes * Milliseconds.MINUTE_UNIT 
+			+ myFields.seconds * Milliseconds.SECOND_UNIT + myFields.milliseconds;
+	}
+	inLeapYear (fields) {
+		return Cbcce.isGregorianLeapYear ( this.solveAskedFields(fields).fullYear )
+	}
+}
+
 	/** Generic proleptic Gregorian calendar, with no era. Years are algebraic numbers.
 	 * this class is only usefull as long as Temporal is not provided. Used for week-related methods, and for signed full years.
+	 * the only difference with ISO8601 is the reference to Unicode's 'gregory' instead of 'iso8601'. Makes a difference in display routines in Firefox (M2025-08)
 	 * @class
 	 * @param {string} id	- the calendar identifier.
 	*/

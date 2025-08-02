@@ -3,14 +3,14 @@
  * To be used with suitable calendrical-demo-**.html file.
  * contents: global variables, animation routines for the html page, event listeners to follow forms.
  * @requires module:calendrical-init.js
- * @version M2024-06-31
+ * @version M2025-08-12
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2024
+ * @license MIT 2016-2025
 */
 // Character set is UTF-8
 /* Version: see details on GitHub
 */
-/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2024
+/* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2025
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -401,8 +401,9 @@ window.onload = function () {
 		= [document.gregorianswitch.day.value, +document.gregorianswitch.month.value, document.gregorianswitch.year.value ];	// computed here for the 'gregorian' calendar.
 	loadCalendrical.then (() => {
 		calendars.push (new calendrical.MilesianCalendar ("milesian",calendrical.pldrDOM));
-		calendars.push (new calendrical.ProlepticGregorianCalendar ("iso_8601"));
+		calendars.push (new calendrical.ISO8601Calendar ("iso_8601"));
 		calendars.push (new calendrical.JulianCalendar ("julian"));
+		calendars.push (new calendrical.ProlepticGregorianCalendar ("prolepgreg"));
 		calendars.push (new calendrical.GregorianCalendar 
 			("gregorian", calendrical.ExtDate.fullUTC(switchingDate.year, switchingDate.month, switchingDate.day), calendrical.pldrDOM));
 		calendars.push (new calendrical.FrenchRevCalendar ("frenchrev",calendrical.pldrDOM));

@@ -3,9 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Calendriers utilisateurs et affichage étendu des dates</title>
-<!-- Version	M2024-07-01	See GitHub for details
+<!-- Version	M2025-08-12	See GitHub for details
 -->
-	
 	<meta name="creator" content="Louis-Aimé de Fouquières">
 	<meta name="description" content="Calendriers utilisateurs et affichage étendu des dates">
 	<meta name="keywords" content="Unicode, calendriers, javascript">
@@ -38,12 +37,13 @@
 			  <tr>
 				<form name="custom">
 				<td><select name="calend" size="1" class="centered">
-					<option value="iso_8601" selected>iso 8601</option>
+					<option value="iso_8601">iso 8601</option>
 					<option value="milesian">milésien</option>
 					<option value="julian">julien</option>
-					<option value="gregorian" selected>grégorien</option>
+					<option value="prolepgreg">grégorien proleptique</option>
+					<option value="gregorian" selected>grégorien réel</option>
 					<option value="frenchrev">révolutionnaire</option>
-					<option value="persian33">persan 33</option>
+					<option value="persian33">persan cycle 33 ans</option>
 				</select></td>
 				<td><input name="year" type="number" value="1582" class="centered digit4"></td>
 				<td><input name="monthname" type="number" value="12" min="1" max="13" class="centered digit2"></td>
@@ -220,13 +220,13 @@
 					<td>
 						<select name="Calendar" size="1" class="centered">
 						<option value="">par défaut</option>
-						<option value="buddhist">bouddhiste Thaï</option>
+						<option value="buddhist">bouddhiste thaï</option>
 						<option value="chinese">chinois luni-solaire</option>
 						<option value="coptic">copte</option>
-						<option value="dangi">coréen traditionnel dangi</option>
+						<option value="dangi">coréen luni-solaire</option>
 						<option value="ethioaa">éthiopien Amete Alem (5493 BC) </option>
 						<option value="ethiopic">éthiopien Amete Mihret (8 AD)</option>
-						<option value="gregory">grégorien</option>
+						<option value="gregory">grégorien proleptique</option>
 						<option value="hebrew">hébraïque</option>
 						<option value="indian">indien moderne</option>
 						<option value="islamic">islamique standard</option>
@@ -234,10 +234,10 @@
 						<option value="islamic-tbla">islamique tabulaire astronomique</option>
 						<option value="islamic-civil">islamique tabulaire civil</option>
 						<option value="islamic-rgsa">islamique, Arabie saoudite</option>
-						<option value="iso8601">ISO 8601 (grégorien normalisé)</option>
+						<option value="iso8601">ISO 8601</option>
 						<option value="japanese">japonais impérial</option>
 						<option value="persian">persan</option>
-						<option value="roc">chinois de république populaire</option>
+						<option value="roc">chinois républicain</option>
 						</select> 
 					</td>
 				   </tr>
