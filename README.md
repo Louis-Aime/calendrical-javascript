@@ -84,9 +84,10 @@ They use calendrical-demo.js and calendrical-init.js as script files.
 Event listeners for the calendrical-demo pages. Most global objects of the demo pages are documented as *Global* by JSDoc.
 ### Calendars used in the demonstration site.
 As defined in calendrical-demo.js, some calendars are instantiated from the classes of calendars.js when the page is loaded. Here are their id:  :
+ * **iso_8601**: the proleptic Gregorian calendar as specified by ISO 8601, with special display order year-month-day, week computations and algebraic year display.
  * **milesian**: the Milesian calendar, as defined at www.calendriermilesien.org; if you use ExtDateTimeFormat, pldr is required.
- * **iso_8601**: the proleptic Gregorian calendar as specified by ISO 8601, with week computations and with algebraic year display.
+ * **prolepgreg**: the proleptic Gregorian calendar of common usage: day, month and year as displayed in common way but year is algebraic.
  * **julian**: the julian calendar. You can display date with ExtDateTimeFormat, using CLDR's names for days, months, eras.  
  * **gregorian** : you instantiate the *GregorianCalendar* with a user-defined switching date to Gregorian reckoning. The *era* field is used to diffentiate "os" (Old Style, meaning Julian reckoning) from "ns" (New Style, Gregorian reckoning). pldr is required, in order to display these eras in a few languages.
  * **frenchRev**: the calendar defined by the French Convention in 1793. pldr is required.
- * **persian 33**: the official algorithmic calendar used in Iran and Afghanistan, same effect as Unicode's.
+ * **persian 33**: the official algorithmic calendar used in Iran and Afghanistan, based on a 33-years cycle, same effect as Unicode's.
