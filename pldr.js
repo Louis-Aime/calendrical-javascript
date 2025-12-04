@@ -75,8 +75,8 @@ const pldrstring =
 			 <month type="1" draft="unconfirmed">⁨P⁩</month>\
 			 <month type="2" draft="unconfirmed">⁨S⁩</month>\
 			 <month type="3" draft="unconfirmed">⁨T⁩</month>\
-			 <month type="4" draft="unconfirmed">⁨C⁩</month>\
-			 <month type="5" draft="unconfirmed">⁨Q⁩</month>\
+			 <month type="4" draft="unconfirmed">⁨Q⁩</month>\
+			 <month type="5" draft="unconfirmed">⁨C⁩</month>\
 			 <month type="6" draft="unconfirmed">⁨X⁩</month>\
 			 <month type="7" draft="unconfirmed">⁨E⁩</month>\
 			 <month type="8" draft="unconfirmed">⁨O⁩</month>\
@@ -134,8 +134,8 @@ const pldrstring =
 			 <month type="1" draft="unconfirmed">⁨P⁩</month>\
 			 <month type="2" draft="unconfirmed">⁨S⁩</month>\
 			 <month type="3" draft="unconfirmed">⁨T⁩</month>\
-			 <month type="4" draft="unconfirmed">⁨C⁩</month>\
-			 <month type="5" draft="unconfirmed">⁨Q⁩</month>\
+			 <month type="4" draft="unconfirmed">⁨Q⁩</month>\
+			 <month type="5" draft="unconfirmed">C⁩</month>\
 			 <month type="6" draft="unconfirmed">⁨X⁩</month>\
 			 <month type="7" draft="unconfirmed">⁨E⁩</month>\
 			 <month type="8" draft="unconfirmed">⁨O⁩</month>\
