@@ -1,6 +1,6 @@
 {
   "name": "calendrical-javascript",
-  "version": "9.2.0",
+  "version": "9.2.1",
   "description": "Routines for computations on calendars. Extend Date and Intl.DateTimeFormat. Allow custom calendars. Add historical gregorian calendars with custom switching date. Specify date in custom calendar. Helps creating calendars for Ecma TC39's Temporal. Handle week figures. Enhance Intl.DateTimeFormat. Extend Unicode CLDR and ICUs.",
   "main": "calendars.js",
   "scripts": {
