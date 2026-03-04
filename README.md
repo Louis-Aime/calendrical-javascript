@@ -2,10 +2,13 @@
 Basic routines in javascript for calendrical computations.
 ## Module architecture
 This module uses ES6 module syntax (export / import).
-## GitHub Page site for software documentation, usage comments, tests and demos
+## Software documentation, usage comments, tests and demos
+JSDoc software documentation is entirely in ./docs, available on online from 
 https://louis-aime.github.io/calendrical-javascript/
 
-## Purpose
+Files in ./docs are for documentation only, and should not be added to standard implementations.
+
+## Main software elements
 
 ### `ExtDate` object
 Extends the built-in `Date` object, making it possible to specify dates in custom-made calendars. 
@@ -71,10 +74,10 @@ This function is a general purpose object. It is here used to fetch the Private 
 ### pldr.js
 A simplified and stringified version of our Private Locale Data Repository, 
 to be used when the access to the XML PLDR file is not available.
-## Demonstration and documentation files
+
+## Additional files for custom
 The calendrical-\*.js and calendrical-demo\*.html files are for test and demonstrating purposes. 
-The JSDoc documentation and the demo are available from GitHub Pages.
-All other \*.html files are JSDoc generated files.
+
 ### calendrical-init.js
 An example of initialisation of the complete package. This file may be tailored to specific applications.
 ### calendrical-demo-en.html, calendrical-demo-fr.html
@@ -82,6 +85,7 @@ Demonstration pages in English resp. French.
 They use calendrical-demo.js and calendrical-init.js as script files.
 ### calendrical.demo.js 
 Event listeners for the calendrical-demo pages. Most global objects of the demo pages are documented as *Global* by JSDoc.
+
 ### Calendars used in the demonstration site.
 As defined in calendrical-demo.js, some calendars are instantiated from the classes of calendars.js when the page is loaded. Here are their id:  :
  * **iso_8601**: the proleptic Gregorian calendar as specified by ISO 8601, with special display order year-month-day, week computations and algebraic year display.
