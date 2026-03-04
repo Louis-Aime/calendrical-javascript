@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: pldr</title>
+    <title>JSDoc: Class: JulianCalendar</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: pldr</h1>
+    <h1 class="page-title">Class: JulianCalendar</h1>
 
     
 
@@ -28,8 +28,10 @@
 
 <header>
     
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-calendars.html">calendars</a>.</span>JulianCalendar<span class="signature">(id, pldr)</span><span class="type-signature"></span></h2>
         
-            
+            <div class="class-description">Generic Julian calendar, with eras (bc/ad). The numbering rules for weeks are those of ISO 8601.</div>
         
     
 </header>
@@ -38,20 +40,97 @@
     <div class="container-overview">
     
         
-            <div class="description">a Private Locale Data Repository stored as a string, with its DOM parser.</div>
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="JulianCalendar"><span class="type-signature"></span>new JulianCalendar<span class="signature">(id, pldr)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
         
 
         
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
             
 
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the calendar identifier.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pldr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
 
+            
+            </td>
 
+            
 
+            
 
+            <td class="description last">an optional Document Object, if specific names are used for months, e.g. for the kabyle calendar.</td>
+        </tr>
 
+    
+    </tbody>
+</table>
 
 
 
@@ -61,9 +140,6 @@
 <dl class="details">
 
     
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2022-11-10</li></ul></dd>
-    
 
     
 
@@ -80,19 +156,9 @@
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Louis A. de Fouquières https://github.com/Louis-Aime</li>
-        </ul>
-    </dd>
-    
 
     
 
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2022</li></ul></dd>
     
 
     
@@ -100,7 +166,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pldr.js.html">pldr.js</a>, <a href="pldr.js.html#line1">line 1</a>
+        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line313">line 313</a>
     </li></ul></dd>
     
 
@@ -130,7 +196,6 @@
 
 
 
-        
     
     </div>
 
@@ -151,13 +216,13 @@
 
         
             
-<h4 class="name" id="~pldrstring"><span class="type-signature">(inner, constant) </span>pldrstring<span class="type-signature"></span></h4>
+<h4 class="name" id="eras"><span class="type-signature"></span>eras<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Stringified XML base, consisting in 2 blocks: ldmlBCP47 declares non language specific calendar elements, ldml declares language specific names; in this stringified version, ldml block is empty.If this file is used for a Web site and not as a module, consider changing "const" to "var" in order to avoid redeclaration errors.
+    Era codes: "bc" for backwards counted years before year 1, "ad" (Anno Domini) for years counted after Dionysius' specification.
 </div>
 
 
@@ -195,7 +260,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pldr.js.html">pldr.js</a>, <a href="pldr.js.html#line17">line 17</a>
+        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line359">line 359</a>
     </li></ul></dd>
     
 
@@ -214,108 +279,6 @@
         
     
 
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".getPldrDOM"><span class="type-signature">(static) </span>getPldrDOM<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    build a document object from the pldrstring object of this file.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pldr.js.html">pldr.js</a>, <a href="pldr.js.html#line185">line 185</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    the link to the document object that holds the private locale data repository's data.
-</div>
-
-
-
-    
-
-
-
-
-
-        
     
 
     
@@ -337,7 +300,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Dec 04 2025 23:36:34 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Mar 04 2026 15:10:22 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

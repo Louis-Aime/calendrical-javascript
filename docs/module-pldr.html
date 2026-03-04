@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: time-units</title>
+    <title>JSDoc: Module: pldr</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: time-units</h1>
+    <h1 class="page-title">Module: pldr</h1>
 
     
 
@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">Set of general purpose duration units</div>
+            <div class="description">a Private Locale Data Repository stored as a string, with its DOM parser.</div>
         
 
         
@@ -62,7 +62,7 @@
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>M2021-08-12</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>M2022-11-10</li></ul></dd>
     
 
     
@@ -100,7 +100,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="time-units.js.html">time-units.js</a>, <a href="time-units.js.html#line1">line 1</a>
+        <a href="pldr.js.html">pldr.js</a>, <a href="pldr.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -151,148 +151,17 @@
 
         
             
-<h4 class="name" id=".timeUnits"><span class="type-signature">(static, constant) </span>timeUnits<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="~pldrstring"><span class="type-signature">(inner, constant) </span>pldrstring<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Duration units in milliseconds
+    Stringified XML base, consisting in 2 blocks: ldmlBCP47 declares non language specific calendar elements, ldml declares language specific names; in this stringified version, ldml block is empty.If this file is used for a Web site and not as a module, consider changing "const" to "var" in order to avoid redeclaration errors.
 </div>
 
 
 
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>DAY_UNIT</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Number of milliseconds in a day.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>HOUR_UNIT</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Number of milliseconds in an hour.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>MINUTE_UNIT</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Number of milliseconds in a minute.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>SECOND_UNIT</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Number of milliseconds in an second.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -322,16 +191,11 @@
     
 
     
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy">
-            <li class="object-value"><pre class="prettyprint"><code>{"DAY_UNIT":86400000,"HOUR_UNIT":3600000,"MINUTE_UNIT":60000,"SECOND_UNIT":1000}</code></pre></li>
-        </ul></dd>
-    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="time-units.js.html">time-units.js</a>, <a href="time-units.js.html#line16">line 16</a>
+        <a href="pldr.js.html">pldr.js</a>, <a href="pldr.js.html#line17">line 17</a>
     </li></ul></dd>
     
 
@@ -350,6 +214,108 @@
         
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getPldrDOM"><span class="type-signature">(static) </span>getPldrDOM<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    build a document object from the pldrstring object of this file.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pldr.js.html">pldr.js</a>, <a href="pldr.js.html#line185">line 185</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the link to the document object that holds the private locale data repository's data.
+</div>
+
+
+
+    
+
+
+
+
+
+        
     
 
     
@@ -371,7 +337,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Dec 04 2025 23:36:34 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Mar 04 2026 15:10:22 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>

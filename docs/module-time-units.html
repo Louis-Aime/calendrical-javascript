@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: FrenchRevCalendar</title>
+    <title>JSDoc: Module: time-units</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: FrenchRevCalendar</h1>
+    <h1 class="page-title">Module: time-units</h1>
 
     
 
@@ -28,10 +28,8 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-calendars.html">calendars</a>.</span>FrenchRevCalendar<span class="signature">(id, pldr)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Generic French revolution calendar. This calendar was defined and enforced in France in 1993, and cancelled in Januray 1806. Strictly speaking, it is not an algorithmic calendar. The new year is supposed to fall on the autumnal equinox as observed in Paris.This algorithmic implementation is based on a 128-year cycle comprising 31 leap years. A leap years occur most often 4 years after the last one, and sometimes 5 years after.This algorithm gives exact results for the period 1992-1806, and also for 1870 where the calendar was briefly enforced under the Commune de Paris.Only one new year does not match the initial definition during the first 128-years cycle: the equinox occurred at 23:44 on the 6 ss day of 81 Ere des Français, 82 should have been a sextile year instead of 81.A PLDR is necessary to display this calendar's date expression, however names are given in comments, as a simple implementation is also possible.</div>
+            
         
     
 </header>
@@ -40,97 +38,20 @@
     <div class="container-overview">
     
         
-
-    
-    <h2>Constructor</h2>
-    
-
-    
-    <h4 class="name" id="FrenchRevCalendar"><span class="type-signature"></span>new FrenchRevCalendar<span class="signature">(id, pldr)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+            <div class="description">Set of general purpose duration units</div>
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
             
 
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the calendar identifier.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pldr</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
 
 
-            
-            </td>
 
-            
 
-            
 
-            <td class="description last">a Document Object, with the specific names for the French revolution calendar in several languages, for several countries etc.</td>
-        </tr>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -140,7 +61,8 @@
 <dl class="details">
 
     
-
+    <dt class="tag-version">Version:</dt>
+    <dd class="tag-version"><ul class="dummy"><li>M2021-08-12</li></ul></dd>
     
 
     
@@ -158,7 +80,19 @@
     
 
     
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Louis A. de Fouquières https://github.com/Louis-Aime</li>
+        </ul>
+    </dd>
+    
 
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT 2016-2022</li></ul></dd>
     
 
     
@@ -166,7 +100,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line545">line 545</a>
+        <a href="time-units.js.html">time-units.js</a>, <a href="time-units.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -196,6 +130,7 @@
 
 
 
+        
     
     </div>
 
@@ -216,17 +151,148 @@
 
         
             
-<h4 class="name" id="eras"><span class="type-signature"></span>eras<span class="type-signature"></span></h4>
+<h4 class="name" id=".timeUnits"><span class="type-signature">(static, constant) </span>timeUnits<span class="type-signature"> :object</span></h4>
 
 
 
 
 <div class="description">
-    One era code, "ef" for "ère des Français"
+    Duration units in milliseconds
 </div>
 
 
 
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>DAY_UNIT</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of milliseconds in a day.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>HOUR_UNIT</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of milliseconds in an hour.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>MINUTE_UNIT</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of milliseconds in a minute.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>SECOND_UNIT</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of milliseconds in an second.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -256,11 +322,16 @@
     
 
     
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy">
+            <li class="object-value"><pre class="prettyprint"><code>{"DAY_UNIT":86400000,"HOUR_UNIT":3600000,"MINUTE_UNIT":60000,"SECOND_UNIT":1000}</code></pre></li>
+        </ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="calendars.js.html">calendars.js</a>, <a href="calendars.js.html#line562">line 562</a>
+        <a href="time-units.js.html">time-units.js</a>, <a href="time-units.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -300,7 +371,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Dec 04 2025 23:36:34 GMT+0100 (heure normale d’Europe centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Mar 04 2026 15:10:22 GMT+0100 (heure normale d’Europe centrale)
 </footer>
 
 <script> prettyPrint(); </script>
