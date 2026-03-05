@@ -1,12 +1,10 @@
 /** a Private Locale Data Repository stored as a string, with its DOM parser.
  * @module
- * @version M2022-11-10
+ * @version M2026-03-14
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
  * @license MIT 2016-2022
  */
 // Charset UTF-8. This file contains non-ANSI characters.
-/* Version	M2022-11-10	latin names for the non-proleptic gregorian calendar
-*/
 "use strict";
 /** Stringified XML base, consisting in 2 blocks: 
  * ldmlBCP47 declares non language specific calendar elements, 

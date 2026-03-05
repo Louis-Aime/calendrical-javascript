@@ -7,7 +7,7 @@
  * @license MIT 2016-2026
  */
 // Character set is UTF-8 
-/* Version	M2026-03-16 Change location of pldr.xml
+/* Version	M2026-03-14 Change location of pldr.xml
 	Version log via GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
