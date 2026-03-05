@@ -4,10 +4,10 @@
  * the calendrical global object holds all calendrical-javascript impored objects.
  * @version M2022-08-06
  * @author Louis A. de Fouquières https://github.com/Louis-Aime
- * @license MIT 2016-2022
+ * @license MIT 2016-2026
  */
 // Character set is UTF-8 
-/* Version	M2022-08-06	Make pldrFetch a permanently visible function.
+/* Version	M2026-03-16 Change location of pldr.xml
 	Version log via GitHub
 */
 /* Copyright Louis A. de Fouquières https://github.com/Louis-Aime 2016-2022
@@ -45,7 +45,7 @@ const
 	loadCalendrical = Promise.all([
 		import ('./fetchdom.js').then (
 			(value) => { calendrical.pldrFetch = value.default;
-						return calendrical.pldrFetch ('./pldr.xml', 1000) },
+						return calendrical.pldrFetch ('https://louis-aime.github.io/calendar-showroom/pldr.xml', 1000) },
 			(error) => { throw 'Error loading standard modules' }		// failure fetching pldr as XML file, fallback in next step
 			).then (
 				(value) => { calendrical.pldrDOM = value },			// fetching XML file has succeeded.
