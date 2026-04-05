@@ -2,7 +2,6 @@
   "name": "calendrical-javascript",
   "version": "9.3.1",
   "description": "Routines for computations on calendars. Extend Date and Intl.DateTimeFormat. Allow custom calendars. Add historical gregorian calendars with custom switching date. Specify date in custom calendar. Handle week figures. Enhance Intl.DateTimeFormat. Extend Unicode CLDR and ICUs.",
-  "main": "calendrical-init.js",
   "scripts": {
     "test": "echo \"Test and demo page available at https://louis-aime.github.io/calendrical-javascript/ \" && exit 1"
   },
