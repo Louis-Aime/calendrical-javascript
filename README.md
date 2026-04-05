@@ -12,7 +12,6 @@ Files in ./docs are for documentation only, and should not be added to standard 
 
 ### `ExtDate` object
 Extends the built-in `Date` object, making it possible to specify dates in custom-made calendars. 
-This foreshadows some features of `Temporal` initiative of Ecma TC39.
 | Purpose | `Date` | `ExtDate` |
 |:--- |:---:|:---:|
 |Number for the first month|0|1|
